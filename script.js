@@ -1,0 +1,14 @@
+// Insira somente números, com código do país e DDD. Ex.: 5511999999999
+const WHATSAPP_NUMBER = window.SITE_CONFIG?.whatsapp || '';
+const header=document.querySelector('[data-header]'),menuButton=document.querySelector('.menu-button'),dialog=document.querySelector('[data-dialog]'),messagePreview=document.querySelector('[data-message]');let activeMessage='';
+window.addEventListener('scroll',()=>header.classList.toggle('scrolled',window.scrollY>30),{passive:true});
+menuButton?.addEventListener('click',()=>{const open=header.classList.toggle('menu-open');menuButton.setAttribute('aria-expanded',String(open));menuButton.textContent=open?'Fechar':'Menu'});
+document.querySelectorAll('.site-header nav a').forEach(link=>link.addEventListener('click',()=>{header.classList.remove('menu-open');menuButton?.setAttribute('aria-expanded','false');if(menuButton)menuButton.textContent='Menu'}));
+const makeMessage=product=>`Olá! Conheci ${product} no site da Maximos Signature e gostaria de saber mais sobre cores, disponibilidade e entrega.`;
+document.querySelectorAll('.js-whatsapp').forEach(link=>link.addEventListener('click',event=>{const product=link.dataset.product||'uma peça Maximos';activeMessage=makeMessage(product);if(WHATSAPP_NUMBER){link.href=`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(activeMessage)}`;return}event.preventDefault();messagePreview.textContent=activeMessage;dialog.showModal()}));
+document.querySelector('[data-close]')?.addEventListener('click',()=>dialog.close());dialog?.addEventListener('click',event=>{if(event.target===dialog)dialog.close()});
+document.querySelector('[data-copy]')?.addEventListener('click',async event=>{await navigator.clipboard.writeText(activeMessage);event.currentTarget.textContent='Mensagem copiada'});
+const focusName=document.querySelector('[data-focus-name]'),focusPrice=document.querySelector('[data-focus-price]'),focusDetail=document.querySelector('[data-focus-detail]'),focusNumber=document.querySelector('[data-focus-number]'),focusLink=document.querySelector('.focus-action .js-whatsapp');
+document.querySelectorAll('.product-card').forEach(card=>card.addEventListener('click',()=>{document.querySelectorAll('.product-card').forEach(item=>item.classList.remove('is-active'));card.classList.add('is-active');focusName.textContent=card.dataset.name;focusPrice.textContent=card.dataset.price;focusDetail.textContent=card.dataset.detail;focusNumber.textContent=card.dataset.number;focusLink.dataset.product=card.dataset.name;document.querySelector('.product-focus').scrollIntoView({behavior:'smooth',block:'center'})}));
+const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target)}}),{threshold:.12});document.querySelectorAll('.reveal').forEach(element=>observer.observe(element));document.querySelector('[data-year]').textContent=new Date().getFullYear();
+
