@@ -13,11 +13,19 @@
       "destaque": true,
       "resumo": "Leve, essencial e criada para acompanhar o ritmo de todos os dias.",
       "descricao": "Uma peça artesanal em couro legítimo que combina presença discreta, funcionalidade e acabamento cuidadoso.",
-      "materiais": ["Couro legítimo", "Construção artesanal"],
-      "cores": ["Consultar disponibilidade"],
+      "materiais": [
+        "Couro legítimo",
+        "Construção artesanal"
+      ],
+      "cores": [
+        "Consultar disponibilidade"
+      ],
       "medidas": null,
-      "imagens": ["assets/hero-conceitual.png"],
-      "imagemConceitual": true,
+      "imagens": [
+        "assets/produtos/aura/graphite.png",
+        "assets/produtos/aura/noir.png"
+      ],
+      "imagemConceitual": false,
       "ordem": 1
     },
     {
@@ -31,11 +39,18 @@
       "destaque": true,
       "resumo": "Textura, presença e construção artesanal em uma peça que revela detalhes aos poucos.",
       "descricao": "A Trama explora o caráter tátil do couro e o cuidado do trabalho manual em uma bolsa de personalidade marcante.",
-      "materiais": ["Couro legítimo", "Acabamento artesanal"],
-      "cores": ["Consultar disponibilidade"],
+      "materiais": [
+        "Couro legítimo",
+        "Acabamento artesanal"
+      ],
+      "cores": [
+        "Consultar disponibilidade"
+      ],
       "medidas": null,
-      "imagens": ["assets/hero-conceitual.png"],
-      "imagemConceitual": true,
+      "imagens": [
+        "assets/produtos/trama/capa.png"
+      ],
+      "imagemConceitual": false,
       "ordem": 2
     },
     {
@@ -49,10 +64,17 @@
       "destaque": true,
       "resumo": "Acabamento marcante e desenho atemporal para uma assinatura visual forte.",
       "descricao": "Uma bolsa feita em pequena escala, criada para destacar a textura do couro e os detalhes de acabamento.",
-      "materiais": ["Couro legítimo", "Produção artesanal"],
-      "cores": ["Consultar disponibilidade"],
+      "materiais": [
+        "Couro legítimo",
+        "Produção artesanal"
+      ],
+      "cores": [
+        "Consultar disponibilidade"
+      ],
       "medidas": null,
-      "imagens": ["assets/hero-conceitual.png"],
+      "imagens": [
+        "assets/hero-conceitual.png"
+      ],
       "imagemConceitual": true,
       "ordem": 3
     },
@@ -64,14 +86,25 @@
       "preco": 327.75,
       "precoAnterior": 437,
       "disponivel": true,
-      "destaque": false,
+      "destaque": true,
       "resumo": "Elegância e delicadeza em um desenho atemporal feito à mão.",
       "descricao": "A Maximos Marfim é confeccionada em couro legítimo para acompanhar a rotina com sofisticação.",
-      "materiais": ["Couro legítimo", "Acabamento artesanal"],
-      "cores": ["Consultar disponibilidade"],
-      "medidas": {"largura": 30, "altura": 30, "profundidade": 5},
-      "imagens": ["assets/hero-conceitual.png"],
-      "imagemConceitual": true,
+      "materiais": [
+        "Couro legítimo",
+        "Acabamento artesanal"
+      ],
+      "cores": [
+        "Consultar disponibilidade"
+      ],
+      "medidas": {
+        "largura": 30,
+        "altura": 30,
+        "profundidade": 5
+      },
+      "imagens": [
+        "assets/produtos/marfim/capa.png"
+      ],
+      "imagemConceitual": false,
       "ordem": 4
     },
     {
@@ -85,10 +118,17 @@
       "destaque": false,
       "resumo": "Uma bolsa versátil, construída para permanecer relevante ao longo do tempo.",
       "descricao": "Design funcional e produção artesanal se encontram em uma peça pensada para o uso cotidiano.",
-      "materiais": ["Couro legítimo", "Produção artesanal"],
-      "cores": ["Consultar disponibilidade"],
+      "materiais": [
+        "Couro legítimo",
+        "Produção artesanal"
+      ],
+      "cores": [
+        "Consultar disponibilidade"
+      ],
       "medidas": null,
-      "imagens": ["assets/hero-conceitual.png"],
+      "imagens": [
+        "assets/hero-conceitual.png"
+      ],
       "imagemConceitual": true,
       "ordem": 5
     },
@@ -103,10 +143,16 @@
       "destaque": false,
       "resumo": "Uma expressão direta da origem artesanal da Maximos Signature.",
       "descricao": "Modelo da linha inicial da marca. Consulte no WhatsApp as características e opções disponíveis.",
-      "materiais": ["Produção artesanal"],
-      "cores": ["Consultar disponibilidade"],
+      "materiais": [
+        "Produção artesanal"
+      ],
+      "cores": [
+        "Consultar disponibilidade"
+      ],
       "medidas": null,
-      "imagens": ["assets/hero-conceitual.png"],
+      "imagens": [
+        "assets/hero-conceitual.png"
+      ],
       "imagemConceitual": true,
       "ordem": 6
     },
@@ -121,12 +167,52 @@
       "destaque": false,
       "resumo": "Uma leitura compacta e urbana do trabalho artesanal da marca.",
       "descricao": "Modelo atualmente indisponível. Entre em contato para conhecer alternativas semelhantes.",
-      "materiais": ["Produção artesanal"],
-      "cores": ["Consultar disponibilidade"],
+      "materiais": [
+        "Produção artesanal"
+      ],
+      "cores": [
+        "Consultar disponibilidade"
+      ],
       "medidas": null,
-      "imagens": ["assets/hero-conceitual.png"],
+      "imagens": [
+        "assets/hero-conceitual.png"
+      ],
       "imagemConceitual": true,
       "ordem": 7
+    }
+  ],
+  "showcase": [
+    {
+      "productId": "maximos-marfim",
+      "linha": "Linha Marfim",
+      "titulo": "Marfim",
+      "texto": "Elegância serena em couro legítimo. Uma peça clara, atemporal e feita para acompanhar diferentes momentos.",
+      "imagem": "assets/produtos/marfim/capa.png",
+      "fundo": "#faf8f5"
+    },
+    {
+      "productId": "maximos-trama",
+      "linha": "Linha Trama",
+      "titulo": "Chocolate",
+      "texto": "O trabalho manual ganha profundidade em uma peça que valoriza textura, construção e presença.",
+      "imagem": "assets/produtos/trama/capa.png",
+      "fundo": "#f6f1eb"
+    },
+    {
+      "productId": "maximos-aura",
+      "linha": "Linha Aura",
+      "titulo": "Graphite",
+      "texto": "Sóbria e versátil, a Aura Graphite aproxima o desenho contemporâneo da tradição artesanal.",
+      "imagem": "assets/produtos/aura/graphite.png",
+      "fundo": "#f1f1f0"
+    },
+    {
+      "productId": "maximos-aura",
+      "linha": "Linha Aura",
+      "titulo": "Noir",
+      "texto": "Preto absoluto e proporções atemporais. Uma expressão discreta e marcante da assinatura Maximos.",
+      "imagem": "assets/produtos/aura/noir.png",
+      "fundo": "#e9e9e9"
     }
   ]
 }

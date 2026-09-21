@@ -2,62 +2,76 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#090807"><meta name="description" content="Maximos Signature — bolsas artesanais em couro legítimo, feitas no Brasil.">
-  <title>Maximos Signature — Feito à mão. Assinado pelo tempo.</title>
-  <link rel="icon" href="assets/favicon.ico"><link rel="stylesheet" href="styles.css">
+  <meta name="theme-color" content="#21150f"><meta name="description" content="Maximos Signature — bolsas artesanais em couro legítimo, feitas à mão no Brasil.">
+  <title>Maximos Signature — A arte do couro legítimo</title>
+  <link rel="icon" href="assets/favicon.ico"><link rel="stylesheet" href="home.css">
 </head>
 <body>
   <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
-  <header class="site-header" data-header>
-    <a class="brand" href="#inicio" aria-label="Maximos Signature — início"><img src="assets/logo-branco.png" alt="Maximos Signature"></a>
-    <nav aria-label="Navegação principal"><a href="catalogo.html">Coleção</a><a href="#artesao">O artesão</a><a href="#como-comprar">Como comprar</a></nav>
-    <a class="header-cta js-whatsapp" href="#" data-product="uma peça Maximos">Conversar <span>↗</span></a>
-    <button class="menu-button" type="button" aria-label="Abrir menu" aria-expanded="false">Menu</button>
+  <header class="home-header" data-header>
+    <nav class="nav-side nav-left" aria-label="Navegação principal"><a href="#universo">Universo</a><a href="#vitrine">Vitrine</a></nav>
+    <a class="monogram" href="#universo" aria-label="Maximos Signature — início"><span>M</span></a>
+    <nav class="nav-side nav-right"><a href="#artesao">Savoir-faire</a><a href="catalogo.html">Coleção</a></nav>
+    <button class="menu-toggle" type="button" aria-expanded="false">Menu</button>
   </header>
+
   <main id="conteudo">
-    <section class="hero" id="inicio" aria-labelledby="hero-title">
-      <img class="hero-image" src="assets/hero-conceitual.png" alt="Bolsa de couro marrom em cenário editorial escuro"><div class="hero-shade"></div><div class="hero-grain" aria-hidden="true"></div>
-      <div class="hero-content reveal">
-        <p class="eyebrow">Feito à mão no Brasil <span></span> Couro legítimo</p>
-        <h1 id="hero-title">Cada peça carrega<br><em>uma assinatura.</em></h1>
-        <p class="hero-copy">Bolsas criadas uma a uma por Máximo — com matéria verdadeira, técnica artesanal e detalhes que o tempo não apaga.</p>
-        <div class="hero-actions"><a class="button button-light" href="#colecao">Descobrir a coleção</a><a class="text-link js-whatsapp" href="#" data-product="uma peça Maximos">Pedir atendimento <span>↗</span></a></div>
+    <section class="hero" id="universo">
+      <img class="hero-bg" src="assets/editorial/atelie-hero.webp" alt="Artesão trabalhando o couro em sua bancada">
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <p class="section-label light">Artesanato em couro legítimo</p>
+        <img class="hero-logo" src="assets/logo-branco.png" alt="Maximos Signature">
+        <p class="hero-tagline">Sua essência, nossa identidade</p>
+        <a class="outline-button light" href="#vitrine">Descobrir peças</a>
       </div>
-      <div class="hero-index" aria-hidden="true"><span>01</span><i></i><span>04</span></div>
-      <div class="hero-note"><span>Matéria</span><strong>Couro natural</strong></div>
-      <p class="concept-note">Imagem conceitual — substituir por fotografia real da coleção</p>
+      <div class="scroll-cue"><span>Explore</span><i></i></div>
     </section>
-    <div class="manifesto-strip" aria-label="Pilares da marca"><div><span>Autoria</span><i>✦</i><span>Couro legítimo</span><i>✦</i><span>Produção artesanal</span><i>✦</i><span>Feito para durar</span><i>✦</i><span>Autoria</span><i>✦</i><span>Couro legítimo</span><i>✦</i><span>Produção artesanal</span><i>✦</i><span>Feito para durar</span><i>✦</i></div></div>
-    <section class="collection section" id="colecao" aria-labelledby="collection-title">
-      <div class="section-heading reveal"><p class="eyebrow dark">A coleção</p><h2 id="collection-title">Três expressões.<br>Uma mesma origem.</h2><p>Escolha a peça que combina com você. No WhatsApp, mostramos cores disponíveis, detalhes e condições de entrega.</p></div>
-      <div class="product-grid">
-        <article class="product-card is-active reveal" data-name="Maximos Aura" data-price="R$ 324" data-detail="Leve, essencial e desenhada para acompanhar o ritmo de todos os dias." data-number="01"><div class="product-visual crop-a"><img src="assets/hero-conceitual.png" alt="Referência visual conceitual para Maximos Aura"></div><div class="product-meta"><span>01 / Essencial</span><span>R$ 324</span></div><h3>Maximos Aura</h3><button type="button" class="product-button">Explorar modelo <span>↗</span></button></article>
-        <article class="product-card reveal" data-name="Maximos Trama" data-price="R$ 327,75" data-detail="Textura, presença e construção artesanal para uma peça que revela detalhes aos poucos." data-number="02"><div class="product-visual crop-b"><img src="assets/hero-conceitual.png" alt="Referência visual conceitual para Maximos Trama"></div><div class="product-meta"><span>02 / Textura</span><span>R$ 327,75</span></div><h3>Maximos Trama</h3><button type="button" class="product-button">Explorar modelo <span>↗</span></button></article>
-        <article class="product-card reveal" data-name="Maximos Croco" data-price="R$ 328" data-detail="Acabamento marcante e desenho atemporal para quem procura uma assinatura visual forte." data-number="03"><div class="product-visual crop-c"><img src="assets/hero-conceitual.png" alt="Referência visual conceitual para Maximos Croco"></div><div class="product-meta"><span>03 / Presença</span><span>R$ 328</span></div><h3>Maximos Croco</h3><button type="button" class="product-button">Explorar modelo <span>↗</span></button></article>
+
+    <section class="manifesto section-light">
+      <div class="manifesto-inner reveal">
+        <p class="section-label">Manifesto</p>
+        <h1>O valor do que é feito<br><em>para atravessar o tempo.</em></h1>
+        <i class="signature-line"></i>
+        <p>Não criamos apenas acessórios. Cada corte, costura e acabamento preserva o conhecimento de Máximo e transforma couro legítimo em uma peça com autoria.</p>
       </div>
-      <p class="collection-note">As fotografias desta demonstração são conceituais. Na versão final, cada modelo recebe ensaio próprio com frente, costas, interior, escala e detalhes.</p><a class="button button-dark" href="catalogo.html">Ver todas as bolsas <span>↗</span></a>
     </section>
-    <section class="product-focus" aria-live="polite">
-      <div class="focus-number" data-focus-number>01</div>
-      <div class="focus-copy reveal"><p class="eyebrow">Peça em destaque</p><h2 data-focus-name>Maximos Aura</h2><p data-focus-detail>Leve, essencial e desenhada para acompanhar o ritmo de todos os dias.</p><div class="material-list"><span><b>01</b> Couro legítimo selecionado</span><span><b>02</b> Produção feita à mão</span><span><b>03</b> Acabamento em pequena escala</span></div></div>
-      <div class="focus-action reveal"><span>A partir de</span><strong data-focus-price>R$ 324</strong><a class="button button-gold js-whatsapp" href="#" data-product="Maximos Aura">Quero conhecer esta peça <span>↗</span></a><small>Atendimento direto, sem carrinho e sem cadastro.</small></div>
+
+    <section class="showcase" id="vitrine" data-showcase>
+      <div class="showcase-sticky">
+        <div class="showcase-copy" data-showcase-copy></div>
+        <div class="showcase-stage" data-showcase-stage><p>Carregando vitrine...</p></div>
+        <div class="showcase-steps" data-showcase-steps aria-label="Peças da vitrine"></div>
+        <p class="showcase-counter"><span data-current>01</span><i></i><span data-total>04</span></p>
+      </div>
     </section>
-    <section class="maker section" id="artesao" aria-labelledby="maker-title">
-      <div class="maker-image reveal"><img src="assets/artesao-conceitual.png" alt="Mãos de um artesão costurando couro em uma bancada"><p>Imagem conceitual — direção para o ensaio real com Máximo</p></div>
-      <div class="maker-copy reveal"><p class="eyebrow dark">Por trás da peça</p><h2 id="maker-title">Antes da marca,<br>já existiam as mãos.</h2><p>Máximo é o artesão e a origem da Maximos Signature. Cada bolsa nasce da escolha do couro, passa por corte, construção e acabamento — uma sequência de decisões que nenhuma produção em massa consegue repetir.</p><blockquote>“Signature” não é um adorno. É a autoria de quem transforma a matéria.</blockquote><a class="text-link dark-link" href="#como-comprar">Conheça nossa forma de criar <span>↓</span></a></div>
+
+    <section class="craft" id="artesao">
+      <div class="craft-copy reveal">
+        <p class="section-label">Savoir-faire</p>
+        <h2>Antes da marca,<br>já existiam as mãos.</h2>
+        <p>Máximo é o artesão e a origem da Maximos Signature. É ele quem escolhe, prepara, corta e transforma o couro — peça por peça, em Bauru, São Paulo.</p>
+        <dl><div><dt>Matéria</dt><dd>Couro legítimo</dd></div><div><dt>Produção</dt><dd>Artesanal</dd></div><div><dt>Origem</dt><dd>Bauru · SP</dd></div></dl>
+        <a class="text-link" href="#colecao">Conhecer as peças <span>↘</span></a>
+      </div>
+      <figure class="craft-image reveal"><img src="assets/editorial/maximo-artesao.webp" alt="Máximo trabalhando em seu ateliê"><figcaption>O artesão por trás da assinatura.</figcaption></figure>
     </section>
-    <section class="process" id="como-comprar" aria-labelledby="process-title">
-      <div class="process-intro reveal"><p class="eyebrow">Comprar é simples</p><h2 id="process-title">Da nossa bancada<br>para a sua história.</h2></div>
-      <ol class="process-list"><li class="reveal"><span>01</span><div><h3>Escolha sua peça</h3><p>Explore os modelos e toque em “Quero conhecer”.</p></div></li><li class="reveal"><span>02</span><div><h3>Converse com a família</h3><p>A mensagem chega pronta no WhatsApp. Confirmamos cor, disponibilidade e detalhes.</p></div></li><li class="reveal"><span>03</span><div><h3>Receba com cuidado</h3><p>Combinamos pagamento e entrega de forma direta e transparente.</p></div></li></ol>
-      <a class="button button-light js-whatsapp reveal" href="#" data-product="uma bolsa Maximos">Começar pelo WhatsApp <span>↗</span></a>
+
+    <section class="collection section-light" id="colecao">
+      <header class="collection-heading reveal"><div><p class="section-label">Coleção atual</p><h2>Peças com identidade.</h2></div><a class="outline-button" href="catalogo.html">Ver coleção completa</a></header>
+      <div class="home-products" data-home-products><p>Carregando coleção...</p></div>
     </section>
-    <section class="final-cta" aria-labelledby="final-title"><p class="eyebrow dark">Maximos Signature</p><h2 id="final-title">Feito à mão.<br><em>Escolhido por você.</em></h2><a class="button button-dark js-whatsapp" href="#" data-product="uma peça Maximos">Falar com a Maximos <span>↗</span></a></section>
+
+    <section class="contact-band">
+      <p class="section-label light">Atendimento direto</p>
+      <h2>Escolha com calma.<br><em>Converse com quem conhece cada peça.</em></h2>
+      <a class="outline-button light" href="#" data-whatsapp>Falar com a Maximos</a>
+    </section>
   </main>
-  <footer><img src="assets/logo-branco.png" alt="Maximos Signature"><div><a href="https://www.instagram.com/maximos.signature/" target="_blank" rel="noopener">Instagram ↗</a><a href="mailto:maximos.signature@gmail.com">E-mail ↗</a></div><p>Artigos artesanais em couro legítimo.<br>Feitos no Brasil.</p><small>© <span data-year></span> Maximos Signature</small></footer>
-  <a class="mobile-whatsapp js-whatsapp" href="#" data-product="uma peça Maximos">Conversar no WhatsApp <span>↗</span></a>
-  <dialog class="contact-dialog" data-dialog><button type="button" class="dialog-close" data-close aria-label="Fechar">×</button><p class="eyebrow dark">Demonstração</p><h2>O atendimento começa aqui.</h2><p>Na publicação, este botão abrirá o WhatsApp da Maximos com a mensagem abaixo já preenchida:</p><div class="message-preview" data-message></div><p class="dialog-note">Basta inserir o número comercial no arquivo <strong>script.js</strong>.</p><button class="button button-dark" type="button" data-copy>Copiar mensagem</button></dialog>
-  <script src="config.js"></script><script src="script.js"></script><script src="home-catalog.js"></script>
-</body>
-</html>
 
+  <footer><a class="footer-mark" href="#universo">Maximos</a><div><a href="catalogo.html">Coleção</a><a href="#artesao">Nossa história</a><a href="https://www.instagram.com/maximos.signature/" target="_blank" rel="noopener">Instagram</a></div><p>Couro legítimo · Feito à mão<br>Bauru, São Paulo</p><small>© <span data-year></span> Maximos Signature</small></footer>
 
+  <div class="social-float"><a href="#" data-whatsapp aria-label="WhatsApp">W</a><a href="https://www.instagram.com/maximos.signature/" target="_blank" rel="noopener" aria-label="Instagram">I</a></div>
+  <dialog data-dialog><button type="button" data-close aria-label="Fechar">×</button><p class="section-label">Demonstração</p><h2>Mensagem preparada.</h2><p data-message></p><small>Adicione o número comercial em <strong>config.js</strong> para abrir o WhatsApp diretamente.</small><button class="dialog-copy" type="button" data-copy>Copiar mensagem</button></dialog>
+  <script src="config.js"></script><script src="home.js"></script>
+</body></html>
