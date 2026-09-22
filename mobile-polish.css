@@ -1,6 +1,6 @@
 /* Refinamento responsivo compartilhado — preserva as imagens e a área útil em telas pequenas. */
 @media (max-width: 620px) {
-  html, body { width: 100%; max-width: 100%; overflow-x: hidden; }
+  html, body { width: 100%; max-width: 100%; overflow-x: clip; }
   img { max-width: 100%; }
 
   /* Início */
@@ -10,14 +10,14 @@
   .hero-logo { width: min(86vw, 330px) !important; height: auto !important; max-height: 190px; }
   .hero-tagline { max-width: 320px; margin: .8rem auto 2.1rem !important; font-size: .58rem; letter-spacing: .22em !important; line-height: 1.8; }
 
-  .showcase { height: 360svh; }
-  .showcase-sticky { display: block; height: 100svh; min-height: 620px; padding: 5.6rem 1rem 3.6rem; }
-  .showcase-copy { min-height: 190px; }
+  .showcase { height: auto; }
+  .showcase-sticky { display: grid; grid-template-columns: 1fr; grid-template-rows: 190px min(92vw, 420px); row-gap: .75rem; align-items: stretch; position: relative; top: auto; height: auto; min-height: 0; max-height: none; padding: 5rem 1rem 3.4rem; }
+  .showcase-copy { min-height: 0; height: 190px; }
   .showcase-info { right: 0; max-width: 100%; }
   .showcase-info h2 { margin: .55rem 0; font-size: clamp(2.45rem, 13vw, 3.55rem); }
   .showcase-info p { max-width: 34rem; margin-block: .5rem; font-size: .9rem; line-height: 1.55; }
   .showcase-info .text-link { margin-top: .55rem; }
-  .showcase-stage { width: 100%; height: calc(100svh - 345px); min-height: 315px; margin: 0; }
+  .showcase-stage { width: 100%; height: 100%; min-height: 0; margin: 0; touch-action: pan-y; }
   .showcase-stage img { inset: 0 !important; width: 100% !important; height: 100% !important; object-fit: contain; transform: translateY(12px) scale(.94); filter: drop-shadow(0 20px 20px #3d2b1f20); }
   .showcase-stage img.active { transform: none; }
   .showcase-steps { inset: auto auto 1.35rem 50%; display: flex; gap: .9rem; transform: translateX(-50%); }
@@ -70,6 +70,6 @@
   .product-badge { padding: .28rem .38rem; letter-spacing: .04em; }
   .discount { padding: .28rem .35rem; }
   .product-action span { font-size: .52rem; }
-  .showcase-copy { min-height: 205px; }
-  .showcase-stage { height: calc(100svh - 360px); }
+  .showcase-sticky { grid-template-rows: 195px min(92vw, 360px); }
+  .showcase-copy { height: 195px; }
 }
