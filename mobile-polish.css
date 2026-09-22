@@ -1,0 +1,75 @@
+/* Refinamento responsivo compartilhado — preserva as imagens e a área útil em telas pequenas. */
+@media (max-width: 620px) {
+  html, body { width: 100%; max-width: 100%; overflow-x: hidden; }
+  img { max-width: 100%; }
+
+  /* Início */
+  .hero { min-height: 100svh; }
+  .hero-content { width: 100%; max-width: 390px; margin-top: 1.5rem; padding-inline: 1rem; }
+  .hero-content .section-label { max-width: 100%; margin-inline: auto; letter-spacing: .24em; line-height: 1.65; }
+  .hero-logo { width: min(86vw, 330px) !important; height: auto !important; max-height: 190px; }
+  .hero-tagline { max-width: 320px; margin: .8rem auto 2.1rem !important; font-size: .58rem; letter-spacing: .22em !important; line-height: 1.8; }
+
+  .showcase { height: 360svh; }
+  .showcase-sticky { display: block; height: 100svh; min-height: 620px; padding: 5.6rem 1rem 3.6rem; }
+  .showcase-copy { min-height: 190px; }
+  .showcase-info { right: 0; max-width: 100%; }
+  .showcase-info h2 { margin: .55rem 0; font-size: clamp(2.45rem, 13vw, 3.55rem); }
+  .showcase-info p { max-width: 34rem; margin-block: .5rem; font-size: .9rem; line-height: 1.55; }
+  .showcase-info .text-link { margin-top: .55rem; }
+  .showcase-stage { width: 100%; height: calc(100svh - 345px); min-height: 315px; margin: 0; }
+  .showcase-stage img { inset: 0 !important; width: 100% !important; height: 100% !important; object-fit: contain; transform: translateY(12px) scale(.94); filter: drop-shadow(0 20px 20px #3d2b1f20); }
+  .showcase-stage img.active { transform: none; }
+  .showcase-steps { inset: auto auto 1.35rem 50%; display: flex; gap: .9rem; transform: translateX(-50%); }
+  .showcase-step { width: 12px; height: 12px; }
+
+  .home-card-visual { aspect-ratio: 1 / 1.12; padding: 9% !important; }
+  .home-card-visual img { object-fit: contain; }
+  .craft-image img { height: auto; max-height: none; object-fit: contain; }
+
+  /* Catálogo */
+  .catalog-head, .shop { width: 100%; max-width: 100%; }
+  .catalog-title, .catalog-title > *, .catalog-tools, .catalog-tools > *, .shop-toolbar { min-width: 0; max-width: 100%; }
+  .catalog-title > p { width: 100%; overflow-wrap: anywhere; }
+  .catalog-tools { width: 100%; }
+  .search-box, .search-box input, .sort-wrap, .sort-select { min-width: 0; max-width: 100%; }
+  .sort-wrap { width: 100%; white-space: normal; }
+  .sort-select { flex: 1; }
+  .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; gap: 1.4rem .65rem; }
+  .product-card, .product-link, .product-info { min-width: 0; max-width: 100%; }
+  .product-image { width: 100%; aspect-ratio: 1 / 1.15 !important; padding: 9% !important; }
+  .product-image img { width: 100%; height: 100%; object-fit: contain; transform: none; }
+  .variant-row { max-width: 100%; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
+  .variant-row::-webkit-scrollbar { display: none; }
+  .variant-thumb { flex: 0 0 34px; width: 34px; height: 34px; }
+  .product-info h2 { min-height: 0; overflow-wrap: anywhere; font-size: .86rem; }
+  .product-price { flex-wrap: wrap; gap: .2rem .45rem; }
+  .product-condition { font-size: .68rem; }
+
+  /* Produto */
+  .product-shell { display: block !important; width: 100%; max-width: 100%; padding-inline: 1rem; }
+  .product-shell > *, .gallery, .product-panel { min-width: 0; max-width: 100%; }
+  .gallery { display: flex; flex-direction: column; width: 100%; overflow: hidden; }
+  .main-photo { order: 1; width: 100%; height: min(104vw, 470px) !important; min-height: 340px !important; max-height: 470px; }
+  .main-photo > img { width: 100% !important; height: 100% !important; max-width: 100%; padding: 7% !important; object-fit: contain !important; }
+  .thumbs { order: 2; display: flex; width: 100%; max-width: 100%; overflow-x: auto; overflow-y: hidden; padding-bottom: .35rem; scrollbar-width: none; }
+  .thumbs::-webkit-scrollbar { display: none; }
+  .thumb { flex: 0 0 58px; width: 58px; height: 58px; }
+  .product-panel { width: 100%; padding-top: 1.7rem; }
+  .product-panel h1 { max-width: 100%; font-size: clamp(2rem, 10.5vw, 2.7rem); overflow-wrap: anywhere; }
+  .summary, .details p { overflow-wrap: anywhere; }
+  .variation-options { max-width: 100%; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
+  .variation-options::-webkit-scrollbar { display: none; }
+  .buy-button { width: 100%; letter-spacing: .09em; }
+  .related-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .related-card { min-width: 0; }
+}
+
+@media (max-width: 360px) {
+  .product-grid { gap-inline: .45rem; }
+  .product-badge { padding: .28rem .38rem; letter-spacing: .04em; }
+  .discount { padding: .28rem .35rem; }
+  .product-action span { font-size: .52rem; }
+  .showcase-copy { min-height: 205px; }
+  .showcase-stage { height: calc(100svh - 360px); }
+}
