@@ -7,6 +7,7 @@ let activeMessage = '';
 const header = document.querySelector('[data-header]');
 const menu = document.querySelector('.menu-toggle');
 const dialog = document.querySelector('[data-dialog]');
+const escapeHtml = value => String(value ?? '').replace(/[&<>\"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;' }[char]));
 
 menu.addEventListener('click', () => {
   const open = header.classList.toggle('menu-open');
@@ -15,6 +16,23 @@ menu.addEventListener('click', () => {
 });
 header.querySelectorAll('a').forEach(link => link.addEventListener('click', () => header.classList.remove('menu-open')));
 
+function productCover(product) {
+  const variant = product.variantes?.find(item => item.disponivel) || product.variantes?.[0];
+  return variant?.imagens?.[0] || product.imagens?.[0] || '';
+}
+
+function featuredFromProducts(products) {
+  const palette = ['#faf8f5', '#f6f1eb', '#f1f1f0', '#eeeae5'];
+  return products.filter(product => product.destaque).sort((a, b) => a.ordem - b.ordem).map((product, index) => ({
+    productId: product.id,
+    linha: `Destaque · ${product.colecao || product.categoria}`,
+    titulo: product.nome,
+    texto: product.resumo,
+    imagem: productCover(product),
+    fundo: palette[index % palette.length]
+  }));
+}
+
 function setStage(index) {
   if (!showcaseItems.length) return;
   activeStage = Math.max(0, Math.min(index, showcaseItems.length - 1));
@@ -22,27 +40,25 @@ function setStage(index) {
     element.classList.toggle('active', itemIndex % showcaseItems.length === activeStage);
   });
   document.querySelector('[data-current]').textContent = String(activeStage + 1).padStart(2, '0');
-  document.querySelector('.showcase-sticky').style.background = showcaseItems[activeStage].fundo || '#f8f5f1';
+  document.querySelector('.showcase-sticky').style.background = showcaseItems[activeStage].fundo;
 }
 
 function renderShowcase(items) {
   showcaseItems = items;
+  const container = document.querySelector('[data-showcase]');
   const copy = document.querySelector('[data-showcase-copy]');
   const stage = document.querySelector('[data-showcase-stage]');
   const steps = document.querySelector('[data-showcase-steps]');
-  copy.innerHTML = items.map((item, index) => `<article class="showcase-info ${index === 0 ? 'active' : ''}"><span class="showcase-kicker">${item.linha}</span><h2>${item.titulo}</h2><p>${item.texto}</p><a class="text-link" href="produto.html?id=${item.productId}">Conhecer a peça ↗</a></article>`).join('');
-  stage.innerHTML = items.map((item, index) => `<img class="${index === 0 ? 'active' : ''}" src="${item.imagem}" alt="${item.titulo}">`).join('');
-  steps.innerHTML = items.map((item, index) => `<button class="showcase-step ${index === 0 ? 'active' : ''}" type="button" data-stage="${index}" aria-label="Ver ${item.titulo}"><span>${item.titulo}</span></button>`).join('');
+  container.style.setProperty('--showcase-count', Math.max(items.length, 1));
+  copy.innerHTML = items.map((item, index) => `<article class="showcase-info ${index === 0 ? 'active' : ''}"><span class="showcase-kicker">${escapeHtml(item.linha)}</span><h2>${escapeHtml(item.titulo)}</h2><p>${escapeHtml(item.texto)}</p><a class="text-link" href="produto.html?id=${encodeURIComponent(item.productId)}">Conhecer a peça ↗</a></article>`).join('');
+  stage.innerHTML = items.map((item, index) => `<img class="${index === 0 ? 'active' : ''}" src="${escapeHtml(item.imagem)}" alt="${escapeHtml(item.titulo)}">`).join('');
+  steps.innerHTML = items.map((item, index) => `<button class="showcase-step ${index === 0 ? 'active' : ''}" type="button" data-stage="${index}" aria-label="Ver ${escapeHtml(item.titulo)}"><span>${escapeHtml(item.titulo)}</span></button>`).join('');
   document.querySelector('[data-total]').textContent = String(items.length).padStart(2, '0');
 
   steps.querySelectorAll('button').forEach(button => button.addEventListener('click', () => {
     const index = Number(button.dataset.stage);
-    if (mobileShowcase.matches) {
-      setStage(index);
-      return;
-    }
-    const container = document.querySelector('[data-showcase]');
-    const target = index / (items.length - 1);
+    if (mobileShowcase.matches) { setStage(index); return; }
+    const target = index / Math.max(items.length - 1, 1);
     scrollTo({ top: container.offsetTop + target * (container.offsetHeight - innerHeight), behavior: 'smooth' });
   }));
 
@@ -53,13 +69,12 @@ function renderShowcase(items) {
     const distance = event.changedTouches[0].clientX - touchStartX;
     touchStartX = null;
     if (Math.abs(distance) < 45) return;
-    const next = distance < 0 ? (activeStage + 1) % items.length : (activeStage - 1 + items.length) % items.length;
-    setStage(next);
+    setStage(distance < 0 ? (activeStage + 1) % items.length : (activeStage - 1 + items.length) % items.length);
   }, { passive: true });
 }
 
 function renderProducts(products) {
-  document.querySelector('[data-home-products]').innerHTML = products.slice(0, 6).map(product => `<article class="home-card reveal"><a href="produto.html?id=${product.id}"><div class="home-card-visual"><img src="${product.imagens[0]}" alt="${product.nome}" loading="lazy"><span>${product.disponivel ? 'Disponível' : 'Indisponível'}</span></div><div class="home-card-meta"><div><h3>${product.nome}</h3><p>${product.colecao}</p></div><strong>${money.format(product.preco)}</strong></div></a></article>`).join('');
+  document.querySelector('[data-home-products]').innerHTML = products.slice(0, 6).map(product => `<article class="home-card reveal"><a href="produto.html?id=${encodeURIComponent(product.id)}"><div class="home-card-visual"><img src="${escapeHtml(productCover(product))}" alt="${escapeHtml(product.nome)}" loading="lazy"><span>${product.disponivel ? 'Disponível' : 'Indisponível'}</span></div><div class="home-card-meta"><div><h3>${escapeHtml(product.nome)}</h3><p>${escapeHtml(product.colecao)}</p></div><strong>${money.format(product.preco)}</strong></div></a></article>`).join('');
   observeReveals();
 }
 
@@ -75,10 +90,7 @@ function handleScroll() {
 
 function observeReveals() {
   const observer = new IntersectionObserver(entries => entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-      observer.unobserve(entry.target);
-    }
+    if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
   }), { threshold: .12 });
   document.querySelectorAll('.reveal:not(.visible)').forEach(item => observer.observe(item));
 }
@@ -87,32 +99,24 @@ function contact(event) {
   event.preventDefault();
   activeMessage = 'Olá! Conheci a coleção no site da Maximos Signature e gostaria de saber quais peças estão disponíveis.';
   const number = window.SITE_CONFIG?.whatsapp;
-  if (number) {
-    location.href = `https://wa.me/${number}?text=${encodeURIComponent(activeMessage)}`;
-    return;
-  }
+  if (number) { location.href = `https://wa.me/${number}?text=${encodeURIComponent(activeMessage)}`; return; }
   document.querySelector('[data-message]').textContent = activeMessage;
   dialog.showModal();
 }
 
 document.querySelectorAll('[data-whatsapp]').forEach(link => link.addEventListener('click', contact));
 document.querySelector('[data-close]').addEventListener('click', () => dialog.close());
-document.querySelector('[data-copy]').addEventListener('click', async event => {
-  await navigator.clipboard.writeText(activeMessage);
-  event.currentTarget.textContent = 'Mensagem copiada';
-});
+document.querySelector('[data-copy]').addEventListener('click', async event => { await navigator.clipboard.writeText(activeMessage); event.currentTarget.textContent = 'Mensagem copiada'; });
 
-fetch('data/products.json')
-  .then(response => response.json())
-  .then(data => {
-    renderShowcase(data.showcase);
-    renderProducts(data.products.sort((a, b) => a.ordem - b.ordem));
-    handleScroll();
-  })
-  .catch(() => {
-    document.querySelector('[data-showcase-stage]').innerHTML = '<p>Não foi possível carregar a vitrine.</p>';
-    document.querySelector('[data-home-products]').innerHTML = '<p>Não foi possível carregar a coleção.</p>';
-  });
+fetch('data/products.json').then(response => response.json()).then(data => {
+  const ordered = [...data.products].sort((a, b) => a.ordem - b.ordem);
+  renderShowcase(featuredFromProducts(ordered));
+  renderProducts(ordered);
+  handleScroll();
+}).catch(() => {
+  document.querySelector('[data-showcase-stage]').innerHTML = '<p>Não foi possível carregar a vitrine.</p>';
+  document.querySelector('[data-home-products]').innerHTML = '<p>Não foi possível carregar a coleção.</p>';
+});
 
 addEventListener('scroll', handleScroll, { passive: true });
 mobileShowcase.addEventListener('change', () => { setStage(0); handleScroll(); });

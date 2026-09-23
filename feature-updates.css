@@ -1,0 +1,13 @@
+.showcase{height:calc(100vh + (var(--showcase-count,4) * 55vh))}
+.social-float .instagram-icon{width:20px;height:20px}
+.category-tools{align-items:flex-start}
+.category-tools>p{padding-top:.7rem}
+.category-filters{justify-content:flex-end;flex-wrap:wrap}
+.product-image img{will-change:opacity;transition:opacity .18s ease,transform .55s}
+@media(max-width:620px){
+  .showcase{height:auto}
+  .category-tools{align-items:flex-start}
+  .category-tools>p{padding-top:0}
+  .category-filters{justify-content:flex-start;flex-wrap:wrap;max-width:100%;overflow:visible}
+  .category-filters::-webkit-scrollbar{display:none}
+}

@@ -1,6 +1,7 @@
 const money = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
-const perPage = 4;
-let products = [], activeFilter = 'todos', query = '', sortBy = 'ordem', page = 1;
+const perPage = 8;
+let products = [], activeCategory = 'todas', query = '', sortBy = 'ordem', page = 1;
+const variantTimers = new Map();
 const message = 'Olá! Gostaria de conhecer melhor as bolsas da Maximos Signature.';
 const dialog = document.querySelector('[data-dialog]');
 const header = document.querySelector('[data-header]');
@@ -20,14 +21,21 @@ function variantsFor(product) {
   }));
 }
 
+function initialVariantIndex(product) {
+  const variants = variantsFor(product);
+  const available = variants.findIndex(item => item.disponivel);
+  return available >= 0 ? available : 0;
+}
+
 function card(product) {
   const variants = variantsFor(product);
-  const initial = variants.find(item => item.disponivel) || variants[0];
+  const initialIndex = initialVariantIndex(product);
+  const initial = variants[initialIndex];
   const old = initial.precoAnterior ? `<del data-card-old="${escapeHtml(product.id)}">${money.format(initial.precoAnterior)}</del>` : `<del data-card-old="${escapeHtml(product.id)}" hidden></del>`;
   const discount = initial.precoAnterior ? Math.round((1 - initial.preco / initial.precoAnterior) * 100) : 0;
-  const thumbs = variants.slice(0, 4).map((variant, index) => `<button class="variant-thumb ${variant === initial ? 'active' : ''}" type="button" data-card-variant data-product="${escapeHtml(product.id)}" data-image="${escapeHtml(variant.imagens?.[0])}" data-price="${variant.preco}" data-old="${variant.precoAnterior || ''}" data-available="${variant.disponivel}" title="${escapeHtml(variant.cor)}" aria-label="Visualizar ${escapeHtml(variant.cor)}"><img src="${escapeHtml(variant.imagens?.[0])}" alt=""></button>`).join('');
+  const thumbs = variants.slice(0, 4).map((variant, index) => `<button class="variant-thumb ${index === initialIndex ? 'active' : ''}" type="button" data-card-variant data-product="${escapeHtml(product.id)}" data-variant-index="${index}" title="${escapeHtml(variant.cor)}" aria-label="Visualizar ${escapeHtml(variant.cor)}"><img src="${escapeHtml(variant.imagens?.[0])}" alt=""></button>`).join('');
   return `<article class="product-card">
-    <a class="product-link" href="produto.html?id=${encodeURIComponent(product.id)}"><div class="product-image"><span class="product-badge" data-card-badge="${escapeHtml(product.id)}">${initial.disponivel ? 'Couro legítimo' : 'Sob consulta'}</span>${discount > 0 ? `<span class="discount">-${discount}%</span>` : ''}<img src="${escapeHtml(initial.imagens?.[0] || product.imagens[0])}" alt="${escapeHtml(product.nome)}" data-card-image="${escapeHtml(product.id)}" loading="lazy"></div></a>
+    <a class="product-link" href="produto.html?id=${encodeURIComponent(product.id)}"><div class="product-image" data-card-hover="${escapeHtml(product.id)}" data-manual-index="${initialIndex}"><span class="product-badge" data-card-badge="${escapeHtml(product.id)}">${initial.disponivel ? 'Couro legítimo' : 'Sob consulta'}</span>${discount > 0 ? `<span class="discount">-${discount}%</span>` : ''}<img src="${escapeHtml(initial.imagens?.[0] || product.imagens[0])}" alt="${escapeHtml(product.nome)}" data-card-image="${escapeHtml(product.id)}" loading="lazy"></div></a>
     <div class="variant-row">${thumbs}<span class="variant-count">${variants.length} ${variants.length === 1 ? 'modelo' : 'cores'}</span></div>
     <a class="product-link" href="produto.html?id=${encodeURIComponent(product.id)}"><div class="product-info"><span class="product-material">${escapeHtml(product.colecao)}</span><h2>${escapeHtml(product.nome)}</h2><div class="product-price"><strong data-card-price="${escapeHtml(product.id)}">${money.format(initial.preco)}</strong>${old}</div><span class="product-condition">Condições no atendimento</span><span class="product-action"><span>Ver detalhes</span><b>→</b></span></div></a>
   </article>`;
@@ -36,12 +44,25 @@ function card(product) {
 function filtered() {
   const needle = normalize(query);
   const list = products.filter(product => {
-    const matchesFilter = activeFilter === 'disponiveis' ? product.disponivel : activeFilter === 'destaques' ? product.destaque : true;
+    const matchesCategory = activeCategory === 'todas' || normalize(product.colecao) === activeCategory;
     const variantTerms = (product.variantes || []).flatMap(item => [item.cor, item.sku]);
     const haystack = normalize([product.nome, product.colecao, product.categoria, product.resumo, ...(product.materiais || []), ...(product.cores || []), ...variantTerms].join(' '));
-    return matchesFilter && (!needle || haystack.includes(needle));
+    return matchesCategory && (!needle || haystack.includes(needle));
   });
-  return list.sort((a, b) => sortBy === 'nome' ? a.nome.localeCompare(b.nome, 'pt-BR') : sortBy === 'preco-asc' ? a.preco - b.preco : sortBy === 'preco-desc' ? b.preco - a.preco : a.ordem - b.ordem);
+  return list.sort((a, b) => sortBy === 'nome' ? a.nome.localeCompare(b.nome, 'pt-BR') : sortBy === 'preco-asc' ? a.preco - b.preco : sortBy === 'preco-desc' ? b.preco - a.preco : Number(b.destaque) - Number(a.destaque) || a.ordem - b.ordem);
+}
+
+function renderCategoryFilters() {
+  const categories = [...new Set(products.map(product => product.colecao).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+  const filters = document.querySelector('[data-categories]');
+  filters.innerHTML = `<button class="filter is-active" type="button" data-category="todas">Todas as categorias</button>${categories.map(category => `<button class="filter" type="button" data-category="${escapeHtml(normalize(category))}">${escapeHtml(category)}</button>`).join('')}`;
+  filters.querySelectorAll('[data-category]').forEach(button => button.addEventListener('click', () => {
+    filters.querySelectorAll('[data-category]').forEach(item => item.classList.remove('is-active'));
+    button.classList.add('is-active');
+    activeCategory = button.dataset.category;
+    page = 1;
+    render();
+  }));
 }
 
 function renderPagination(total) {
@@ -52,35 +73,61 @@ function renderPagination(total) {
   nav.querySelectorAll('[data-page]').forEach(button => button.addEventListener('click', () => { page = Number(button.dataset.page); render(); document.querySelector('#produtos').scrollIntoView({ behavior: 'smooth' }); }));
 }
 
+function updateCardVariant(productId, variantIndex, animate = true) {
+  const product = products.find(item => item.id === productId);
+  const variant = variantsFor(product)[variantIndex];
+  if (!variant) return;
+  document.querySelectorAll(`[data-card-variant][data-product="${productId}"]`).forEach(item => item.classList.toggle('active', Number(item.dataset.variantIndex) === variantIndex));
+  const image = document.querySelector(`[data-card-image="${productId}"]`);
+  if (animate) image.style.opacity = '.18';
+  setTimeout(() => { image.src = variant.imagens?.[0]; image.style.opacity = '1'; }, animate ? 110 : 0);
+  document.querySelector(`[data-card-price="${productId}"]`).textContent = money.format(variant.preco);
+  const old = document.querySelector(`[data-card-old="${productId}"]`);
+  if (variant.precoAnterior) { old.textContent = money.format(variant.precoAnterior); old.hidden = false; } else old.hidden = true;
+  document.querySelector(`[data-card-badge="${productId}"]`).textContent = variant.disponivel ? 'Couro legítimo' : 'Sob consulta';
+}
+
 function bindVariants() {
   document.querySelectorAll('[data-card-variant]').forEach(button => button.addEventListener('click', () => {
     const productId = button.dataset.product;
-    document.querySelectorAll(`[data-card-variant][data-product="${productId}"]`).forEach(item => item.classList.remove('active'));
-    button.classList.add('active');
-    const image = document.querySelector(`[data-card-image="${productId}"]`);
-    image.style.opacity = '.2';
-    setTimeout(() => { image.src = button.dataset.image; image.style.opacity = '1'; }, 120);
-    document.querySelector(`[data-card-price="${productId}"]`).textContent = money.format(Number(button.dataset.price));
-    const old = document.querySelector(`[data-card-old="${productId}"]`);
-    if (button.dataset.old) { old.textContent = money.format(Number(button.dataset.old)); old.hidden = false; } else old.hidden = true;
-    document.querySelector(`[data-card-badge="${productId}"]`).textContent = button.dataset.available === 'true' ? 'Couro legítimo' : 'Sob consulta';
+    const index = Number(button.dataset.variantIndex);
+    document.querySelector(`[data-card-hover="${productId}"]`).dataset.manualIndex = index;
+    updateCardVariant(productId, index);
   }));
+
+  if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  document.querySelectorAll('[data-card-hover]').forEach(area => {
+    const productId = area.dataset.cardHover;
+    const variants = variantsFor(products.find(item => item.id === productId));
+    if (variants.length < 2) return;
+    area.addEventListener('mouseenter', () => {
+      let index = Number(area.dataset.manualIndex);
+      const timer = setInterval(() => { index = (index + 1) % variants.length; updateCardVariant(productId, index); }, 1050);
+      variantTimers.set(productId, timer);
+    });
+    area.addEventListener('mouseleave', () => {
+      clearInterval(variantTimers.get(productId));
+      variantTimers.delete(productId);
+      updateCardVariant(productId, Number(area.dataset.manualIndex));
+    });
+  });
 }
 
 function render() {
+  variantTimers.forEach(timer => clearInterval(timer));
+  variantTimers.clear();
   const list = filtered();
   const pages = Math.max(1, Math.ceil(list.length / perPage));
   if (page > pages) page = pages;
   document.querySelector('[data-count]').textContent = list.length;
   const visible = list.slice((page - 1) * perPage, page * perPage);
   const grid = document.querySelector('[data-catalog]');
-  grid.innerHTML = visible.length ? visible.map(card).join('') : '<div class="empty-state"><h2>Nenhuma peça encontrada</h2><p>Tente outro termo ou remova os filtros.</p></div>';
+  grid.innerHTML = visible.length ? visible.map(card).join('') : '<div class="empty-state"><h2>Nenhuma peça encontrada</h2><p>Tente outro termo ou escolha outra categoria.</p></div>';
   grid.setAttribute('aria-busy', 'false');
   bindVariants();
   renderPagination(list.length);
 }
 
-document.querySelectorAll('[data-filter]').forEach(button => button.addEventListener('click', () => { document.querySelectorAll('[data-filter]').forEach(item => item.classList.remove('is-active')); button.classList.add('is-active'); activeFilter = button.dataset.filter; page = 1; render(); }));
 document.querySelector('[data-search]').addEventListener('input', event => { query = event.target.value; page = 1; render(); });
 document.querySelector('[data-sort]').addEventListener('change', event => { sortBy = event.target.value; page = 1; render(); });
 
@@ -95,5 +142,5 @@ function contact(event) {
 document.querySelectorAll('[data-contact]').forEach(item => item.addEventListener('click', contact));
 document.querySelector('[data-close]')?.addEventListener('click', () => dialog.close());
 document.querySelector('[data-copy]')?.addEventListener('click', async event => { await navigator.clipboard.writeText(message); event.currentTarget.textContent = 'Mensagem copiada'; });
-fetch('data/products.json').then(response => { if (!response.ok) throw new Error(); return response.json(); }).then(data => { products = data.products; render(); }).catch(() => { document.querySelector('[data-catalog]').innerHTML = '<p class="loading">Não foi possível carregar os produtos.</p>'; });
+fetch('data/products.json').then(response => { if (!response.ok) throw new Error(); return response.json(); }).then(data => { products = data.products; renderCategoryFilters(); render(); }).catch(() => { document.querySelector('[data-catalog]').innerHTML = '<p class="loading">Não foi possível carregar os produtos.</p>'; });
 document.querySelector('[data-year]').textContent = new Date().getFullYear();
