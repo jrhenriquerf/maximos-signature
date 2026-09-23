@@ -11,3 +11,28 @@
   .category-filters{justify-content:flex-start;flex-wrap:wrap;max-width:100%;overflow:visible}
   .category-filters::-webkit-scrollbar{display:none}
 }
+
+/* Vitrine imersiva: recortes reais, luz dinamica e profundidade sutil */
+.showcase-sticky{isolation:isolate}
+.showcase-sticky::before{content:"M";position:absolute;right:7vw;top:50%;z-index:-1;transform:translateY(-50%);font:400 clamp(22rem,46vw,50rem)/1 Cinzel,Georgia,serif;color:#68442b08;pointer-events:none}
+.showcase-stage{--tilt-x:0deg;--tilt-y:0deg;--shift-x:0px;--shift-y:0px;--shine-x:50%;--shine-y:42%;perspective:1200px;isolation:isolate}
+.showcase-stage::before{content:"";position:absolute;inset:7% 3%;z-index:-2;border-radius:50%;background:radial-gradient(circle at var(--shine-x) var(--shine-y),#fffefa 0,#fff9 20%,transparent 61%);filter:blur(7px);transition:background-position .25s ease}
+.showcase-stage::after{content:"";position:absolute;left:17%;right:8%;bottom:8%;z-index:-1;height:10%;border-radius:50%;background:#40251645;filter:blur(24px);transform:translate3d(calc(var(--shift-x) * -.4),calc(var(--shift-y) * -.2),0) scaleX(.82);opacity:.72;transition:transform .3s ease,opacity .6s ease}
+.showcase-stage img.showcase-product{inset:1% 2% 7%!important;width:96%!important;height:92%!important;object-fit:contain;filter:drop-shadow(0 18px 16px #301b101f) drop-shadow(0 45px 38px #301b1026);transform-origin:50% 62%;will-change:transform,opacity;transition:opacity .65s ease,transform .75s cubic-bezier(.2,.75,.2,1),filter .75s ease}
+.showcase-stage img.showcase-product.active{transform:translate3d(var(--shift-x),var(--shift-y),45px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) scale(1.035);filter:drop-shadow(0 20px 18px #301b1024) drop-shadow(0 52px 42px #301b1033)}
+.showcase-stage img.showcase-product.editorial{inset:7% 13%!important;width:74%!important;height:84%!important;object-fit:cover;border:1px solid #fff8;border-radius:2px;box-shadow:0 30px 70px #2c190f33;clip-path:inset(0 round 2px)}
+.showcase-stage img.showcase-product.editorial.active{transform:translate3d(var(--shift-x),var(--shift-y),32px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) scale(1.01)}
+@media(max-width:620px){
+  .showcase-sticky::before{right:-17vw;font-size:82vw}
+  .showcase-stage::before{inset:8% -4%}
+  .showcase-stage::after{left:13%;right:13%;bottom:4%;height:8%;filter:blur(18px)}
+  .showcase-stage img.showcase-product{inset:0!important;width:100%!important;height:100%!important;filter:drop-shadow(0 18px 22px #301b102b)}
+  .showcase-stage img.showcase-product.cutout.active{animation:showcase-float 5s ease-in-out infinite}
+  .showcase-stage img.showcase-product.editorial{inset:4% 9%!important;width:82%!important;height:92%!important;object-fit:cover}
+}
+@keyframes showcase-float{0%,100%{transform:translateY(0) scale(.98)}50%{transform:translateY(-8px) scale(1)}}
+@media(prefers-reduced-motion:reduce){.showcase-stage img.showcase-product.active{animation:none!important;transform:none!important}}
+
+.showcase-sticky::before{z-index:0}
+.showcase-stage{z-index:1}
+.showcase-steps,.showcase-counter{z-index:4}

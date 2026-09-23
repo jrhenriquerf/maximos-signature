@@ -9,6 +9,7 @@
   "products": [
     {
       "id": "maximos-classic-tote",
+      "imagemDestaque": "assets/showcase/classic-tote.webp",
       "nome": "Maximos Classic Tote",
       "categoria": "Bolsas",
       "colecao": "Grandes",
@@ -88,6 +89,7 @@
     },
     {
       "id": "maximos-dual-classic",
+      "imagemDestaque": "assets/showcase/dual-classic.webp",
       "nome": "Maximos Dual Classic",
       "categoria": "Bolsas",
       "colecao": "Grandes",
@@ -141,6 +143,7 @@
     },
     {
       "id": "maximos-essencial",
+      "imagemDestaque": "assets/showcase/essencial.webp",
       "nome": "Maximos Essencial",
       "categoria": "Bolsas",
       "colecao": "Grandes",
@@ -219,6 +222,7 @@
     },
     {
       "id": "maximos-aura",
+      "imagemDestaque": "assets/showcase/aura.webp",
       "nome": "Maximos Aura",
       "categoria": "Bolsas",
       "colecao": "Grandes",
@@ -327,6 +331,7 @@
     },
     {
       "id": "maximos-trama",
+      "imagemDestaque": "assets/showcase/trama.webp",
       "nome": "Maximos Trama",
       "categoria": "Bolsas",
       "colecao": "Grandes",
@@ -405,6 +410,7 @@
     },
     {
       "id": "maximos-marfim",
+      "imagemDestaque": "assets/showcase/marfim.webp",
       "nome": "Maximos Marfim",
       "categoria": "Bolsas",
       "colecao": "Grandes",
@@ -622,6 +628,7 @@
     },
     {
       "id": "maximos-croco",
+      "imagemDestaque": "assets/showcase/croco.webp",
       "nome": "Maximos Croco",
       "categoria": "Bolsas",
       "colecao": "Grandes",
@@ -676,6 +683,7 @@
     },
     {
       "id": "maximos-urban",
+      "imagemDestaque": "assets/showcase/urban.webp",
       "nome": "Maximos Urban",
       "categoria": "Bolsas",
       "colecao": "Pequenas",
@@ -731,6 +739,7 @@
     },
     {
       "id": "maximos-origem",
+      "imagemDestaque": "assets/showcase/origem.webp",
       "nome": "Maximos Origem",
       "categoria": "Bolsas",
       "colecao": "Pequenas",

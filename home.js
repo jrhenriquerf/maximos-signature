@@ -22,13 +22,19 @@ function productCover(product) {
 }
 
 function featuredFromProducts(products) {
-  const palette = ['#faf8f5', '#f6f1eb', '#f1f1f0', '#eeeae5'];
+  const palette = [
+    'radial-gradient(circle at 73% 42%, #eadfd2 0, #f8f3ed 32%, #e9dfd5 100%)',
+    'radial-gradient(circle at 74% 40%, #e4ddd5 0, #f7f3ee 34%, #ded5cc 100%)',
+    'radial-gradient(circle at 72% 42%, #ead8d3 0, #faf3ef 32%, #e7d7ce 100%)',
+    'radial-gradient(circle at 74% 41%, #ddc8bd 0, #f5ece6 34%, #d8c5b9 100%)'
+  ];
   return products.filter(product => product.destaque).sort((a, b) => a.ordem - b.ordem).map((product, index) => ({
     productId: product.id,
     linha: `Destaque · ${product.colecao || product.categoria}`,
     titulo: product.nome,
     texto: product.resumo,
-    imagem: productCover(product),
+    imagem: product.imagemDestaque || productCover(product),
+    editorial: ['maximos-urban', 'maximos-origem'].includes(product.id),
     fundo: palette[index % palette.length]
   }));
 }
@@ -51,7 +57,7 @@ function renderShowcase(items) {
   const steps = document.querySelector('[data-showcase-steps]');
   container.style.setProperty('--showcase-count', Math.max(items.length, 1));
   copy.innerHTML = items.map((item, index) => `<article class="showcase-info ${index === 0 ? 'active' : ''}"><span class="showcase-kicker">${escapeHtml(item.linha)}</span><h2>${escapeHtml(item.titulo)}</h2><p>${escapeHtml(item.texto)}</p><a class="text-link" href="produto.html?id=${encodeURIComponent(item.productId)}">Conhecer a peça ↗</a></article>`).join('');
-  stage.innerHTML = items.map((item, index) => `<img class="${index === 0 ? 'active' : ''}" src="${escapeHtml(item.imagem)}" alt="${escapeHtml(item.titulo)}">`).join('');
+  stage.innerHTML = items.map((item, index) => `<img class="showcase-product ${item.editorial ? 'editorial' : 'cutout'} ${index === 0 ? 'active' : ''}" src="${escapeHtml(item.imagem)}" alt="${escapeHtml(item.titulo)}" ${index ? 'loading="lazy"' : 'fetchpriority="high"'}>`).join('');
   steps.innerHTML = items.map((item, index) => `<button class="showcase-step ${index === 0 ? 'active' : ''}" type="button" data-stage="${index}" aria-label="Ver ${escapeHtml(item.titulo)}"><span>${escapeHtml(item.titulo)}</span></button>`).join('');
   document.querySelector('[data-total]').textContent = String(items.length).padStart(2, '0');
 
@@ -71,6 +77,26 @@ function renderShowcase(items) {
     if (Math.abs(distance) < 45) return;
     setStage(distance < 0 ? (activeStage + 1) % items.length : (activeStage - 1 + items.length) % items.length);
   }, { passive: true });
+
+  if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    stage.addEventListener('pointermove', event => {
+      const rect = stage.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / rect.width - .5;
+      const y = (event.clientY - rect.top) / rect.height - .5;
+      stage.style.setProperty('--tilt-y', `${x * 9}deg`);
+      stage.style.setProperty('--tilt-x', `${y * -7}deg`);
+      stage.style.setProperty('--shift-x', `${x * 13}px`);
+      stage.style.setProperty('--shift-y', `${y * 9}px`);
+      stage.style.setProperty('--shine-x', `${50 + x * 28}%`);
+      stage.style.setProperty('--shine-y', `${42 + y * 24}%`);
+    });
+    stage.addEventListener('pointerleave', () => {
+      ['--tilt-x', '--tilt-y'].forEach(property => stage.style.setProperty(property, '0deg'));
+      ['--shift-x', '--shift-y'].forEach(property => stage.style.setProperty(property, '0px'));
+      stage.style.setProperty('--shine-x', '50%');
+      stage.style.setProperty('--shine-y', '42%');
+    });
+  }
 }
 
 function renderProducts(products) {
