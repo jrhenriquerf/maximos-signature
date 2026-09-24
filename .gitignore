@@ -24,3 +24,5 @@ _site/
 # Cache local do Python
 __pycache__/
 *.py[cod]
+
+.local-image-matches.json

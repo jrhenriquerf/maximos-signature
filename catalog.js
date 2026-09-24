@@ -7,6 +7,8 @@ const dialog = document.querySelector('[data-dialog]');
 const header = document.querySelector('[data-header]');
 const escapeHtml = value => String(value ?? '').replace(/[&<>\"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;' }[char]));
 const normalize = value => String(value ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+const imageVersion = (source, size) => PRODUCT_IMAGES.version(source, size);
+const imageSrcset = source => PRODUCT_IMAGES.srcset(source);
 
 const menuToggle = document.querySelector('.menu-toggle');
 function setStoreMenu(open) {
@@ -43,9 +45,9 @@ function card(product) {
   const initial = variants[initialIndex];
   const old = initial.precoAnterior ? `<del data-card-old="${escapeHtml(product.id)}">${money.format(initial.precoAnterior)}</del>` : `<del data-card-old="${escapeHtml(product.id)}" hidden></del>`;
   const discount = initial.precoAnterior ? Math.round((1 - initial.preco / initial.precoAnterior) * 100) : 0;
-  const thumbs = variants.slice(0, 4).map((variant, index) => `<button class="variant-thumb ${index === initialIndex ? 'active' : ''}" type="button" data-card-variant data-product="${escapeHtml(product.id)}" data-variant-index="${index}" title="${escapeHtml(variant.cor)}" aria-label="Visualizar ${escapeHtml(variant.cor)}"><img src="${escapeHtml(variant.imagens?.[0])}" alt=""></button>`).join('');
+  const thumbs = variants.slice(0, 4).map((variant, index) => `<button class="variant-thumb ${index === initialIndex ? 'active' : ''}" type="button" data-card-variant data-product="${escapeHtml(product.id)}" data-variant-index="${index}" title="${escapeHtml(variant.cor)}" aria-label="Visualizar ${escapeHtml(variant.cor)}"><img src="${escapeHtml(imageVersion(variant.imagens?.[0], 'thumb'))}" alt="" loading="lazy"></button>`).join('');
   return `<article class="product-card">
-    <a class="product-link" href="produto.html?id=${encodeURIComponent(product.id)}"><div class="product-image" data-card-hover="${escapeHtml(product.id)}" data-manual-index="${initialIndex}"><span class="product-badge" data-card-badge="${escapeHtml(product.id)}">${initial.disponivel ? 'Couro legítimo' : 'Sob consulta'}</span>${discount > 0 ? `<span class="discount">-${discount}%</span>` : ''}<img class="card-image-layer is-active" src="${escapeHtml(initial.imagens?.[0] || product.imagens[0])}" alt="${escapeHtml(product.nome)}" data-card-image="${escapeHtml(product.id)}" data-card-layer="0" loading="lazy"><img class="card-image-layer" src="${escapeHtml(initial.imagens?.[0] || product.imagens[0])}" alt="" data-card-layer="1" aria-hidden="true"></div></a>
+    <a class="product-link" href="produto.html?id=${encodeURIComponent(product.id)}"><div class="product-image" data-card-hover="${escapeHtml(product.id)}" data-manual-index="${initialIndex}"><span class="product-badge" data-card-badge="${escapeHtml(product.id)}">${initial.disponivel ? 'Couro legítimo' : 'Sob consulta'}</span>${discount > 0 ? `<span class="discount">-${discount}%</span>` : ''}<img class="card-image-layer is-active" src="${escapeHtml(imageVersion(initial.imagens?.[0] || product.imagens[0], 'card'))}" srcset="${escapeHtml(imageSrcset(initial.imagens?.[0] || product.imagens[0]))}" sizes="(max-width: 700px) 50vw, 600px" alt="${escapeHtml(product.nome)}" data-card-image="${escapeHtml(product.id)}" data-card-layer="0" data-source="${escapeHtml(initial.imagens?.[0] || product.imagens[0])}" loading="lazy"><img class="card-image-layer" src="${escapeHtml(imageVersion(initial.imagens?.[0] || product.imagens[0], 'card'))}" srcset="${escapeHtml(imageSrcset(initial.imagens?.[0] || product.imagens[0]))}" sizes="(max-width: 700px) 50vw, 600px" alt="" data-card-layer="1" data-source="${escapeHtml(initial.imagens?.[0] || product.imagens[0])}" aria-hidden="true"></div></a>
     <div class="variant-row">${thumbs}<span class="variant-count">${variants.length} ${variants.length === 1 ? 'modelo' : 'cores'}</span></div>
     <a class="product-link" href="produto.html?id=${encodeURIComponent(product.id)}"><div class="product-info"><span class="product-material">${escapeHtml(product.colecao)}</span><h2>${escapeHtml(product.nome)}</h2><div class="product-price"><strong data-card-price="${escapeHtml(product.id)}">${money.format(initial.preco)}</strong>${old}</div><span class="product-condition">Condições no atendimento</span><span class="product-action"><span>Ver detalhes</span><b>→</b></span></div></a>
   </article>`;
@@ -93,7 +95,7 @@ function swapCardImage(productId, source, alt, animate = true) {
   const current = layers[activeIndex];
   const nextIndex = activeIndex === 0 ? 1 : 0;
   const next = layers[nextIndex];
-  if (current.getAttribute('src') === source) return;
+  if (current.dataset.source === source) return;
 
   const token = String(Number(stage.dataset.swapToken || 0) + 1);
   stage.dataset.swapToken = token;
@@ -101,6 +103,7 @@ function swapCardImage(productId, source, alt, animate = true) {
     if (stage.dataset.swapToken !== token) return;
     if (!animate) stage.classList.add('image-swap-instant');
     next.alt = alt;
+    next.dataset.source = source;
     next.classList.add('is-active');
     current.classList.remove('is-active');
     stage.dataset.activeLayer = String(nextIndex);
@@ -109,7 +112,9 @@ function swapCardImage(productId, source, alt, animate = true) {
 
   next.onload = activate;
   next.onerror = () => { next.onload = null; };
-  next.src = source;
+  next.srcset = imageSrcset(source);
+  next.sizes = '(max-width: 700px) 50vw, 600px';
+  next.src = imageVersion(source, 'card');
   if (next.complete && next.naturalWidth) activate();
 }
 
