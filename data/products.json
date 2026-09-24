@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-21",
+  "updatedAt": "2026-09-24",
   "currency": "BRL",
   "source": {
     "type": "woocommerce-csv",
@@ -14,7 +14,7 @@
       "categoria": "Bolsas",
       "colecao": "Grandes",
       "preco": 320.25,
-      "precoAnterior": 427.0,
+      "precoAnterior": 427,
       "disponivel": true,
       "destaque": true,
       "resumo": "Maximos Classic Tote em couro legítimo com acabamento premium, feita a mão.",
@@ -28,9 +28,9 @@
         "Consultar disponibilidade"
       ],
       "medidas": {
-        "largura": 38.0,
-        "altura": 32.0,
-        "profundidade": 5.0
+        "largura": 38,
+        "altura": 32,
+        "profundidade": 5
       },
       "imagens": [
         "assets/products/maximos-classic-tote/mx-bag-001/01.webp",
@@ -42,14 +42,14 @@
           "sku": "MX-BAG-001",
           "cor": "Vinho",
           "preco": 320.25,
-          "precoAnterior": 427.0,
+          "precoAnterior": 427,
           "disponivel": true,
           "estoque": 1,
           "pesoKg": 0.485,
           "medidas": {
-            "largura": 38.0,
-            "altura": 32.0,
-            "profundidade": 5.0
+            "largura": 38,
+            "altura": 32,
+            "profundidade": 5
           },
           "imagens": [
             "assets/products/maximos-classic-tote/mx-bag-001/01.webp",
@@ -66,14 +66,14 @@
           "sku": "MX-BAG-003",
           "cor": "Consultar disponibilidade",
           "preco": 320.25,
-          "precoAnterior": 427.0,
+          "precoAnterior": 427,
           "disponivel": false,
           "estoque": 0,
           "pesoKg": 0.385,
           "medidas": {
-            "largura": 38.0,
-            "altura": 32.0,
-            "profundidade": 5.0
+            "largura": 38,
+            "altura": 32,
+            "profundidade": 5
           },
           "imagens": [
             "assets/products/maximos-classic-tote/mx-bag-003/01.webp",
@@ -94,7 +94,7 @@
       "categoria": "Bolsas",
       "colecao": "Grandes",
       "preco": 320.25,
-      "precoAnterior": 427.0,
+      "precoAnterior": 427,
       "disponivel": true,
       "destaque": true,
       "resumo": "Maximos Dual Classic em couro legítimo com acabamento premium, feita a mão.",
@@ -107,9 +107,9 @@
         "Preto e Off-white"
       ],
       "medidas": {
-        "largura": 33.0,
-        "altura": 31.0,
-        "profundidade": 5.0
+        "largura": 33,
+        "altura": 31,
+        "profundidade": 5
       },
       "imagens": [
         "assets/products/maximos-dual-classic/mx-bag-002/01.webp"
@@ -120,14 +120,14 @@
           "sku": "MX-BAG-002",
           "cor": "Preto e Off-white",
           "preco": 320.25,
-          "precoAnterior": 427.0,
+          "precoAnterior": 427,
           "disponivel": true,
           "estoque": 1,
           "pesoKg": 0.404,
           "medidas": {
-            "largura": 33.0,
-            "altura": 31.0,
-            "profundidade": 5.0
+            "largura": 33,
+            "altura": 31,
+            "profundidade": 5
           },
           "imagens": [
             "assets/products/maximos-dual-classic/mx-bag-002/01.webp",
@@ -148,7 +148,7 @@
       "categoria": "Bolsas",
       "colecao": "Grandes",
       "preco": 342.75,
-      "precoAnterior": 457.0,
+      "precoAnterior": 457,
       "disponivel": true,
       "destaque": true,
       "resumo": "Maximos Essencial em couro legítimo com acabamento premium, feita a mão.",
@@ -162,9 +162,9 @@
         "Off white e Vinho"
       ],
       "medidas": {
-        "largura": 32.0,
-        "altura": 30.0,
-        "profundidade": 6.0
+        "largura": 32,
+        "altura": 30,
+        "profundidade": 6
       },
       "imagens": [
         "assets/products/maximos-essencial/mx-bag-004/01.webp",
@@ -176,14 +176,14 @@
           "sku": "MX-BAG-004",
           "cor": "Craquelada",
           "preco": 342.75,
-          "precoAnterior": 457.0,
+          "precoAnterior": 457,
           "disponivel": true,
           "estoque": 1,
           "pesoKg": 0.565,
           "medidas": {
-            "largura": 32.0,
-            "altura": 30.0,
-            "profundidade": 6.0
+            "largura": 32,
+            "altura": 30,
+            "profundidade": 6
           },
           "imagens": [
             "assets/products/maximos-essencial/mx-bag-004/01.webp",
@@ -198,14 +198,14 @@
           "sku": "MX-BAG-005",
           "cor": "Off white e Vinho",
           "preco": 342.75,
-          "precoAnterior": 457.0,
+          "precoAnterior": 457,
           "disponivel": true,
           "estoque": 1,
           "pesoKg": 0.56,
           "medidas": {
-            "largura": 31.0,
-            "altura": 30.0,
-            "profundidade": 6.0
+            "largura": 31,
+            "altura": 30,
+            "profundidade": 6
           },
           "imagens": [
             "assets/products/maximos-essencial/mx-bag-005/01.webp",
@@ -226,8 +226,8 @@
       "nome": "Maximos Aura",
       "categoria": "Bolsas",
       "colecao": "Grandes",
-      "preco": 324.0,
-      "precoAnterior": 432.0,
+      "preco": 324,
+      "precoAnterior": 432,
       "disponivel": true,
       "destaque": true,
       "resumo": "Maximos Aura em couro legítimo com acabamento premium, feita a mão",
@@ -242,9 +242,9 @@
         "Vinho"
       ],
       "medidas": {
-        "largura": 30.0,
-        "altura": 30.0,
-        "profundidade": 5.0
+        "largura": 30,
+        "altura": 30,
+        "profundidade": 5
       },
       "imagens": [
         "assets/products/maximos-aura/mx-bag-006/01.webp",
@@ -256,15 +256,15 @@
           "id": "maximos-aura-mx-bag-006",
           "sku": "MX-BAG-006",
           "cor": "Off white e Caramelo",
-          "preco": 324.0,
-          "precoAnterior": 432.0,
+          "preco": 324,
+          "precoAnterior": 432,
           "disponivel": false,
           "estoque": 0,
           "pesoKg": 0.435,
           "medidas": {
-            "largura": 30.0,
-            "altura": 32.0,
-            "profundidade": 5.0
+            "largura": 30,
+            "altura": 32,
+            "profundidade": 5
           },
           "imagens": [
             "assets/products/maximos-aura/mx-bag-006/01.webp",
@@ -281,15 +281,15 @@
           "id": "maximos-aura-mx-bag-007",
           "sku": "MX-BAG-007",
           "cor": "Preto e off white",
-          "preco": 324.0,
-          "precoAnterior": 432.0,
+          "preco": 324,
+          "precoAnterior": 432,
           "disponivel": true,
           "estoque": 1,
           "pesoKg": 0.46,
           "medidas": {
-            "largura": 30.0,
-            "altura": 30.0,
-            "profundidade": 5.0
+            "largura": 30,
+            "altura": 30,
+            "profundidade": 5
           },
           "imagens": [
             "assets/products/maximos-aura/mx-bag-007/01.webp",
@@ -303,15 +303,15 @@
           "id": "maximos-aura-mx-bag-008",
           "sku": "MX-BAG-008",
           "cor": "Vinho",
-          "preco": 324.0,
-          "precoAnterior": 432.0,
+          "preco": 324,
+          "precoAnterior": 432,
           "disponivel": true,
           "estoque": 1,
           "pesoKg": 0.43,
           "medidas": {
-            "largura": 30.0,
-            "altura": 30.0,
-            "profundidade": 5.0
+            "largura": 30,
+            "altura": 30,
+            "profundidade": 5
           },
           "imagens": [
             "assets/products/maximos-aura/mx-bag-008/01.webp",
@@ -336,7 +336,7 @@
       "categoria": "Bolsas",
       "colecao": "Grandes",
       "preco": 327.75,
-      "precoAnterior": 437.0,
+      "precoAnterior": 437,
       "disponivel": true,
       "destaque": true,
       "resumo": "Maximos Trama em couro legítimo com acabamento premium, feita a mão.",
@@ -350,9 +350,9 @@
         "Consultar disponibilidade"
       ],
       "medidas": {
-        "largura": 33.0,
-        "altura": 30.0,
-        "profundidade": 5.0
+        "largura": 33,
+        "altura": 30,
+        "profundidade": 5
       },
       "imagens": [
         "assets/products/maximos-trama/mx-bag-009/01.webp",
@@ -364,14 +364,14 @@
           "sku": "MX-BAG-009",
           "cor": "Caramelo",
           "preco": 327.75,
-          "precoAnterior": 437.0,
+          "precoAnterior": 437,
           "disponivel": true,
           "estoque": 1,
           "pesoKg": 0.4,
           "medidas": {
-            "largura": 33.0,
-            "altura": 30.0,
-            "profundidade": 5.0
+            "largura": 33,
+            "altura": 30,
+            "profundidade": 5
           },
           "imagens": [
             "assets/products/maximos-trama/mx-bag-009/01.webp",
@@ -387,14 +387,14 @@
           "sku": "MX-BAG-010",
           "cor": "Consultar disponibilidade",
           "preco": 327.75,
-          "precoAnterior": 437.0,
+          "precoAnterior": 437,
           "disponivel": true,
           "estoque": 1,
           "pesoKg": 0.4,
           "medidas": {
-            "largura": 33.0,
-            "altura": 30.0,
-            "profundidade": 5.0
+            "largura": 33,
+            "altura": 30,
+            "profundidade": 5
           },
           "imagens": [
             "assets/products/maximos-trama/mx-bag-010/01.webp",
@@ -415,7 +415,7 @@
       "categoria": "Bolsas",
       "colecao": "Grandes",
       "preco": 327.75,
-      "precoAnterior": 437.0,
+      "precoAnterior": 437,
       "disponivel": true,
       "destaque": true,
       "resumo": "Maximos Marfim em couro legítimo com acabamento premium, feito a mão.",
@@ -428,9 +428,9 @@
         "Consultar disponibilidade"
       ],
       "medidas": {
-        "largura": 30.0,
-        "altura": 30.0,
-        "profundidade": 5.0
+        "largura": 30,
+        "altura": 30,
+        "profundidade": 5
       },
       "imagens": [
         "assets/products/maximos-marfim/mx-bag-011/01.webp"
@@ -441,14 +441,14 @@
           "sku": "MX-BAG-011",
           "cor": "Consultar disponibilidade",
           "preco": 327.75,
-          "precoAnterior": 437.0,
+          "precoAnterior": 437,
           "disponivel": true,
           "estoque": 1,
           "pesoKg": 0.455,
           "medidas": {
-            "largura": 30.0,
-            "altura": 30.0,
-            "profundidade": 5.0
+            "largura": 30,
+            "altura": 30,
+            "profundidade": 5
           },
           "imagens": [
             "assets/products/maximos-marfim/mx-bag-011/01.webp",
@@ -471,7 +471,7 @@
       "categoria": "Bolsas",
       "colecao": "Pequenas",
       "preco": 111.75,
-      "precoAnterior": 149.0,
+      "precoAnterior": 149,
       "disponivel": true,
       "destaque": false,
       "resumo": "Maximos Essencial Mini em couro legítimo com acabamento premium.",
@@ -489,9 +489,9 @@
         "Marrom"
       ],
       "medidas": {
-        "largura": 10.0,
-        "altura": 20.0,
-        "profundidade": 1.0
+        "largura": 10,
+        "altura": 20,
+        "profundidade": 1
       },
       "imagens": [
         "assets/products/maximos-essencial-mini/mx-bag-012/01.webp",
@@ -507,14 +507,14 @@
           "sku": "MX-BAG-012",
           "cor": "Consultar disponibilidade",
           "preco": 111.75,
-          "precoAnterior": 149.0,
+          "precoAnterior": 149,
           "disponivel": true,
           "estoque": 1,
           "pesoKg": 0.13,
           "medidas": {
-            "largura": 10.0,
-            "altura": 20.0,
-            "profundidade": 1.0
+            "largura": 10,
+            "altura": 20,
+            "profundidade": 1
           },
           "imagens": [
             "assets/products/maximos-essencial-mini/mx-bag-012/01.webp",
@@ -532,14 +532,14 @@
           "sku": "MX-BAG-013",
           "cor": "Craquelado",
           "preco": 111.75,
-          "precoAnterior": 149.0,
+          "precoAnterior": 149,
           "disponivel": true,
           "estoque": 1,
           "pesoKg": 0.13,
           "medidas": {
-            "largura": 10.0,
-            "altura": 20.0,
-            "profundidade": 1.0
+            "largura": 10,
+            "altura": 20,
+            "profundidade": 1
           },
           "imagens": [
             "assets/products/maximos-essencial-mini/mx-bag-013/01.webp",
@@ -551,14 +551,14 @@
           "sku": "MX-BAG-014",
           "cor": "Café",
           "preco": 111.75,
-          "precoAnterior": 149.0,
+          "precoAnterior": 149,
           "disponivel": true,
           "estoque": 1,
           "pesoKg": 0.13,
           "medidas": {
-            "largura": 10.0,
-            "altura": 20.0,
-            "profundidade": 1.0
+            "largura": 10,
+            "altura": 20,
+            "profundidade": 1
           },
           "imagens": [
             "assets/products/maximos-essencial-mini/mx-bag-014/01.webp",
@@ -570,14 +570,14 @@
           "sku": "MX-BAG-015",
           "cor": "Caramelo",
           "preco": 111.75,
-          "precoAnterior": 149.0,
+          "precoAnterior": 149,
           "disponivel": true,
           "estoque": 1,
           "pesoKg": 0.14,
           "medidas": {
-            "largura": 10.0,
-            "altura": 20.0,
-            "profundidade": 1.0
+            "largura": 10,
+            "altura": 20,
+            "profundidade": 1
           },
           "imagens": [
             "assets/products/maximos-essencial-mini/mx-bag-015/01.webp",
@@ -589,14 +589,14 @@
           "sku": "MX-BAG-016",
           "cor": "Vinho",
           "preco": 111.75,
-          "precoAnterior": 149.0,
+          "precoAnterior": 149,
           "disponivel": true,
           "estoque": 1,
           "pesoKg": 0.13,
           "medidas": {
-            "largura": 10.0,
-            "altura": 20.0,
-            "profundidade": 1.0
+            "largura": 10,
+            "altura": 20,
+            "profundidade": 1
           },
           "imagens": [
             "assets/products/maximos-essencial-mini/mx-bag-016/01.webp",
@@ -608,14 +608,14 @@
           "sku": "MX-BAG-017",
           "cor": "Marrom",
           "preco": 111.75,
-          "precoAnterior": 149.0,
+          "precoAnterior": 149,
           "disponivel": true,
           "estoque": 1,
           "pesoKg": 0.13,
           "medidas": {
-            "largura": 10.0,
-            "altura": 20.0,
-            "profundidade": 1.0
+            "largura": 10,
+            "altura": 20,
+            "profundidade": 1
           },
           "imagens": [
             "assets/products/maximos-essencial-mini/mx-bag-017/01.webp",
@@ -632,8 +632,8 @@
       "nome": "Maximos Croco",
       "categoria": "Bolsas",
       "colecao": "Grandes",
-      "preco": 328.0,
-      "precoAnterior": 437.0,
+      "preco": 328,
+      "precoAnterior": 437,
       "disponivel": true,
       "destaque": true,
       "resumo": "Maximos Croco em couro legítimo com acabamento premium, feita a mão",
@@ -646,9 +646,9 @@
         "Off white e Caramelo"
       ],
       "medidas": {
-        "largura": 30.0,
-        "altura": 32.0,
-        "profundidade": 5.0
+        "largura": 30,
+        "altura": 32,
+        "profundidade": 5
       },
       "imagens": [
         "assets/products/maximos-croco/mx-bag-018/01.webp"
@@ -658,15 +658,15 @@
           "id": "maximos-croco-mx-bag-018",
           "sku": "MX-BAG-018",
           "cor": "Off white e Caramelo",
-          "preco": 328.0,
-          "precoAnterior": 437.0,
+          "preco": 328,
+          "precoAnterior": 437,
           "disponivel": true,
           "estoque": 1,
           "pesoKg": 0.435,
           "medidas": {
-            "largura": 30.0,
-            "altura": 32.0,
-            "profundidade": 5.0
+            "largura": 30,
+            "altura": 32,
+            "profundidade": 5
           },
           "imagens": [
             "assets/products/maximos-croco/mx-bag-018/01.webp",
@@ -687,10 +687,10 @@
       "nome": "Maximos Urban",
       "categoria": "Bolsas",
       "colecao": "Pequenas",
-      "preco": 99.0,
+      "preco": 99,
       "precoAnterior": null,
       "disponivel": false,
-      "destaque": true,
+      "destaque": false,
       "resumo": "Maximos urban em couro legítimo com acabamento premium, feita a mão",
       "descricao": "Bolsa em couro legítimo com design compacto e contemporâneo. Um modelo versátil, pensado para acompanhar a rotina, com visual mais minimalista, contemporâneo e urbano.",
       "materiais": [
@@ -701,9 +701,9 @@
         "Consultar disponibilidade"
       ],
       "medidas": {
-        "largura": 36.0,
-        "altura": 13.0,
-        "profundidade": 23.0
+        "largura": 36,
+        "altura": 13,
+        "profundidade": 23
       },
       "imagens": [
         "assets/products/maximos-urban/mx-bag-019/01.webp"
@@ -713,15 +713,15 @@
           "id": "maximos-urban-mx-bag-019",
           "sku": "MX-BAG-019",
           "cor": "Consultar disponibilidade",
-          "preco": 99.0,
+          "preco": 99,
           "precoAnterior": null,
           "disponivel": false,
           "estoque": -1,
           "pesoKg": 0.54,
           "medidas": {
-            "largura": 36.0,
-            "altura": 13.0,
-            "profundidade": 23.0
+            "largura": 36,
+            "altura": 13,
+            "profundidade": 23
           },
           "imagens": [
             "assets/products/maximos-urban/mx-bag-019/01.webp",
@@ -743,7 +743,7 @@
       "nome": "Maximos Origem",
       "categoria": "Bolsas",
       "colecao": "Pequenas",
-      "preco": 79.0,
+      "preco": 79,
       "precoAnterior": null,
       "disponivel": true,
       "destaque": true,
@@ -757,9 +757,9 @@
         "Consultar disponibilidade"
       ],
       "medidas": {
-        "largura": 8.0,
-        "altura": 17.0,
-        "profundidade": 21.0
+        "largura": 8,
+        "altura": 17,
+        "profundidade": 21
       },
       "imagens": [
         "assets/products/maximos-origem/mx-bag-020/01.webp"
@@ -769,15 +769,15 @@
           "id": "maximos-origem-mx-bag-020",
           "sku": "MX-BAG-020",
           "cor": "Consultar disponibilidade",
-          "preco": 79.0,
+          "preco": 79,
           "precoAnterior": null,
           "disponivel": true,
           "estoque": 1,
           "pesoKg": 0.23,
           "medidas": {
-            "largura": 8.0,
-            "altura": 17.0,
-            "profundidade": 21.0
+            "largura": 8,
+            "altura": 17,
+            "profundidade": 21
           },
           "imagens": [
             "assets/products/maximos-origem/mx-bag-020/01.webp",
