@@ -746,7 +746,7 @@
       "preco": 79,
       "precoAnterior": null,
       "disponivel": true,
-      "destaque": true,
+      "destaque": false,
       "resumo": "Maximos origem em couro legítimo com acabamento premium, feita a mão",
       "descricao": "A peça que traduz a essência da Maximos Signature. Produzida artesanalmente em couro legítimo, destaca-se pela costura manual aparente, que evidencia o cuidado, a tradição e a autenticidade presentes em cada detalhe.",
       "materiais": [
