@@ -27,6 +27,7 @@ PRODUCTS_FILE = ROOT / "data" / "products.json"
 BACKUP_DIR = ROOT / ".local-backups"
 MAX_BODY = 8 * 1024 * 1024
 PRODUCT_ID = re.compile(r"^[a-z0-9][a-z0-9-]{0,119}$")
+SKU_PATTERN = re.compile(r"^[A-Z0-9][A-Z0-9._-]{0,79}$")
 WRITE_LOCK = threading.Lock()
 SESSION_TOKEN = secrets.token_urlsafe(32)
 
@@ -68,6 +69,9 @@ def validate_catalog(value: object) -> dict:
         raise ApiError(HTTPStatus.BAD_REQUEST, "O catalogo excede o limite de 500 produtos.")
 
     identifiers: set[str] = set()
+    skus: set[str] = set()
+    normalized_products: list[dict] = []
+
     for position, product in enumerate(products, start=1):
         if not isinstance(product, dict):
             raise ApiError(HTTPStatus.BAD_REQUEST, f"Produto {position} invalido.")
@@ -79,12 +83,61 @@ def validate_catalog(value: object) -> dict:
             raise ApiError(HTTPStatus.BAD_REQUEST, f"ID duplicado: {identifier}.")
         if not isinstance(name, str) or not name.strip():
             raise ApiError(HTTPStatus.BAD_REQUEST, f"Nome ausente no produto {identifier}.")
+
+        variants = product.get("variantes")
+        if not isinstance(variants, list) or not variants:
+            raise ApiError(HTTPStatus.BAD_REQUEST, f"Adicione ao menos uma versao em {name}.")
+        if len(variants) > 50:
+            raise ApiError(HTTPStatus.BAD_REQUEST, f"O produto {name} excede 50 versoes.")
+
+        normalized_variants: list[dict] = []
+        for variant_position, variant in enumerate(variants, start=1):
+            if not isinstance(variant, dict):
+                raise ApiError(HTTPStatus.BAD_REQUEST, f"Versao {variant_position} invalida em {name}.")
+            sku = str(variant.get("sku", "")).strip().upper()
+            color = str(variant.get("cor", "")).strip()
+            if not SKU_PATTERN.fullmatch(sku):
+                raise ApiError(HTTPStatus.BAD_REQUEST, f"SKU invalido na versao {variant_position} de {name}.")
+            if sku in skus:
+                raise ApiError(HTTPStatus.BAD_REQUEST, f"SKU duplicado no catalogo: {sku}.")
+            if not color:
+                raise ApiError(HTTPStatus.BAD_REQUEST, f"Cor ausente na versao {sku}.")
+            stock = variant.get("estoque", 0)
+            if isinstance(stock, bool) or not isinstance(stock, (int, float)) or stock < 0 or int(stock) != stock:
+                raise ApiError(HTTPStatus.BAD_REQUEST, f"Estoque invalido na versao {sku}.")
+            price = variant.get("preco")
+            if isinstance(price, bool) or not isinstance(price, (int, float)) or price < 0:
+                raise ApiError(HTTPStatus.BAD_REQUEST, f"Preco invalido na versao {sku}.")
+            images = variant.get("imagens")
+            if not isinstance(images, list) or not images or not all(isinstance(image, str) and image.strip() for image in images):
+                raise ApiError(HTTPStatus.BAD_REQUEST, f"Adicione fotos validas para a versao {sku}.")
+
+            normalized_variant = dict(variant)
+            normalized_variant["sku"] = sku
+            normalized_variant["cor"] = color
+            normalized_variant["estoque"] = int(stock)
+            normalized_variant["disponivel"] = bool(variant.get("disponivel")) and int(stock) > 0
+            normalized_variant["imagens"] = [image.strip() for image in images]
+            normalized_variants.append(normalized_variant)
+            skus.add(sku)
+
+        available = [variant for variant in normalized_variants if variant["disponivel"]]
+        preferred = available[0] if available else normalized_variants[0]
+        normalized_product = dict(product)
+        normalized_product["variantes"] = normalized_variants
+        normalized_product["disponivel"] = bool(available)
+        normalized_product["cores"] = list(dict.fromkeys(variant["cor"] for variant in normalized_variants))
+        normalized_product["imagens"] = [variant["imagens"][0] for variant in normalized_variants]
+        normalized_product["preco"] = preferred["preco"]
+        normalized_product["precoAnterior"] = preferred.get("precoAnterior")
+        normalized_product["medidas"] = preferred.get("medidas")
+        normalized_products.append(normalized_product)
         identifiers.add(identifier)
 
     normalized = dict(value)
     normalized["updatedAt"] = date.today().isoformat()
     normalized.setdefault("currency", "BRL")
-    normalized["products"] = products
+    normalized["products"] = normalized_products
     return normalized
 
 

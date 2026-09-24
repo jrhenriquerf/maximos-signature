@@ -11,20 +11,16 @@
 
 ## Abrir o gerenciador
 
-No WSL, entre na pasta do projeto e execute:
+Dê dois cliques no atalho **Gerenciador Maximos Signature** da Área de Trabalho. Ele inicia o servidor e abre a página automaticamente.
+
+Também é possível iniciar manualmente no WSL:
 
 ```bash
 cd /home/jarangel/workspace/maximos-signature
 python3 scripts/local_admin_server.py
 ```
 
-Depois abra:
-
-```text
-http://127.0.0.1:8080/admin.html
-```
-
-Mantenha o terminal aberto enquanto estiver usando o gerenciador. Para encerrar, pressione `Ctrl+C`.
+O endereço local é `http://127.0.0.1:8080/admin.html`. Mantenha o terminal aberto durante o uso e pressione `Ctrl+C` para encerrar.
 
 ## Fluxo de atualização
 
@@ -54,18 +50,30 @@ Se o push falhar, o JSON, o backup e o commit permanecem locais. A mensagem do g
 
 Os botões **Exportar JSON** e **Importar JSON** continuam disponíveis como contingência. Quando o editor for aberto sem o servidor local, ele entra em modo rascunho e não tentará publicar.
 
-## Imagens
+## Versões, estoque e imagens
 
-Organize as fotografias reais assim:
+Cada produto representa um modelo de bolsa. Dentro dele, cada cor ou acabamento é uma **versão** com dados próprios:
+
+- SKU único;
+- cor ou acabamento;
+- quantidade em estoque;
+- preço e preço anterior;
+- peso e medidas;
+- conjunto de fotografias.
+
+Use **Marcar vendida** para zerar o estoque e retirar somente aquela versão de venda. A bolsa continua disponível enquanto outra versão possuir estoque. Quando todas chegarem a zero, o produto passa automaticamente a indisponível.
+
+Organize as fotografias por modelo e SKU:
 
 ```text
-assets/products/maximos-aura/frente.webp
-assets/products/maximos-aura/costas.webp
-assets/products/maximos-aura/interior.webp
-assets/products/maximos-aura/detalhe.webp
+assets/products/maximos-aura/mx-bag-007/01.webp
+assets/products/maximos-aura/mx-bag-007/02.webp
+assets/products/maximos-aura/mx-bag-008/01.webp
 ```
 
-No editor, informe um caminho por linha. A primeira imagem será usada como capa.
+No cartão de cada versão, informe uma imagem por linha. A primeira representa a versão no catálogo. O campo **Imagem editorial da vitrine** é separado e controla a apresentação no carrossel da página inicial.
+
+Marque **Imagem ilustrativa ou gerada** apenas quando as fotografias não representarem fielmente a peça real. O site exibirá esse aviso ao cliente.
 
 ## WhatsApp
 

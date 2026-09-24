@@ -716,7 +716,7 @@
           "preco": 99,
           "precoAnterior": null,
           "disponivel": false,
-          "estoque": -1,
+          "estoque": 0,
           "pesoKg": 0.54,
           "medidas": {
             "largura": 36,
