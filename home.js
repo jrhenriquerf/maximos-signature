@@ -9,12 +9,19 @@ const menu = document.querySelector('.menu-toggle');
 const dialog = document.querySelector('[data-dialog]');
 const escapeHtml = value => String(value ?? '').replace(/[&<>\"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;' }[char]));
 
-menu.addEventListener('click', () => {
-  const open = header.classList.toggle('menu-open');
+function setMenu(open) {
+  header.classList.toggle('menu-open', open);
+  document.body.classList.toggle('menu-visible', open);
   menu.setAttribute('aria-expanded', String(open));
-  menu.textContent = open ? 'Fechar' : 'Menu';
+  menu.setAttribute('aria-label', open ? 'Fechar navegacao' : 'Abrir navegacao');
+  menu.querySelector('.visually-hidden').textContent = open ? 'Fechar navegacao' : 'Abrir navegacao';
+}
+
+menu.addEventListener('click', () => setMenu(!header.classList.contains('menu-open')));
+header.querySelectorAll('a').forEach(link => link.addEventListener('click', () => setMenu(false)));
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape') setMenu(false);
 });
-header.querySelectorAll('a').forEach(link => link.addEventListener('click', () => header.classList.remove('menu-open')));
 
 function productCover(product) {
   const variant = product.variantes?.find(item => item.disponivel) || product.variantes?.[0];

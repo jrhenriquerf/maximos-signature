@@ -25,6 +25,16 @@ python3 -m http.server 8080
 
 Depois acesse `http://localhost:8080`.
 
+## Gerenciar o catálogo localmente
+
+O editor administrativo não é publicado no GitHub Pages. Para abri-lo com capacidade de salvar e enviar alterações ao GitHub, execute:
+
+```bash
+python3 scripts/local_admin_server.py
+```
+
+Acesse `http://127.0.0.1:8080/admin.html`. O servidor grava `data/products.json`, cria um backup local, faz commit somente desse arquivo e executa o push usando a autenticação Git/SSH já configurada. Consulte `GUIA-CATALOGO.md` para o fluxo completo.
+
 ## Antes da publicacao
 
 1. Preencha o numero comercial em `config.js`.

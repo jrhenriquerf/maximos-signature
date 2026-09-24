@@ -18,3 +18,9 @@ dist/
 
 # Artefato local do GitHub Pages
 _site/
+
+# Backups criados pelo gerenciador local
+.local-backups/
+# Cache local do Python
+__pycache__/
+*.py[cod]

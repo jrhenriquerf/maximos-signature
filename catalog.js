@@ -8,10 +8,20 @@ const header = document.querySelector('[data-header]');
 const escapeHtml = value => String(value ?? '').replace(/[&<>\"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;' }[char]));
 const normalize = value => String(value ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 
-document.querySelector('.menu-toggle')?.addEventListener('click', event => {
-  const open = header.classList.toggle('menu-open');
-  event.currentTarget.setAttribute('aria-expanded', String(open));
-  event.currentTarget.textContent = open ? 'Fechar' : 'Menu';
+const menuToggle = document.querySelector('.menu-toggle');
+function setStoreMenu(open) {
+  const storeHeader = document.querySelector('[data-header]');
+  storeHeader.classList.toggle('menu-open', open);
+  document.body.classList.toggle('menu-visible', open);
+  menuToggle?.setAttribute('aria-expanded', String(open));
+  menuToggle?.setAttribute('aria-label', open ? 'Fechar navegacao' : 'Abrir navegacao');
+  const label = menuToggle?.querySelector('.visually-hidden');
+  if (label) label.textContent = open ? 'Fechar navegacao' : 'Abrir navegacao';
+}
+menuToggle?.addEventListener('click', () => setStoreMenu(!document.querySelector('[data-header]').classList.contains('menu-open')));
+document.querySelector('[data-header] nav')?.querySelectorAll('a').forEach(link => link.addEventListener('click', () => setStoreMenu(false)));
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape') setStoreMenu(false);
 });
 
 function variantsFor(product) {

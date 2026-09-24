@@ -7,11 +7,20 @@ let activeMessage = '';
 const escapeHtml = value => String(value ?? '').replace(/[&<>\"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;' }[char]));
 const whatsappIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2-5.4A8.5 8.5 0 1 1 21 11.5Z"/><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M8.2 7.6c.5 4.3 3.2 7 7.5 7.5l1.1-1.6-2.5-1.2-.9 1c-1.6-.7-2.9-2-3.6-3.6l1-1-1.1-2.4-1.5 1.3Z"/></svg>';
 
-document.querySelector('.menu-toggle')?.addEventListener('click', event => {
-  const header = document.querySelector('[data-header]');
-  const open = header.classList.toggle('menu-open');
-  event.currentTarget.setAttribute('aria-expanded', String(open));
-  event.currentTarget.textContent = open ? 'Fechar' : 'Menu';
+const menuToggle = document.querySelector('.menu-toggle');
+function setStoreMenu(open) {
+  const storeHeader = document.querySelector('[data-header]');
+  storeHeader.classList.toggle('menu-open', open);
+  document.body.classList.toggle('menu-visible', open);
+  menuToggle?.setAttribute('aria-expanded', String(open));
+  menuToggle?.setAttribute('aria-label', open ? 'Fechar navegacao' : 'Abrir navegacao');
+  const label = menuToggle?.querySelector('.visually-hidden');
+  if (label) label.textContent = open ? 'Fechar navegacao' : 'Abrir navegacao';
+}
+menuToggle?.addEventListener('click', () => setStoreMenu(!document.querySelector('[data-header]').classList.contains('menu-open')));
+document.querySelector('[data-header] nav')?.querySelectorAll('a').forEach(link => link.addEventListener('click', () => setStoreMenu(false)));
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape') setStoreMenu(false);
 });
 
 function productVariants(product) {
