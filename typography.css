@@ -1,0 +1,87 @@
+/* Sistema tipografico da marca: Cinzel para expressao, sans-serif para leitura e interface. */
+:root {
+  --font-display: Cinzel, Georgia, serif;
+  --font-body: "Helvetica Neue", "Segoe UI", Arial, sans-serif;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --serif: var(--font-display);
+  --sans: var(--font-body);
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-body);
+  font-weight: var(--weight-regular);
+}
+
+h1,
+h2,
+h3,
+.wordmark strong,
+.monogram,
+.manifesto h1,
+.showcase-info h2,
+.craft h2,
+.collection h2,
+.contact-band h2,
+.catalog-title h1,
+.product-info h2,
+.service h2,
+.product-panel h1,
+.craft-note h2,
+.section-heading h2,
+.related-card h3 {
+  font-family: var(--font-display);
+  font-weight: var(--weight-medium);
+}
+
+strong,
+b,
+.product-price strong,
+.price-row strong,
+.related-card span,
+.variation.active span {
+  font-weight: var(--weight-semibold);
+}
+
+.nav-side a,
+.store-header nav a,
+.header-contact,
+.outline-button,
+.service-button,
+.buy-button,
+.dialog-copy,
+.product-action,
+.product-badge,
+.tag,
+.section-label,
+.showcase-kicker,
+.eyebrow,
+.filter,
+.footer-links a,
+.site-footer .footer-links a,
+.footer-origin > span,
+.menu-toggle,
+.home-header.menu-open::before {
+  font-family: var(--font-body);
+  font-weight: var(--weight-semibold);
+}
+
+.showcase-info p,
+.summary,
+.footer-origin p,
+.manifesto-inner > p:last-child {
+  font-weight: var(--weight-regular);
+}
+
+.footer-origin p {
+  font-family: var(--font-body);
+}
+
+em {
+  font-weight: var(--weight-regular);
+}
