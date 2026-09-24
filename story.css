@@ -54,6 +54,20 @@
   font: 500 clamp(1.15rem, 1.7vw, 1.45rem)/1.4 var(--serif);
 }
 
+.craft-copy dl {
+  margin-top: 0;
+  border-top: 0;
+}
+
+.craft-copy dl div {
+  align-items: center;
+}
+
+.craft-copy dt,
+.craft-copy dd {
+  line-height: 1.35;
+}
+
 .craft-image {
   position: relative;
   isolation: isolate;
