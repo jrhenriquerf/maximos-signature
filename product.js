@@ -5,6 +5,8 @@ const dialog = document.querySelector('[data-dialog]');
 let activeMessage = '';
 
 const escapeHtml = value => String(value ?? '').replace(/[&<>\"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;' }[char]));
+const imageVersion = (source, size) => PRODUCT_IMAGES.version(source, size);
+const imageSrcset = source => PRODUCT_IMAGES.srcset(source);
 const whatsappIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2-5.4A8.5 8.5 0 1 1 21 11.5Z"/><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M8.2 7.6c.5 4.3 3.2 7 7.5 7.5l1.1-1.6-2.5-1.2-.9 1c-1.6-.7-2.9-2-3.6-3.6l1-1-1.1-2.4-1.5 1.3Z"/></svg>';
 
 const menuToggle = document.querySelector('.menu-toggle');
@@ -45,8 +47,8 @@ function render(product, all, variantIndex = 0) {
   const materials = (product.materiais || []).map(item => `<li>${escapeHtml(item)}</li>`).join('');
   const colors = (product.cores || []).map(item => `<li>${escapeHtml(item)}</li>`).join('');
   const measures = measuresData ? `${measuresData.largura} × ${measuresData.altura} × ${measuresData.profundidade} cm` : 'Confirme as dimensões no atendimento';
-  const thumbs = images.map((image, index) => `<button class="thumb ${index === 0 ? 'active' : ''}" type="button" data-image="${escapeHtml(image)}" data-index="${index}" aria-label="Ver imagem ${index + 1}"><img src="${escapeHtml(image)}" alt=""></button>`).join('');
-  const variationOptions = variants.map((item, index) => `<button class="variation ${index === variantIndex ? 'active' : ''}" type="button" data-variant-index="${index}" title="${escapeHtml(item.cor)}${item.sku ? ` — ${escapeHtml(item.sku)}` : ''}" aria-label="Selecionar ${escapeHtml(item.cor)}"><img src="${escapeHtml(item.imagens?.[0] || product.imagens?.[0])}" alt=""><span>${escapeHtml(item.cor)}</span></button>`).join('');
+  const thumbs = images.map((image, index) => `<button class="thumb ${index === 0 ? 'active' : ''}" type="button" data-image="${escapeHtml(image)}" data-index="${index}" aria-label="Ver imagem ${index + 1}"><img src="${escapeHtml(imageVersion(image, 'thumb'))}" alt="" loading="lazy"></button>`).join('');
+  const variationOptions = variants.map((item, index) => `<button class="variation ${index === variantIndex ? 'active' : ''}" type="button" data-variant-index="${index}" title="${escapeHtml(item.cor)}${item.sku ? ` — ${escapeHtml(item.sku)}` : ''}" aria-label="Selecionar ${escapeHtml(item.cor)}"><img src="${escapeHtml(imageVersion(item.imagens?.[0] || product.imagens?.[0], 'thumb'))}" alt="" loading="lazy"><span>${escapeHtml(item.cor)}</span></button>`).join('');
 
   document.title = `${product.nome} — Maximos Signature`;
   document.querySelector('meta[name="description"]').content = product.resumo;
@@ -55,7 +57,7 @@ function render(product, all, variantIndex = 0) {
     <div class="gallery">
       <div class="thumbs">${thumbs}</div>
       <figure class="main-photo" data-zoom-area>
-        <img src="${escapeHtml(images[0])}" alt="${escapeHtml(product.nome)} — ${escapeHtml(variant.cor)}" data-main-image>
+        <img src="${escapeHtml(images[0])}" srcset="${escapeHtml(imageSrcset(images[0]))}" sizes="(max-width: 760px) 100vw, 1200px" alt="${escapeHtml(product.nome)} — ${escapeHtml(variant.cor)}" data-main-image>
         ${product.imagemConceitual ? '<span class="concept-badge">Imagem conceitual</span>' : ''}
         <span class="zoom-hint" aria-hidden="true">＋ Passe o mouse para ampliar</span>
         <span class="photo-count"><b data-current>1</b> / ${images.length}</span>
@@ -97,6 +99,8 @@ function selectImage(button) {
   const image = document.querySelector('[data-main-image]');
   image.style.opacity = '0';
   setTimeout(() => {
+    image.srcset = imageSrcset(button.dataset.image);
+    image.sizes = '(max-width: 760px) 100vw, 1200px';
     image.src = button.dataset.image;
     image.style.opacity = '1';
   }, 160);
@@ -121,7 +125,7 @@ function renderRelated(items) {
   const section = document.querySelector('[data-related-section]');
   if (!items.length) { section.hidden = true; return; }
   section.hidden = false;
-  document.querySelector('[data-related]').innerHTML = items.map(item => `<a class="related-card" href="produto.html?id=${encodeURIComponent(item.id)}"><figure><img src="${escapeHtml(item.imagens[0])}" alt="${escapeHtml(item.nome)}" loading="lazy"></figure><div><h3>${escapeHtml(item.nome)}</h3><span>A partir de ${money.format(item.preco)}</span></div></a>`).join('');
+  document.querySelector('[data-related]').innerHTML = items.map(item => `<a class="related-card" href="produto.html?id=${encodeURIComponent(item.id)}"><figure><img src="${escapeHtml(imageVersion(item.imagens[0], 'card'))}" srcset="${escapeHtml(imageSrcset(item.imagens[0]))}" sizes="(max-width: 700px) 50vw, 600px" alt="${escapeHtml(item.nome)}" loading="lazy"></figure><div><h3>${escapeHtml(item.nome)}</h3><span>A partir de ${money.format(item.preco)}</span></div></a>`).join('');
 }
 
 function contact(event, product, variant) {

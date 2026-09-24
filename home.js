@@ -9,6 +9,9 @@ const menu = document.querySelector('.menu-toggle');
 const dialog = document.querySelector('[data-dialog]');
 const escapeHtml = value => String(value ?? '').replace(/[&<>\"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;' }[char]));
 
+const imageVersion = (source, size) => PRODUCT_IMAGES.version(source, size);
+const imageSrcset = source => PRODUCT_IMAGES.srcset(source);
+
 function setMenu(open) {
   header.classList.toggle('menu-open', open);
   document.body.classList.toggle('menu-visible', open);
@@ -64,7 +67,7 @@ function renderShowcase(items) {
   const steps = document.querySelector('[data-showcase-steps]');
   container.style.setProperty('--showcase-count', Math.max(items.length, 1));
   copy.innerHTML = items.map((item, index) => `<article class="showcase-info ${index === 0 ? 'active' : ''}"><span class="showcase-kicker">${escapeHtml(item.linha)}</span><h2>${escapeHtml(item.titulo)}</h2><p>${escapeHtml(item.texto)}</p><a class="text-link" href="produto.html?id=${encodeURIComponent(item.productId)}">Conhecer a peça ↗</a></article>`).join('');
-  stage.innerHTML = items.map((item, index) => `<img class="showcase-product ${item.editorial ? 'editorial' : 'cutout'} ${index === 0 ? 'active' : ''}" src="${escapeHtml(item.imagem)}" alt="${escapeHtml(item.titulo)}" ${index ? 'loading="lazy"' : 'fetchpriority="high"'}>`).join('');
+  stage.innerHTML = items.map((item, index) => `<img class="showcase-product ${item.editorial ? 'editorial' : 'cutout'} ${index === 0 ? 'active' : ''}" src="${escapeHtml(imageVersion(item.imagem, 'card'))}" srcset="${escapeHtml(imageSrcset(item.imagem))}" sizes="(max-width: 620px) 100vw, 55vw" alt="${escapeHtml(item.titulo)}" ${index ? 'loading="lazy"' : 'fetchpriority="high"'}>`).join('');
   steps.innerHTML = items.map((item, index) => `<button class="showcase-step ${index === 0 ? 'active' : ''}" type="button" data-stage="${index}" aria-label="Ver ${escapeHtml(item.titulo)}"><span>${escapeHtml(item.titulo)}</span></button>`).join('');
   document.querySelector('[data-total]').textContent = String(items.length).padStart(2, '0');
 
@@ -107,7 +110,7 @@ function renderShowcase(items) {
 }
 
 function renderProducts(products) {
-  document.querySelector('[data-home-products]').innerHTML = products.slice(0, 6).map(product => `<article class="home-card reveal"><a href="produto.html?id=${encodeURIComponent(product.id)}"><div class="home-card-visual"><img src="${escapeHtml(productCover(product))}" alt="${escapeHtml(product.nome)}" loading="lazy"><span>${product.disponivel ? 'Disponível' : 'Indisponível'}</span></div><div class="home-card-meta"><div><h3>${escapeHtml(product.nome)}</h3><p>${escapeHtml(product.colecao)}</p></div><strong>${money.format(product.preco)}</strong></div></a></article>`).join('');
+  document.querySelector('[data-home-products]').innerHTML = products.slice(0, 6).map(product => `<article class="home-card reveal"><a href="produto.html?id=${encodeURIComponent(product.id)}"><div class="home-card-visual"><img src="${escapeHtml(imageVersion(productCover(product), 'card'))}" srcset="${escapeHtml(imageSrcset(productCover(product)))}" sizes="(max-width: 700px) 100vw, 33vw" alt="${escapeHtml(product.nome)}" loading="lazy"><span>${product.disponivel ? 'Disponível' : 'Indisponível'}</span></div><div class="home-card-meta"><div><h3>${escapeHtml(product.nome)}</h3><p>${escapeHtml(product.colecao)}</p></div><strong>${money.format(product.preco)}</strong></div></a></article>`).join('');
   observeReveals();
 }
 

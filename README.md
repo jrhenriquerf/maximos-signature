@@ -35,6 +35,15 @@ python3 scripts/local_admin_server.py
 
 Acesse `http://127.0.0.1:8080/admin.html`. O servidor grava `data/products.json`, cria um backup local, faz commit somente desse arquivo e executa o push usando a autenticação Git/SSH já configurada. Consulte `GUIA-CATALOGO.md` para o fluxo completo.
 
+## Imagens dos produtos
+
+As fotografias originais são tratadas como arquivos-mestre e permanecem fora do repositório. O site usa três derivados WebP para equilibrar nitidez e desempenho:
+
+- `01-thumb.webp` (360 px): seletores de cor e miniaturas;
+- `01-card.webp` (900 px): catálogo e vitrines;
+- `01.webp` (até 1800 px): página do produto e zoom.
+
+O navegador escolhe automaticamente a resolução adequada por meio de `srcset`. Para recriar os derivados a partir das pastas locais de originais, use `scripts/optimize_product_images.py`; o script compara visualmente cada imagem publicada com os originais e só substitui o detalhe quando a correspondência é segura.
 ## Antes da publicacao
 
 1. Preencha o numero comercial em `config.js`.
