@@ -7,7 +7,7 @@ Site estatico e responsivo da Maximos Signature, com vitrine editorial, catalogo
 - `index.html`: apresentacao da marca e vitrine de destaques.
 - `catalogo.html`: catalogo completo com filtros.
 - `produto.html?id=maximos-aura`: pagina individual alimentada pelo JSON.
-- `admin.html`: editor local para cadastrar e atualizar os produtos.
+- `admin.html`: editor para uso local; ele nao e incluido no site publico.
 
 ## Dados e configuracao
 
@@ -28,12 +28,58 @@ Depois acesse `http://localhost:8080`.
 ## Antes da publicacao
 
 1. Preencha o numero comercial em `config.js`.
-2. Substitua as imagens conceituais por fotografias reais.
-3. Revise precos, estoque, cores e medidas em `data/products.json`.
-4. Conecte o repositorio ao Cloudflare Pages para publicacao automatica.
+2. Revise precos, estoque, cores e medidas em `data/products.json`.
+3. Confirme que as fotografias finais estao na pasta `assets`.
+4. Preencha o numero comercial em `config.js` antes da versao definitiva.
+5. Teste `index.html`, `catalogo.html` e ao menos uma pagina de produto.
 
-## Hospedagem
+## Publicar no GitHub Pages
 
-O projeto nao precisa de build, banco de dados ou servidor de aplicacao. A raiz do repositorio pode ser publicada diretamente como site estatico no Cloudflare Pages.
+O projeto nao precisa de build, banco de dados ou servidor de aplicacao. O workflow `.github/workflows/deploy-pages.yml` publica automaticamente o site a cada envio para a branch `main`.
 
-As imagens atuais sao conceituais e nao representam produtos reais da Maximos Signature.
+### Primeira publicacao
+
+1. Crie um repositorio vazio no GitHub, sem adicionar README ou `.gitignore`.
+2. No terminal, dentro desta pasta, conecte e envie o repositorio:
+
+```bash
+git remote add origin https://github.com/SEU-USUARIO/NOME-DO-REPOSITORIO.git
+git push -u origin main
+```
+
+3. No GitHub, abra **Settings > Pages**.
+4. Em **Build and deployment > Source**, escolha **GitHub Actions**.
+5. Abra a aba **Actions** e acompanhe o workflow **Publicar no GitHub Pages**.
+
+Ao concluir, o endereco sera semelhante a:
+
+```text
+https://SEU-USUARIO.github.io/NOME-DO-REPOSITORIO/
+```
+
+Todos os caminhos do site sao relativos, portanto o catalogo, as imagens e as paginas de produto funcionam nesse subdiretorio.
+
+### Dominio proprio
+
+Quando desejar usar `maximossignature.com.br`, primeiro adicione o dominio em **Settings > Pages > Custom domain**. Somente depois altere o DNS no provedor do dominio.
+
+Para o dominio principal, configure os registros `A` de `@`:
+
+```text
+185.199.108.153
+185.199.109.153
+185.199.110.153
+185.199.111.153
+```
+
+Para `www`, crie um `CNAME` apontando para `SEU-USUARIO.github.io`. Depois da propagacao, ative **Enforce HTTPS** no GitHub Pages.
+
+### Atualizacoes futuras
+
+Depois da configuracao inicial, qualquer novo commit enviado para `main` inicia uma publicacao automaticamente:
+
+```bash
+git add .
+git commit -m "Atualiza o catalogo"
+git push
+```

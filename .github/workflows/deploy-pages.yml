@@ -1,0 +1,60 @@
+name: Publicar no GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar o repositorio
+        uses: actions/checkout@v6
+
+      - name: Validar os arquivos publicos
+        run: |
+          test -f index.html
+          test -f catalogo.html
+          test -f produto.html
+          test -f data/products.json
+          python3 -m json.tool data/products.json > /dev/null
+
+      - name: Configurar o GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Preparar o site estatico
+        run: |
+          mkdir -p _site
+          rsync -a ./ _site/ \
+            --exclude .git/ \
+            --exclude .github/ \
+            --exclude .gitignore \
+            --exclude _site/ \
+            --exclude scripts/ \
+            --exclude admin.html \
+            --exclude admin.css \
+            --exclude admin.js \
+            --exclude README.md \
+            --exclude GUIA-CATALOGO.md
+
+      - name: Enviar os arquivos do site
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+      - name: Publicar
+        id: deployment
+        uses: actions/deploy-pages@v4
