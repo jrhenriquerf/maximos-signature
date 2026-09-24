@@ -36,3 +36,29 @@
 .showcase-sticky::before{z-index:0}
 .showcase-stage{z-index:1}
 .showcase-steps,.showcase-counter{z-index:4}
+
+
+/* Troca suave entre versões do catálogo */
+.product-image .card-image-layer{
+  position:absolute;
+  inset:13%;
+  z-index:0;
+  width:74%;
+  height:74%;
+  object-fit:contain;
+  opacity:0;
+  transform:scale(.9);
+  pointer-events:none;
+  transition:opacity .42s ease,transform .55s ease;
+  will-change:opacity,transform;
+}
+.product-image .card-image-layer.is-active{opacity:1}
+.product-link:hover .product-image .card-image-layer{transform:scale(.95)!important}
+.product-image.image-swap-instant .card-image-layer{transition:none!important}
+@media(max-width:520px){
+  .product-image .card-image-layer{inset:12%;width:76%;height:76%;transform:none}
+  .product-link:hover .product-image .card-image-layer{transform:none!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .product-image .card-image-layer{transition:none!important}
+}

@@ -45,7 +45,7 @@ function card(product) {
   const discount = initial.precoAnterior ? Math.round((1 - initial.preco / initial.precoAnterior) * 100) : 0;
   const thumbs = variants.slice(0, 4).map((variant, index) => `<button class="variant-thumb ${index === initialIndex ? 'active' : ''}" type="button" data-card-variant data-product="${escapeHtml(product.id)}" data-variant-index="${index}" title="${escapeHtml(variant.cor)}" aria-label="Visualizar ${escapeHtml(variant.cor)}"><img src="${escapeHtml(variant.imagens?.[0])}" alt=""></button>`).join('');
   return `<article class="product-card">
-    <a class="product-link" href="produto.html?id=${encodeURIComponent(product.id)}"><div class="product-image" data-card-hover="${escapeHtml(product.id)}" data-manual-index="${initialIndex}"><span class="product-badge" data-card-badge="${escapeHtml(product.id)}">${initial.disponivel ? 'Couro legítimo' : 'Sob consulta'}</span>${discount > 0 ? `<span class="discount">-${discount}%</span>` : ''}<img src="${escapeHtml(initial.imagens?.[0] || product.imagens[0])}" alt="${escapeHtml(product.nome)}" data-card-image="${escapeHtml(product.id)}" loading="lazy"></div></a>
+    <a class="product-link" href="produto.html?id=${encodeURIComponent(product.id)}"><div class="product-image" data-card-hover="${escapeHtml(product.id)}" data-manual-index="${initialIndex}"><span class="product-badge" data-card-badge="${escapeHtml(product.id)}">${initial.disponivel ? 'Couro legítimo' : 'Sob consulta'}</span>${discount > 0 ? `<span class="discount">-${discount}%</span>` : ''}<img class="card-image-layer is-active" src="${escapeHtml(initial.imagens?.[0] || product.imagens[0])}" alt="${escapeHtml(product.nome)}" data-card-image="${escapeHtml(product.id)}" data-card-layer="0" loading="lazy"><img class="card-image-layer" src="${escapeHtml(initial.imagens?.[0] || product.imagens[0])}" alt="" data-card-layer="1" aria-hidden="true"></div></a>
     <div class="variant-row">${thumbs}<span class="variant-count">${variants.length} ${variants.length === 1 ? 'modelo' : 'cores'}</span></div>
     <a class="product-link" href="produto.html?id=${encodeURIComponent(product.id)}"><div class="product-info"><span class="product-material">${escapeHtml(product.colecao)}</span><h2>${escapeHtml(product.nome)}</h2><div class="product-price"><strong data-card-price="${escapeHtml(product.id)}">${money.format(initial.preco)}</strong>${old}</div><span class="product-condition">Condições no atendimento</span><span class="product-action"><span>Ver detalhes</span><b>→</b></span></div></a>
   </article>`;
@@ -83,14 +83,42 @@ function renderPagination(total) {
   nav.querySelectorAll('[data-page]').forEach(button => button.addEventListener('click', () => { page = Number(button.dataset.page); render(); document.querySelector('#produtos').scrollIntoView({ behavior: 'smooth' }); }));
 }
 
+function swapCardImage(productId, source, alt, animate = true) {
+  const stage = document.querySelector(`[data-card-hover="${productId}"]`);
+  if (!stage || !source) return;
+  const layers = [...stage.querySelectorAll('[data-card-layer]')];
+  if (layers.length < 2) return;
+
+  const activeIndex = Number(stage.dataset.activeLayer || 0);
+  const current = layers[activeIndex];
+  const nextIndex = activeIndex === 0 ? 1 : 0;
+  const next = layers[nextIndex];
+  if (current.getAttribute('src') === source) return;
+
+  const token = String(Number(stage.dataset.swapToken || 0) + 1);
+  stage.dataset.swapToken = token;
+  const activate = () => {
+    if (stage.dataset.swapToken !== token) return;
+    if (!animate) stage.classList.add('image-swap-instant');
+    next.alt = alt;
+    next.classList.add('is-active');
+    current.classList.remove('is-active');
+    stage.dataset.activeLayer = String(nextIndex);
+    if (!animate) requestAnimationFrame(() => stage.classList.remove('image-swap-instant'));
+  };
+
+  next.onload = activate;
+  next.onerror = () => { next.onload = null; };
+  next.src = source;
+  if (next.complete && next.naturalWidth) activate();
+}
+
 function updateCardVariant(productId, variantIndex, animate = true) {
   const product = products.find(item => item.id === productId);
   const variant = variantsFor(product)[variantIndex];
   if (!variant) return;
   document.querySelectorAll(`[data-card-variant][data-product="${productId}"]`).forEach(item => item.classList.toggle('active', Number(item.dataset.variantIndex) === variantIndex));
-  const image = document.querySelector(`[data-card-image="${productId}"]`);
-  if (animate) image.style.opacity = '.18';
-  setTimeout(() => { image.src = variant.imagens?.[0]; image.style.opacity = '1'; }, animate ? 110 : 0);
+  swapCardImage(productId, variant.imagens?.[0], `${product.nome} — ${variant.cor}`, animate);
   document.querySelector(`[data-card-price="${productId}"]`).textContent = money.format(variant.preco);
   const old = document.querySelector(`[data-card-old="${productId}"]`);
   if (variant.precoAnterior) { old.textContent = money.format(variant.precoAnterior); old.hidden = false; } else old.hidden = true;
@@ -112,7 +140,8 @@ function bindVariants() {
     if (variants.length < 2) return;
     area.addEventListener('mouseenter', () => {
       let index = Number(area.dataset.manualIndex);
-      const timer = setInterval(() => { index = (index + 1) % variants.length; updateCardVariant(productId, index); }, 1050);
+      clearInterval(variantTimers.get(productId));
+      const timer = setInterval(() => { index = (index + 1) % variants.length; updateCardVariant(productId, index); }, 1800);
       variantTimers.set(productId, timer);
     });
     area.addEventListener('mouseleave', () => {
