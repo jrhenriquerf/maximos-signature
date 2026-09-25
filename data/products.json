@@ -9,7 +9,7 @@
   "products": [
     {
       "id": "maximos-classic-tote",
-      "imagemDestaque": "assets/showcase/classic-tote-v2.webp",
+      "imagemDestaque": "assets/showcase/classic-tote-v3.webp",
       "nome": "Maximos Classic Tote",
       "categoria": "Bolsas",
       "colecao": "Grandes",
@@ -89,7 +89,7 @@
     },
     {
       "id": "maximos-dual-classic",
-      "imagemDestaque": "assets/showcase/dual-classic-v2.webp",
+      "imagemDestaque": "assets/showcase/dual-classic-v3.webp",
       "nome": "Maximos Dual Classic",
       "categoria": "Bolsas",
       "colecao": "Grandes",
@@ -143,7 +143,7 @@
     },
     {
       "id": "maximos-essencial",
-      "imagemDestaque": "assets/showcase/essencial-v2.webp",
+      "imagemDestaque": "assets/showcase/essencial-v3.webp",
       "nome": "Maximos Essencial",
       "categoria": "Bolsas",
       "colecao": "Grandes",
@@ -222,7 +222,7 @@
     },
     {
       "id": "maximos-aura",
-      "imagemDestaque": "assets/showcase/aura-v2.webp",
+      "imagemDestaque": "assets/showcase/aura-v3.webp",
       "nome": "Maximos Aura",
       "categoria": "Bolsas",
       "colecao": "Grandes",
@@ -331,7 +331,7 @@
     },
     {
       "id": "maximos-trama",
-      "imagemDestaque": "assets/showcase/trama-v2.webp",
+      "imagemDestaque": "assets/showcase/trama-v3.webp",
       "nome": "Maximos Trama",
       "categoria": "Bolsas",
       "colecao": "Grandes",
@@ -410,7 +410,7 @@
     },
     {
       "id": "maximos-marfim",
-      "imagemDestaque": "assets/showcase/marfim-v2.webp",
+      "imagemDestaque": "assets/showcase/marfim-v3.webp",
       "nome": "Maximos Marfim",
       "categoria": "Bolsas",
       "colecao": "Grandes",
@@ -628,7 +628,7 @@
     },
     {
       "id": "maximos-croco",
-      "imagemDestaque": "assets/showcase/croco-v2.webp",
+      "imagemDestaque": "assets/showcase/croco-v3.webp",
       "nome": "Maximos Croco",
       "categoria": "Bolsas",
       "colecao": "Grandes",
