@@ -222,7 +222,7 @@
     },
     {
       "id": "maximos-aura",
-      "imagemDestaque": "assets/showcase/aura.webp",
+      "imagemDestaque": "assets/showcase/aura-v2.webp",
       "nome": "Maximos Aura",
       "categoria": "Bolsas",
       "colecao": "Grandes",
@@ -331,7 +331,7 @@
     },
     {
       "id": "maximos-trama",
-      "imagemDestaque": "assets/showcase/trama.webp",
+      "imagemDestaque": "assets/showcase/trama-v2.webp",
       "nome": "Maximos Trama",
       "categoria": "Bolsas",
       "colecao": "Grandes",
@@ -410,7 +410,7 @@
     },
     {
       "id": "maximos-marfim",
-      "imagemDestaque": "assets/showcase/marfim.webp",
+      "imagemDestaque": "assets/showcase/marfim-v2.webp",
       "nome": "Maximos Marfim",
       "categoria": "Bolsas",
       "colecao": "Grandes",
@@ -628,7 +628,7 @@
     },
     {
       "id": "maximos-croco",
-      "imagemDestaque": "assets/showcase/croco.webp",
+      "imagemDestaque": "assets/showcase/croco-v2.webp",
       "nome": "Maximos Croco",
       "categoria": "Bolsas",
       "colecao": "Grandes",
