@@ -152,3 +152,56 @@ em {
     font-size: clamp(2.2rem, 9.8vw, 2.85rem);
   }
 }
+
+/* Bloco de atendimento: escala editorial mais contida. */
+.contact-band {
+  padding-block: clamp(5.5rem, 8vw, 8.5rem);
+}
+
+.contact-band h2 {
+  width: min(100%, 1120px);
+  margin: 0 auto 2rem;
+  font-size: clamp(2.4rem, 3.65vw, 4rem);
+  line-height: 1.17;
+}
+
+.contact-band h2 em {
+  display: block;
+  margin-top: .18em;
+  font-size: .78em;
+  line-height: 1.22;
+}
+
+@media (max-width: 620px) {
+  .contact-band {
+    padding: 4.75rem 1.35rem 5rem;
+    background-position: 58% center;
+  }
+
+  .contact-band .section-label {
+    margin-bottom: .85rem;
+    font-size: .56rem;
+    letter-spacing: .13em;
+  }
+
+  .contact-band h2 {
+    width: min(100%, 21rem);
+    margin-bottom: 1.75rem;
+    font-size: clamp(1.75rem, 7.7vw, 2.05rem);
+    line-height: 1.2;
+    letter-spacing: -.006em;
+  }
+
+  .contact-band h2 em {
+    margin-top: .3em;
+    font-size: .76em;
+    line-height: 1.32;
+  }
+
+  .contact-band .outline-button {
+    min-height: 44px;
+    padding-inline: 1.4rem;
+    font-size: .56rem;
+    letter-spacing: .18em;
+  }
+}
