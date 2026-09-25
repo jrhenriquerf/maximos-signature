@@ -9,7 +9,7 @@
   "products": [
     {
       "id": "maximos-classic-tote",
-      "imagemDestaque": "assets/showcase/classic-tote.webp",
+      "imagemDestaque": "assets/showcase/classic-tote-v2.webp",
       "nome": "Maximos Classic Tote",
       "categoria": "Bolsas",
       "colecao": "Grandes",
@@ -89,7 +89,7 @@
     },
     {
       "id": "maximos-dual-classic",
-      "imagemDestaque": "assets/showcase/dual-classic.webp",
+      "imagemDestaque": "assets/showcase/dual-classic-v2.webp",
       "nome": "Maximos Dual Classic",
       "categoria": "Bolsas",
       "colecao": "Grandes",
@@ -143,7 +143,7 @@
     },
     {
       "id": "maximos-essencial",
-      "imagemDestaque": "assets/showcase/essencial.webp",
+      "imagemDestaque": "assets/showcase/essencial-v2.webp",
       "nome": "Maximos Essencial",
       "categoria": "Bolsas",
       "colecao": "Grandes",
