@@ -11,6 +11,7 @@ const escapeHtml = value => String(value ?? '').replace(/[&<>\"]/g, char => ({ '
 
 const imageVersion = (source, size) => PRODUCT_IMAGES.version(source, size);
 const imageSrcset = source => PRODUCT_IMAGES.srcset(source);
+const showcaseSrcset = source => `${imageVersion(source, 'card')} 900w, ${source} 1200w`;
 
 function setMenu(open) {
   header.classList.toggle('menu-open', open);
@@ -67,7 +68,7 @@ function renderShowcase(items) {
   const steps = document.querySelector('[data-showcase-steps]');
   container.style.setProperty('--showcase-count', Math.max(items.length, 1));
   copy.innerHTML = items.map((item, index) => `<article class="showcase-info ${index === 0 ? 'active' : ''}"><span class="showcase-kicker">${escapeHtml(item.linha)}</span><h2>${escapeHtml(item.titulo)}</h2><p>${escapeHtml(item.texto)}</p><a class="text-link" href="produto.html?id=${encodeURIComponent(item.productId)}">Conhecer a peça ↗</a></article>`).join('');
-  stage.innerHTML = items.map((item, index) => `<img class="showcase-product ${item.editorial ? 'editorial' : 'cutout'} ${index === 0 ? 'active' : ''}" src="${escapeHtml(imageVersion(item.imagem, 'card'))}" srcset="${escapeHtml(imageSrcset(item.imagem))}" sizes="(max-width: 620px) 100vw, 55vw" alt="${escapeHtml(item.titulo)}" ${index ? 'loading="lazy"' : 'fetchpriority="high"'}>`).join('');
+  stage.innerHTML = items.map((item, index) => `<img class="showcase-product ${item.editorial ? 'editorial' : 'cutout'} ${index === 0 ? 'active' : ''}" src="${escapeHtml(item.imagem)}" srcset="${escapeHtml(showcaseSrcset(item.imagem))}" sizes="(max-width: 620px) 900px, 1200px" alt="${escapeHtml(item.titulo)}" ${index ? 'loading="lazy"' : 'fetchpriority="high"'}>`).join('');
   steps.innerHTML = items.map((item, index) => `<button class="showcase-step ${index === 0 ? 'active' : ''}" type="button" data-stage="${index}" aria-label="Ver ${escapeHtml(item.titulo)}"><span>${escapeHtml(item.titulo)}</span></button>`).join('');
   document.querySelector('[data-total]').textContent = String(items.length).padStart(2, '0');
 

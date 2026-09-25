@@ -62,3 +62,18 @@
 @media(prefers-reduced-motion:reduce){
   .product-image .card-image-layer{transition:none!important}
 }
+
+/* Mantem os recortes nitidos quando o carrossel esta em repouso. Sombras e
+   profundidade ficam nos pseudo-elementos do palco para nao rasterizar a foto. */
+.showcase-stage img.showcase-product{
+  filter:none;
+  backface-visibility:hidden;
+  will-change:opacity;
+}
+.showcase-stage img.showcase-product.active{
+  transform:translate3d(var(--shift-x),var(--shift-y),0) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  filter:none;
+}
+@media(max-width:620px){
+  .showcase-stage img.showcase-product.cutout.active{animation:none;transform:none}
+}
