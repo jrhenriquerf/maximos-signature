@@ -93,7 +93,7 @@ em {
   font-weight: var(--weight-regular);
   letter-spacing: .18em;
   line-height: 1.5;
-  text-transform: none;
+  text-transform: uppercase;
 }
 
 .section-label,
@@ -101,7 +101,7 @@ em {
 .eyebrow {
   font-weight: var(--weight-medium);
   letter-spacing: .16em;
-  text-transform: none;
+  text-transform: uppercase;
 }
 
 .manifesto h1,
