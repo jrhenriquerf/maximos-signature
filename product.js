@@ -7,6 +7,7 @@ let activeMessage = '';
 const escapeHtml = value => String(value ?? '').replace(/[&<>\"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;' }[char]));
 const imageVersion = (source, size) => PRODUCT_IMAGES.version(source, size);
 const imageSrcset = source => PRODUCT_IMAGES.srcset(source);
+const isAvailable = (variant, product) => (variant?.disponivel ?? product?.disponivel) !== false && Number(variant?.estoque ?? (product?.disponivel === false ? 0 : 1)) > 0;
 const whatsappIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2-5.4A8.5 8.5 0 1 1 21 11.5Z"/><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M8.2 7.6c.5 4.3 3.2 7 7.5 7.5l1.1-1.6-2.5-1.2-.9 1c-1.6-.7-2.9-2-3.6-3.6l1-1-1.1-2.4-1.5 1.3Z"/></svg>';
 
 const menuToggle = document.querySelector('.menu-toggle');
@@ -40,15 +41,18 @@ function render(product, all, variantIndex = 0) {
   const images = variant.imagens?.length ? variant.imagens : product.imagens;
   const price = Number(variant.preco ?? product.preco);
   const previousPrice = Number(variant.precoAnterior ?? product.precoAnterior) || null;
-  const available = variant.disponivel ?? product.disponivel;
+  const available = isAvailable(variant, product);
   const measuresData = variant.medidas || product.medidas;
   const old = previousPrice ? `<del>${money.format(previousPrice)}</del>` : '';
   const discount = previousPrice ? Math.round((1 - price / previousPrice) * 100) : 0;
   const materials = (product.materiais || []).map(item => `<li>${escapeHtml(item)}</li>`).join('');
-  const colors = (product.cores || []).map(item => `<li>${escapeHtml(item)}</li>`).join('');
+  const models = variants.map(item => `<li>${escapeHtml(item.cor)}${isAvailable(item, product) ? '' : ' — Esgotado'}</li>`).join('');
   const measures = measuresData ? `${measuresData.largura} × ${measuresData.altura} × ${measuresData.profundidade} cm` : 'Confirme as dimensões no atendimento';
   const thumbs = images.map((image, index) => `<button class="thumb ${index === 0 ? 'active' : ''}" type="button" data-image="${escapeHtml(image)}" data-index="${index}" aria-label="Ver imagem ${index + 1}"><img src="${escapeHtml(imageVersion(image, 'thumb'))}" alt="" loading="lazy"></button>`).join('');
-  const variationOptions = variants.map((item, index) => `<button class="variation ${index === variantIndex ? 'active' : ''}" type="button" data-variant-index="${index}" title="${escapeHtml(item.cor)}${item.sku ? ` — ${escapeHtml(item.sku)}` : ''}" aria-label="Selecionar ${escapeHtml(item.cor)}"><img src="${escapeHtml(imageVersion(item.imagens?.[0] || product.imagens?.[0], 'thumb'))}" alt="" loading="lazy"><span>${escapeHtml(item.cor)}</span></button>`).join('');
+  const variationOptions = variants.map((item, index) => {
+    const itemAvailable = isAvailable(item, product);
+    return `<button class="variation ${index === variantIndex ? 'active' : ''}${itemAvailable ? '' : ' is-unavailable'}" type="button" data-variant-index="${index}" title="${escapeHtml(item.cor)}${item.sku ? ` — ${escapeHtml(item.sku)}` : ''}${itemAvailable ? '' : ' — Esgotado'}" aria-label="Selecionar modelo ${escapeHtml(item.cor)}${itemAvailable ? '' : ' — Esgotado'}"><img src="${escapeHtml(imageVersion(item.imagens?.[0] || product.imagens?.[0], 'thumb'))}" alt="" loading="lazy"><span>${escapeHtml(item.cor)}</span>${itemAvailable ? '' : '<small>Esgotado</small>'}</button>`;
+  }).join('');
 
   document.title = `${product.nome} — Maximos Signature`;
   document.querySelector('meta[name="description"]').content = product.resumo;
@@ -69,14 +73,14 @@ function render(product, all, variantIndex = 0) {
       <p class="summary">${escapeHtml(product.resumo)}</p>
       <div class="price-row"><strong>${money.format(price)}</strong>${old}</div>
       <p class="payment-note">Consulte formas de pagamento e entrega no atendimento.</p>
-      <span class="availability ${available ? '' : 'no'}">${available ? 'Disponível' : 'Disponibilidade sob consulta'}</span>
-      ${variants.length > 1 ? `<div class="variation-title"><span>Cor: <strong>${escapeHtml(variant.cor)}</strong></span><span>${variants.length} opções</span></div><div class="variation-options">${variationOptions}</div>` : `<p class="single-variant">Cor: <strong>${escapeHtml(variant.cor)}</strong>${variant.sku ? `<span>SKU ${escapeHtml(variant.sku)}</span>` : ''}</p>`}
-      <a class="buy-button" href="#" data-buy><span class="button-label">${whatsappIcon}${available ? 'Comprar pelo WhatsApp' : 'Consultar disponibilidade'}</span><b>→</b></a>
+      <span class="availability ${available ? '' : 'no'}">${available ? 'Disponível' : 'Esgotado'}</span>
+      ${variants.length > 1 ? `<div class="variation-title"><span>Modelo: <strong>${escapeHtml(variant.cor)}</strong></span><span>${variants.length} modelos</span></div><div class="variation-options">${variationOptions}</div>` : `<p class="single-variant">Modelo: <strong>${escapeHtml(variant.cor)}</strong>${variant.sku ? `<span>SKU ${escapeHtml(variant.sku)}</span>` : ''}</p>`}
+      <a class="buy-button" href="#" data-buy><span class="button-label">${whatsappIcon}${available ? 'Comprar pelo WhatsApp' : 'Consultar reposição'}</span><b>→</b></a>
       <div class="benefits"><span>Atendimento direto</span><span>Feito no Brasil</span><span>Pequena escala</span></div>
       <div class="details">
         <details open><summary>Descrição</summary><p>${escapeHtml(product.descricao)}</p></details>
         <details><summary>Material e acabamento</summary><ul>${materials}</ul></details>
-        <details><summary>Cores disponíveis</summary><ul>${colors}</ul></details>
+        <details><summary>Modelos desta linha</summary><ul>${models}</ul></details>
         <details><summary>Dimensões</summary><p>${measures}${variant.pesoKg ? `<br>Peso informado: ${escapeHtml(variant.pesoKg)} kg` : ''}${variant.sku ? `<br>SKU: ${escapeHtml(variant.sku)}` : ''}</p></details>
       </div>
     </div>
@@ -131,9 +135,9 @@ function renderRelated(items) {
 function contact(event, product, variant) {
   event.preventDefault();
   const selection = [variant.cor, variant.sku].filter(Boolean).join(' — ');
-  activeMessage = variant.disponivel
+  activeMessage = isAvailable(variant, product)
     ? `Olá! Tenho interesse na ${product.nome}${selection ? ` (${selection})` : ''}. Poderia me confirmar as formas de pagamento e entrega?`
-    : `Olá! Gostaria de consultar a disponibilidade da ${product.nome}${selection ? ` (${selection})` : ''}.`;
+    : `Olá! Gostaria de saber sobre a reposição da ${product.nome}${selection ? ` (${selection})` : ''}.`;
   const number = window.SITE_CONFIG?.whatsapp;
   if (number) { location.href = `https://wa.me/${number}?text=${encodeURIComponent(activeMessage)}`; return; }
   document.querySelector('[data-message]').textContent = activeMessage;
@@ -145,7 +149,8 @@ fetch('data/products.json')
   .then(data => {
     const product = data.products.find(item => item.id === id);
     if (!product) throw new Error();
-    render(product, data.products);
+    const initialVariant = productVariants(product).findIndex(item => isAvailable(item, product));
+    render(product, data.products, initialVariant >= 0 ? initialVariant : 0);
   })
   .catch(() => { page.innerHTML = '<div class="loading"><div><h1>Produto não encontrado</h1><a href="catalogo.html">Voltar às bolsas</a></div></div>'; });
 

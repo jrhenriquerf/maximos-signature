@@ -39,7 +39,7 @@ Acesse `http://127.0.0.1:8080/admin.html`. O servidor grava `data/products.json`
 
 As fotografias originais são tratadas como arquivos-mestre e permanecem fora do repositório. O site usa três derivados WebP para equilibrar nitidez e desempenho:
 
-- `01-thumb.webp` (360 px): seletores de cor e miniaturas;
+- `01-thumb.webp` (360 px): seletores de modelo e miniaturas;
 - `01-card.webp` (900 px): catálogo e vitrines;
 - `01.webp` (até 1800 px): página do produto e zoom.
 
@@ -47,7 +47,7 @@ O navegador escolhe automaticamente a resolução adequada por meio de `srcset`.
 ## Antes da publicacao
 
 1. Preencha o numero comercial em `config.js`.
-2. Revise precos, estoque, cores e medidas em `data/products.json`.
+2. Revise precos, estoque, modelos e medidas em `data/products.json`.
 3. Confirme que as fotografias finais estao na pasta `assets`.
 4. Preencha o numero comercial em `config.js` antes da versao definitiva.
 5. Teste `index.html`, `catalogo.html` e ao menos uma pagina de produto.

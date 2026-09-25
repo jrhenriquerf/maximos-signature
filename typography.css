@@ -85,3 +85,70 @@ b,
 em {
   font-weight: var(--weight-regular);
 }
+
+/* Frases de efeito: menos caixa-alta e contraste mais editorial. */
+.hero-tagline {
+  font-family: var(--font-display);
+  font-size: clamp(.82rem, 1.15vw, 1rem);
+  font-weight: var(--weight-regular);
+  letter-spacing: .18em;
+  line-height: 1.5;
+  text-transform: none;
+}
+
+.section-label,
+.showcase-kicker,
+.eyebrow {
+  font-weight: var(--weight-medium);
+  letter-spacing: .16em;
+  text-transform: none;
+}
+
+.manifesto h1,
+.showcase-info h2,
+.collection-heading h2,
+.craft-copy h2,
+.contact-band h2 {
+  font-weight: var(--weight-regular);
+  letter-spacing: -.012em;
+}
+
+.manifesto h1 {
+  font-size: clamp(2.3rem, 4.4vw, 4.6rem);
+}
+
+.showcase-info h2 {
+  font-size: clamp(2.75rem, 4.4vw, 4.9rem);
+}
+
+.collection-heading h2,
+.craft-copy h2 {
+  font-size: clamp(2.45rem, 3.85vw, 4.15rem);
+}
+
+.manifesto h1 em,
+.craft-copy h2 em,
+.contact-band h2 em {
+  display: inline-block;
+  font-size: .82em;
+  font-style: normal;
+  font-weight: var(--weight-regular);
+  letter-spacing: .005em;
+}
+
+.craft-copy h2 em {
+  color: var(--tan);
+}
+
+@media (max-width: 620px) {
+  .hero-tagline {
+    font-size: .82rem;
+    letter-spacing: .13em !important;
+  }
+
+  .showcase-info h2,
+  .collection-heading h2,
+  .craft-copy h2 {
+    font-size: clamp(2.2rem, 9.8vw, 2.85rem);
+  }
+}

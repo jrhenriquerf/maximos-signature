@@ -33,9 +33,11 @@ function variantsFor(product) {
   }));
 }
 
+const isAvailable = variant => variant?.disponivel !== false && Number(variant?.estoque ?? 1) > 0;
+
 function initialVariantIndex(product) {
   const variants = variantsFor(product);
-  const available = variants.findIndex(item => item.disponivel);
+  const available = variants.findIndex(isAvailable);
   return available >= 0 ? available : 0;
 }
 
@@ -43,13 +45,22 @@ function card(product) {
   const variants = variantsFor(product);
   const initialIndex = initialVariantIndex(product);
   const initial = variants[initialIndex];
+  const available = isAvailable(initial);
+  const unavailableCount = variants.filter(variant => !isAvailable(variant)).length;
+  const allUnavailable = unavailableCount === variants.length;
   const old = initial.precoAnterior ? `<del data-card-old="${escapeHtml(product.id)}">${money.format(initial.precoAnterior)}</del>` : `<del data-card-old="${escapeHtml(product.id)}" hidden></del>`;
   const discount = initial.precoAnterior ? Math.round((1 - initial.preco / initial.precoAnterior) * 100) : 0;
-  const thumbs = variants.slice(0, 4).map((variant, index) => `<button class="variant-thumb ${index === initialIndex ? 'active' : ''}" type="button" data-card-variant data-product="${escapeHtml(product.id)}" data-variant-index="${index}" title="${escapeHtml(variant.cor)}" aria-label="Visualizar ${escapeHtml(variant.cor)}"><img src="${escapeHtml(imageVersion(variant.imagens?.[0], 'thumb'))}" alt="" loading="lazy"></button>`).join('');
-  return `<article class="product-card">
-    <a class="product-link" href="produto.html?id=${encodeURIComponent(product.id)}"><div class="product-image" data-card-hover="${escapeHtml(product.id)}" data-manual-index="${initialIndex}"><span class="product-badge" data-card-badge="${escapeHtml(product.id)}">${initial.disponivel ? 'Couro legítimo' : 'Sob consulta'}</span>${discount > 0 ? `<span class="discount">-${discount}%</span>` : ''}<img class="card-image-layer is-active" src="${escapeHtml(imageVersion(initial.imagens?.[0] || product.imagens[0], 'card'))}" srcset="${escapeHtml(imageSrcset(initial.imagens?.[0] || product.imagens[0]))}" sizes="(max-width: 700px) 50vw, 600px" alt="${escapeHtml(product.nome)}" data-card-image="${escapeHtml(product.id)}" data-card-layer="0" data-source="${escapeHtml(initial.imagens?.[0] || product.imagens[0])}" loading="lazy"><img class="card-image-layer" src="${escapeHtml(imageVersion(initial.imagens?.[0] || product.imagens[0], 'card'))}" srcset="${escapeHtml(imageSrcset(initial.imagens?.[0] || product.imagens[0]))}" sizes="(max-width: 700px) 50vw, 600px" alt="" data-card-layer="1" data-source="${escapeHtml(initial.imagens?.[0] || product.imagens[0])}" aria-hidden="true"></div></a>
-    <div class="variant-row">${thumbs}<span class="variant-count">${variants.length} ${variants.length === 1 ? 'modelo' : 'cores'}</span></div>
-    <a class="product-link" href="produto.html?id=${encodeURIComponent(product.id)}"><div class="product-info"><span class="product-material">${escapeHtml(product.colecao)}</span><h2>${escapeHtml(product.nome)}</h2><div class="product-price"><strong data-card-price="${escapeHtml(product.id)}">${money.format(initial.preco)}</strong>${old}</div><span class="product-condition">Condições no atendimento</span><span class="product-action"><span>Ver detalhes</span><b>→</b></span></div></a>
+  const thumbs = variants.slice(0, 4).map((variant, index) => {
+    const variantAvailable = isAvailable(variant);
+    const status = variantAvailable ? '' : ' — Esgotado';
+    return `<button class="variant-thumb ${index === initialIndex ? 'active' : ''}${variantAvailable ? '' : ' is-unavailable'}" type="button" data-card-variant data-product="${escapeHtml(product.id)}" data-variant-index="${index}" title="${escapeHtml(variant.cor)}${status}" aria-label="Visualizar modelo ${escapeHtml(variant.cor)}${status}"><img src="${escapeHtml(imageVersion(variant.imagens?.[0], 'thumb'))}" alt="" loading="lazy"></button>`;
+  }).join('');
+  const modelCount = `${variants.length} ${variants.length === 1 ? 'modelo' : 'modelos'}`;
+  const stockSummary = unavailableCount ? ` · ${unavailableCount} ${unavailableCount === 1 ? 'esgotado' : 'esgotados'}` : '';
+  return `<article class="product-card ${allUnavailable ? 'is-sold-out' : ''}" data-product-card="${escapeHtml(product.id)}">
+    <a class="product-link" href="produto.html?id=${encodeURIComponent(product.id)}"><div class="product-image" data-card-hover="${escapeHtml(product.id)}" data-manual-index="${initialIndex}"><span class="product-badge ${available ? '' : 'is-sold-out'}" data-card-badge="${escapeHtml(product.id)}">${available ? 'Couro legítimo' : 'Esgotado'}</span>${discount > 0 ? `<span class="discount">-${discount}%</span>` : ''}<img class="card-image-layer is-active" src="${escapeHtml(imageVersion(initial.imagens?.[0] || product.imagens[0], 'card'))}" srcset="${escapeHtml(imageSrcset(initial.imagens?.[0] || product.imagens[0]))}" sizes="(max-width: 700px) 50vw, 600px" alt="${escapeHtml(product.nome)}" data-card-image="${escapeHtml(product.id)}" data-card-layer="0" data-source="${escapeHtml(initial.imagens?.[0] || product.imagens[0])}" loading="lazy"><img class="card-image-layer" src="${escapeHtml(imageVersion(initial.imagens?.[0] || product.imagens[0], 'card'))}" srcset="${escapeHtml(imageSrcset(initial.imagens?.[0] || product.imagens[0]))}" sizes="(max-width: 700px) 50vw, 600px" alt="" data-card-layer="1" data-source="${escapeHtml(initial.imagens?.[0] || product.imagens[0])}" aria-hidden="true"></div></a>
+    <div class="variant-row">${thumbs}<span class="variant-count">${modelCount}${stockSummary}</span></div>
+    <a class="product-link" href="produto.html?id=${encodeURIComponent(product.id)}"><div class="product-info"><span class="product-material">${escapeHtml(product.colecao)}</span><h2>${escapeHtml(product.nome)}</h2><div class="product-price"><strong data-card-price="${escapeHtml(product.id)}">${money.format(initial.preco)}</strong>${old}</div><span class="product-condition ${available ? '' : 'is-sold-out'}" data-card-condition="${escapeHtml(product.id)}">${available ? 'Condições no atendimento' : 'Este modelo está esgotado'}</span><span class="product-action"><span>Ver detalhes</span><b>→</b></span></div></a>
   </article>`;
 }
 
@@ -127,7 +138,13 @@ function updateCardVariant(productId, variantIndex, animate = true) {
   document.querySelector(`[data-card-price="${productId}"]`).textContent = money.format(variant.preco);
   const old = document.querySelector(`[data-card-old="${productId}"]`);
   if (variant.precoAnterior) { old.textContent = money.format(variant.precoAnterior); old.hidden = false; } else old.hidden = true;
-  document.querySelector(`[data-card-badge="${productId}"]`).textContent = variant.disponivel ? 'Couro legítimo' : 'Sob consulta';
+  const available = isAvailable(variant);
+  const badge = document.querySelector(`[data-card-badge="${productId}"]`);
+  badge.textContent = available ? 'Couro legítimo' : 'Esgotado';
+  badge.classList.toggle('is-sold-out', !available);
+  const condition = document.querySelector(`[data-card-condition="${productId}"]`);
+  condition.textContent = available ? 'Condições no atendimento' : 'Este modelo está esgotado';
+  condition.classList.toggle('is-sold-out', !available);
 }
 
 function bindVariants() {

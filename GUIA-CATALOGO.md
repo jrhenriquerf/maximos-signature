@@ -52,16 +52,16 @@ Os botões **Exportar JSON** e **Importar JSON** continuam disponíveis como con
 
 ## Versões, estoque e imagens
 
-Cada produto representa um modelo de bolsa. Dentro dele, cada cor ou acabamento é uma **versão** com dados próprios:
+Cada produto representa uma linha de bolsas. Dentro dela, cada modelo ou acabamento é uma **versão** com dados próprios:
 
 - SKU único;
-- cor ou acabamento;
+- modelo ou acabamento;
 - quantidade em estoque;
 - preço e preço anterior;
 - peso e medidas;
 - conjunto de fotografias.
 
-Use **Marcar vendida** para zerar o estoque e retirar somente aquela versão de venda. A bolsa continua disponível enquanto outra versão possuir estoque. Quando todas chegarem a zero, o produto passa automaticamente a indisponível.
+Use **Marcar vendida** para zerar o estoque e marcar somente aquele modelo como esgotado. A bolsa continua disponível enquanto outro modelo possuir estoque. Quando todos chegarem a zero, a linha passa automaticamente a esgotada.
 
 Organize as fotografias por modelo e SKU:
 

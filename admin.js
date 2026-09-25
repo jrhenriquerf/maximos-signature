@@ -94,7 +94,7 @@ function variantCard(variant, index, total) {
         <div class="variant-preview"><img src="${escapeHtml(cover)}" alt="" data-variant-preview ${cover ? '' : 'hidden'}><span data-variant-empty ${cover ? 'hidden' : ''}>Sem foto</span></div>
         <div class="variant-fields">
           <div class="variant-grid identity-grid">
-            <label>Cor ou acabamento<input name="variant-cor" value="${escapeHtml(variant.cor || '')}" required></label>
+            <label>Modelo ou acabamento<input name="variant-cor" value="${escapeHtml(variant.cor || '')}" required></label>
             <label>SKU<input name="variant-sku" value="${escapeHtml(variant.sku || '')}" placeholder="MX-BAG-000" required></label>
             <label>Estoque<input name="variant-estoque" type="number" min="0" step="1" value="${stock}" required></label>
           </div>
@@ -186,7 +186,7 @@ function collectVariants(allowIncomplete = false) {
     if (!variants.length) throw new Error('Adicione ao menos uma versão da bolsa.');
     const skus = new Set();
     variants.forEach((variant, index) => {
-      if (!variant.cor) throw new Error(`Informe a cor ou acabamento da versão ${index + 1}.`);
+      if (!variant.cor) throw new Error(`Informe o modelo ou acabamento da versão ${index + 1}.`);
       if (!variant.sku) throw new Error(`Informe o SKU da versão ${index + 1}.`);
       if (skus.has(variant.sku)) throw new Error(`O SKU ${variant.sku} está repetido neste produto.`);
       if (!variant.imagens.length) throw new Error(`Adicione ao menos uma foto para a versão ${variant.cor}.`);
@@ -202,7 +202,7 @@ function updateStockSummary() {
   const variants = collectVariants(true);
   const available = variants.filter(item => item.disponivel && item.estoque > 0);
   const units = available.reduce((total, item) => total + item.estoque, 0);
-  summary.innerHTML = `<div><span>Versões</span><strong>${variants.length}</strong></div><div><span>Disponíveis</span><strong>${available.length}</strong></div><div><span>Unidades em estoque</span><strong>${units}</strong></div><p>${available.length ? 'A bolsa continuará disponível enquanto ao menos uma versão possuir estoque.' : 'Todas as versões estão sem estoque. A bolsa aparecerá como indisponível.'}</p>`;
+  summary.innerHTML = `<div><span>Versões</span><strong>${variants.length}</strong></div><div><span>Disponíveis</span><strong>${available.length}</strong></div><div><span>Unidades em estoque</span><strong>${units}</strong></div><p>${available.length ? 'A linha continuará disponível enquanto ao menos um modelo possuir estoque.' : 'Todos os modelos estão esgotados. A linha aparecerá como esgotada.'}</p>`;
 }
 
 function renderEditor() {
