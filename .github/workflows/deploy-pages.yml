@@ -30,7 +30,10 @@ jobs:
           test -f catalogo.html
           test -f produto.html
           test -f data/products.json
+          test -f data/meta-commerce.csv
           python3 -m json.tool data/products.json > /dev/null
+          python3 scripts/test_meta_feed.py
+          python3 scripts/generate_meta_feed.py --check
 
       - name: Configurar o GitHub Pages
         uses: actions/configure-pages@v5

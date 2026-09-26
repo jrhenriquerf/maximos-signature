@@ -1,5 +1,7 @@
 const money = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
-const id = new URLSearchParams(location.search).get('id');
+const productParams = new URLSearchParams(location.search);
+const id = productParams.get('id');
+const requestedModel = productParams.get('sku') || productParams.get('modelo');
 const page = document.querySelector('[data-product-page]');
 const dialog = document.querySelector('[data-dialog]');
 let activeMessage = '';
@@ -35,9 +37,19 @@ function productVariants(product) {
   }];
 }
 
+function syncVariantUrl(productId, sku) {
+  if (!sku) return;
+  const url = new URL(location.href);
+  url.searchParams.set('id', productId);
+  url.searchParams.set('sku', sku);
+  url.searchParams.delete('modelo');
+  history.replaceState(null, '', url);
+}
+
 function render(product, all, variantIndex = 0) {
   const variants = productVariants(product);
   const variant = variants[variantIndex] || variants[0];
+  syncVariantUrl(product.id, variant.sku);
   const images = variant.imagens?.length ? variant.imagens : product.imagens;
   const price = Number(variant.preco ?? product.preco);
   const previousPrice = Number(variant.precoAnterior ?? product.precoAnterior) || null;
@@ -149,8 +161,16 @@ fetch('data/products.json')
   .then(data => {
     const product = data.products.find(item => item.id === id);
     if (!product) throw new Error();
-    const initialVariant = productVariants(product).findIndex(item => isAvailable(item, product));
-    render(product, data.products, initialVariant >= 0 ? initialVariant : 0);
+    const variants = productVariants(product);
+    const requested = String(requestedModel || '').trim().toLocaleLowerCase('pt-BR');
+    const requestedVariant = requested
+      ? variants.findIndex(item => [item.sku, item.id, item.cor].some(value => String(value || '').trim().toLocaleLowerCase('pt-BR') === requested))
+      : -1;
+    const availableVariant = variants.findIndex(item => isAvailable(item, product));
+    const initialVariant = requestedVariant >= 0
+      ? requestedVariant
+      : (availableVariant >= 0 ? availableVariant : 0);
+    render(product, data.products, initialVariant);
   })
   .catch(() => { page.innerHTML = '<div class="loading"><div><h1>Produto não encontrado</h1><a href="catalogo.html">Voltar às bolsas</a></div></div>'; });
 

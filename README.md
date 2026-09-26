@@ -6,12 +6,13 @@ Site estatico e responsivo da Maximos Signature, com vitrine editorial, catalogo
 
 - `index.html`: apresentacao da marca e vitrine de destaques.
 - `catalogo.html`: catalogo completo com filtros.
-- `produto.html?id=maximos-aura`: pagina individual alimentada pelo JSON.
+- `produto.html?id=maximos-aura&sku=MX-BAG-007`: pagina individual com o modelo/SKU correto.
 - `admin.html`: editor para uso local; ele nao e incluido no site publico.
 
 ## Dados e configuracao
 
 - `data/products.json`: fonte unica dos produtos.
+- `data/meta-commerce.csv`: feed publico gerado, com um item independente por SKU.
 - `config.js`: numero do WhatsApp e contatos da marca.
 - `GUIA-CATALOGO.md`: instrucoes detalhadas para administrar o catalogo.
 
@@ -33,7 +34,7 @@ O editor administrativo não é publicado no GitHub Pages. Para abri-lo com capa
 python3 scripts/local_admin_server.py
 ```
 
-Acesse `http://127.0.0.1:8080/admin.html`. O servidor grava `data/products.json`, cria um backup local, faz commit somente desse arquivo e executa o push usando a autenticação Git/SSH já configurada. Consulte `GUIA-CATALOGO.md` para o fluxo completo.
+Acesse `http://127.0.0.1:8080/admin.html`. O servidor grava `data/products.json`, regenera `data/meta-commerce.csv`, cria um backup local, versiona os dois arquivos no mesmo commit e executa o push usando a autenticação Git/SSH já configurada. Consulte `GUIA-CATALOGO.md` para o fluxo completo.
 
 ## Imagens dos produtos
 
@@ -44,12 +45,35 @@ As fotografias originais são tratadas como arquivos-mestre e permanecem fora do
 - `01.webp` (até 1800 px): página do produto e zoom.
 
 O navegador escolhe automaticamente a resolução adequada por meio de `srcset`. Para recriar os derivados a partir das pastas locais de originais, use `scripts/optimize_product_images.py`; o script compara visualmente cada imagem publicada com os originais e só substitui o detalhe quando a correspondência é segura.
+
+## Feed do Meta Commerce e WhatsApp Business
+
+O feed fica publico depois do deploy em:
+
+```text
+https://jrhenriquerf.github.io/maximos-signature/data/meta-commerce.csv
+```
+
+Cada linha representa um SKU e inclui estoque, disponibilidade, preco normal/promocional, imagens absolutas e um link que abre diretamente o modelo correspondente. O `id` enviado ao Meta e o SKU; `item_group_id` agrupa as versoes da mesma linha de bolsas.
+
+O gerenciador local atualiza o CSV sempre que salva o catalogo. Tambem e possivel gerar e validar manualmente:
+
+```bash
+python3 scripts/generate_meta_feed.py
+python3 scripts/generate_meta_feed.py --check
+python3 scripts/test_meta_feed.py
+```
+
+Se o endereco publico do site mudar, atualize `DEFAULT_BASE_URL` em `scripts/generate_meta_feed.py`, regenere o CSV e publique os dois arquivos. O workflow do GitHub Pages bloqueia o deploy quando o feed estiver ausente, invalido ou diferente do JSON.
+
+No Commerce Manager, crie ou selecione o catalogo, adicione uma fonte de dados por feed/URL programada, informe a URL acima, escolha atualizacao diaria e confirme moeda BRL e pais Brasil. Depois, conecte esse catalogo a conta do WhatsApp Business e revise eventuais diagnosticos de itens.
 ## Antes da publicacao
+
 
 1. Preencha o numero comercial em `config.js`.
 2. Revise precos, estoque, modelos e medidas em `data/products.json`.
 3. Confirme que as fotografias finais estao na pasta `assets`.
-4. Preencha o numero comercial em `config.js` antes da versao definitiva.
+4. Valide `data/meta-commerce.csv` com `python3 scripts/generate_meta_feed.py --check`.
 5. Teste `index.html`, `catalogo.html` e ao menos uma pagina de produto.
 
 ## Publicar no GitHub Pages
