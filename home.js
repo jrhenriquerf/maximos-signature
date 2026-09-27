@@ -140,10 +140,9 @@ function observeReveals() {
 }
 
 function contact(event) {
-  event.preventDefault();
   activeMessage = 'Olá! Conheci a coleção no site da Maximos Signature e gostaria de saber quais peças estão disponíveis.';
-  const number = window.SITE_CONFIG?.whatsapp;
-  if (number) { location.href = `https://wa.me/${number}?text=${encodeURIComponent(activeMessage)}`; return; }
+  if (window.prepareWhatsAppLink?.(event.currentTarget, activeMessage)) return;
+  event.preventDefault();
   document.querySelector('[data-message]').textContent = activeMessage;
   dialog.showModal();
 }

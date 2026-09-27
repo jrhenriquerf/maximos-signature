@@ -5,6 +5,7 @@
   let enabled = false;
   let initialized = false;
   let lastViewContent = null;
+  let previousFocus = null;
 
   function readConsent() {
     try { return localStorage.getItem(consentKey); } catch { return null; }
@@ -64,36 +65,49 @@
     element = document.createElement('aside');
     element.className = 'privacy-consent';
     element.dataset.privacyConsent = '';
+    element.id = 'privacy-consent-panel';
     element.setAttribute('role', 'dialog');
     element.setAttribute('aria-label', 'Preferências de privacidade');
     element.innerHTML = `<p>Usamos o Pixel da Meta para medir visitas e contatos pelo WhatsApp e melhorar futuros anúncios. Ele só será ativado com sua autorização. Saiba mais na <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener">Política de Privacidade da Meta</a>.</p><div class="privacy-consent__actions"><button type="button" data-consent-reject>Continuar sem medição</button><button type="button" data-consent-accept>Aceitar medição</button></div>`;
     document.body.appendChild(element);
+    const hideBanner = () => {
+      element.hidden = true;
+      if (previousFocus?.isConnected) previousFocus.focus();
+      previousFocus = null;
+    };
     element.querySelector('[data-consent-accept]').addEventListener('click', () => {
       writeConsent('granted');
-      element.hidden = true;
+      hideBanner();
       loadPixel();
     });
     element.querySelector('[data-consent-reject]').addEventListener('click', () => {
       writeConsent('denied');
-      element.hidden = true;
+      hideBanner();
       disablePixel();
+    });
+    element.addEventListener('keydown', event => {
+      if (event.key === 'Escape') hideBanner();
     });
     return element;
   }
 
   function addPreferencesControl() {
-    const footer = document.querySelector('.site-footer');
-    if (!footer || footer.querySelector('.privacy-preferences')) return;
+    if (document.querySelector('.privacy-preferences')) return;
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'privacy-preferences';
-    button.textContent = 'Preferências de privacidade';
+    button.setAttribute('aria-label', 'Abrir preferências de privacidade');
+    button.setAttribute('aria-haspopup', 'dialog');
+    button.setAttribute('aria-controls', 'privacy-consent-panel');
+    button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.7 2.8 8.2 7 10 4.2-1.8 7-5.3 7-10V6l-7-3Z"/><path d="M9.5 12.2 11.2 14l3.7-4"/></svg><span>Privacidade</span>';
     button.addEventListener('click', () => {
+      previousFocus = document.activeElement;
       const element = banner();
       element.hidden = false;
       element.querySelector('[data-consent-accept]').focus();
     });
-    footer.appendChild(button);
+    if (document.querySelector('.social-float')) document.body.classList.add('has-social-float');
+    document.body.appendChild(button);
   }
 
   addEventListener('maximos:viewcontent', event => {
