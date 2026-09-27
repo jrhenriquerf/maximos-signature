@@ -67,6 +67,18 @@ python3 scripts/test_meta_feed.py
 Se o endereco publico do site mudar, atualize `DEFAULT_BASE_URL` em `scripts/generate_meta_feed.py`, regenere o CSV e publique os dois arquivos. O workflow do GitHub Pages bloqueia o deploy quando o feed estiver ausente, invalido ou diferente do JSON.
 
 No Commerce Manager, crie ou selecione o catalogo, adicione uma fonte de dados por feed/URL programada, informe a URL acima, escolha atualizacao diaria e confirme moeda BRL e pais Brasil. Depois, conecte esse catalogo a conta do WhatsApp Business e revise eventuais diagnosticos de itens.
+
+## Meta Pixel e consentimento
+
+O site usa o conjunto de dados **Maximos Signature** (`1011169471576704`) somente depois que a pessoa aceita a medicao no aviso de privacidade. A escolha fica salva no navegador e pode ser revista pelo botao **Preferencias de privacidade** no rodape.
+
+Eventos implementados:
+
+- `PageView`: carregamento de uma pagina depois do consentimento;
+- `ViewContent`: visualizacao de um produto/SKU, com identificador, nome, valor e BRL;
+- `Contact`: clique real para iniciar atendimento pelo WhatsApp.
+
+O site nao envia `Purchase`, pois nao possui checkout proprio. O identificador publico fica em `config.js`; a logica centralizada esta em `analytics.js`.
 ## Antes da publicacao
 
 
