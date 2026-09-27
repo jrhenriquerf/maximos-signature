@@ -44,6 +44,7 @@ class MetaFeedTests(unittest.TestCase):
     def test_one_row_per_sku_with_independent_inventory_and_prices(self) -> None:
         rows = build_rows(self.catalog, "https://example.com/loja/")
         self.assertEqual([row["id"] for row in rows], ["MX-001", "MX-002"])
+        self.assertNotIn("item_group_id", rows[0])
         self.assertEqual(rows[0]["availability"], "in stock")
         self.assertEqual(rows[0]["quantity_to_sell_on_facebook"], "2")
         self.assertEqual(rows[0]["price"], "427.00 BRL")
@@ -65,6 +66,12 @@ class MetaFeedTests(unittest.TestCase):
         self.catalog["products"][0]["descricao"] = "Couro, forro e acabamento artesanal."
         rows = list(csv.DictReader(StringIO(render_feed(self.catalog, "https://example.com/"))))
         self.assertEqual(rows[0]["description"], "Couro, forro e acabamento artesanal.")
+
+    def test_rendered_csv_does_not_group_color_skus(self) -> None:
+        rendered = render_feed(self.catalog, "https://example.com/")
+        reader = csv.DictReader(StringIO(rendered))
+        self.assertNotIn("item_group_id", reader.fieldnames or [])
+        self.assertEqual([row["id"] for row in reader], ["MX-001", "MX-002"])
 
     def test_duplicate_sku_is_rejected(self) -> None:
         self.catalog["products"][0]["variantes"][1]["sku"] = "MX-001"

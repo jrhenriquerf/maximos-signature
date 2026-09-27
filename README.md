@@ -54,7 +54,7 @@ O feed fica publico depois do deploy em:
 https://jrhenriquerf.github.io/maximos-signature/data/meta-commerce.csv
 ```
 
-Cada linha representa um SKU e inclui estoque, disponibilidade, preco normal/promocional, imagens absolutas e um link que abre diretamente o modelo correspondente. O `id` enviado ao Meta e o SKU; `item_group_id` agrupa as versoes da mesma linha de bolsas.
+Cada linha representa um SKU independente e inclui estoque, disponibilidade, preco normal/promocional, imagens absolutas e um link que abre diretamente o modelo correspondente. O `id` enviado ao Meta e o SKU; o feed nao envia `item_group_id`, evitando que cores diferentes sejam agrupadas em um unico item nos canais da Meta.
 
 O gerenciador local atualiza o CSV sempre que salva o catalogo. Tambem e possivel gerar e validar manualmente:
 
