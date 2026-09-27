@@ -22,8 +22,11 @@ import tempfile
 import threading
 from urllib.parse import urlparse
 
+from generate_meta_feed import DEFAULT_BASE_URL, render_feed
+
 ROOT = Path(__file__).resolve().parents[1]
 PRODUCTS_FILE = ROOT / "data" / "products.json"
+META_FEED_FILE = ROOT / "data" / "meta-commerce.csv"
 BACKUP_DIR = ROOT / ".local-backups"
 MAX_BODY = 8 * 1024 * 1024
 PRODUCT_ID = re.compile(r"^[a-z0-9][a-z0-9-]{0,119}$")
@@ -143,9 +146,11 @@ def validate_catalog(value: object) -> dict:
 
 def save_and_publish(catalog: dict, message: str) -> dict[str, object]:
     serialized = json.dumps(catalog, ensure_ascii=False, indent=2) + "\n"
+    feed_serialized = render_feed(catalog, DEFAULT_BASE_URL)
     current = PRODUCTS_FILE.read_text(encoding="utf-8")
-    if current == serialized:
-        return {"changed": False, "published": True, "message": "O catalogo ja esta atualizado."}
+    current_feed = META_FEED_FILE.read_text(encoding="utf-8") if META_FEED_FILE.exists() else ""
+    if current == serialized and current_feed == feed_serialized:
+        return {"changed": False, "published": True, "message": "O catalogo e o feed ja estao atualizados."}
 
     BACKUP_DIR.mkdir(exist_ok=True)
     stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -167,13 +172,14 @@ def save_and_publish(catalog: dict, message: str) -> dict[str, object]:
     finally:
         if temporary_name and Path(temporary_name).exists():
             Path(temporary_name).unlink()
+    META_FEED_FILE.write_text(feed_serialized, encoding="utf-8", newline="")
 
-    add_result = git("add", "--", "data/products.json")
+    add_result = git("add", "--", "data/products.json", "data/meta-commerce.csv")
     if add_result.returncode != 0:
         raise ApiError(HTTPStatus.INTERNAL_SERVER_ERROR, add_result.stderr.strip() or "Falha ao preparar o commit.")
 
     safe_message = " ".join(message.split())[:72] or "catalog: atualiza produtos"
-    commit_result = git("commit", "-m", safe_message, "--", "data/products.json")
+    commit_result = git("commit", "-m", safe_message, "--", "data/products.json", "data/meta-commerce.csv")
     if commit_result.returncode != 0:
         raise ApiError(HTTPStatus.INTERNAL_SERVER_ERROR, commit_result.stderr.strip() or "Falha ao criar o commit.")
 
@@ -198,7 +204,7 @@ def save_and_publish(catalog: dict, message: str) -> dict[str, object]:
         "published": True,
         "commit": commit_hash,
         "branch": context["branch"],
-        "message": "Catalogo salvo e enviado ao GitHub.",
+        "message": "Catalogo e feed Meta salvos e enviados ao GitHub.",
     }
 
 

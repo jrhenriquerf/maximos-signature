@@ -3,8 +3,9 @@
 ## Arquivos principais
 
 - `data/products.json`: fonte única dos dados dos produtos.
+- `data/meta-commerce.csv`: feed publico do Meta, gerado com um item por SKU.
 - `catalogo.html`: coleção completa, filtros e acesso às peças.
-- `produto.html?id=maximos-aura`: página individual de cada produto.
+- `produto.html?id=maximos-aura&sku=MX-BAG-007`: página individual com o modelo correto.
 - `admin.html`: editor visual exclusivamente local.
 - `scripts/local_admin_server.py`: servidor que salva, versiona e publica o catálogo.
 - `config.js`: número do WhatsApp e contatos da marca.
@@ -29,9 +30,10 @@ O endereço local é `http://127.0.0.1:8080/admin.html`. Mantenha o terminal abe
 3. Clique em **Salvar e publicar**.
 4. O servidor valida o catálogo e cria um backup em `.local-backups`.
 5. O arquivo `data/products.json` é atualizado.
-6. Um commit contendo somente o JSON é criado.
-7. O commit é enviado para a branch atual no remote `origin`.
-8. O workflow do GitHub Pages publica a nova versão automaticamente.
+6. O feed `data/meta-commerce.csv` é regenerado a partir do JSON.
+7. Um commit contendo o JSON e o CSV é criado.
+8. O commit é enviado para a branch atual no remote `origin`.
+9. O workflow valida os arquivos e o GitHub Pages publica a nova versão automaticamente.
 
 O topo do gerenciador mostra a branch conectada e o resultado da sincronização.
 
@@ -41,7 +43,7 @@ O topo do gerenciador mostra a branch conectada e o resultado da sincronização
 - Cada execução gera um token temporário usado nas gravações.
 - O token nunca é incluído no site público ou salvo no repositório.
 - A autenticação com o GitHub é feita pelo próprio Git/SSH configurado na máquina.
-- `admin.html`, `admin.js`, `admin.css` e `scripts` são excluídos do pacote do GitHub Pages.
+- `admin.html`, `admin.js`, `admin.css` e `scripts` são excluídos do pacote do GitHub Pages; o CSV em `data` permanece publico.
 - Alterações em outros arquivos do projeto não são incluídas no commit automático do catálogo.
 
 Se o push falhar, o JSON, o backup e o commit permanecem locais. A mensagem do gerenciador indicará o motivo para que o envio possa ser repetido depois.
@@ -74,6 +76,36 @@ assets/products/maximos-aura/mx-bag-008/01.webp
 No cartão de cada versão, informe uma imagem por linha. A primeira representa a versão no catálogo. O campo **Imagem editorial da vitrine** é separado e controla a apresentação no carrossel da página inicial.
 
 Marque **Imagem ilustrativa ou gerada** apenas quando as fotografias não representarem fielmente a peça real. O site exibirá esse aviso ao cliente.
+
+## Meta Commerce e WhatsApp Business
+
+Depois da publicacao no GitHub Pages, use esta URL como fonte de dados programada:
+
+```text
+https://jrhenriquerf.github.io/maximos-signature/data/meta-commerce.csv
+```
+
+O feed envia para cada SKU:
+
+- identificador unico e agrupamento da linha;
+- titulo, descricao, modelo/cor e marca;
+- estoque e disponibilidade independentes;
+- preco normal e, quando aplicavel, preco promocional;
+- imagem principal e imagens adicionais com URL absoluta;
+- link direto com `id` e `sku` para abrir o modelo correto.
+
+No Commerce Manager:
+
+1. Crie ou abra o catalogo comercial.
+2. Em **Fontes de dados**, escolha a opcao de feed/arquivo por URL programada.
+3. Cole a URL acima e agende uma leitura diaria.
+4. Defina Brasil e BRL quando solicitado e conclua a importacao.
+5. Confira **Diagnosticos** e corrija qualquer item rejeitado antes de divulgar.
+6. No Business Manager/WhatsApp Manager, associe o catalogo a conta e ao numero do WhatsApp Business.
+
+Depois disso, cada uso de **Salvar e publicar** atualiza o JSON e o feed. O Meta busca a versao nova no proximo horario programado; para urgencias, solicite uma atualizacao manual da fonte no Commerce Manager.
+
+Se o dominio ou caminho publico mudar, altere `DEFAULT_BASE_URL` em `scripts/generate_meta_feed.py`, execute `python3 scripts/generate_meta_feed.py` e publique o CSV regenerado. Valide com `python3 scripts/test_meta_feed.py` e `python3 scripts/generate_meta_feed.py --check`.
 
 ## WhatsApp
 
