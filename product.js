@@ -105,6 +105,13 @@ function render(product, all, variantIndex = 0) {
     window.scrollTo(0, scrollY);
   }));
   document.querySelector('[data-buy]').addEventListener('click', event => contact(event, product, variant));
+  dispatchEvent(new CustomEvent('maximos:viewcontent', { detail: {
+    content_ids: [variant.sku || product.id],
+    content_name: `${product.nome} — ${variant.cor}`,
+    content_type: 'product',
+    value: price,
+    currency: 'BRL'
+  } }));
   setupZoom();
   renderRelated(all.filter(item => item.id !== product.id).slice(0, 4));
 }

@@ -105,6 +105,14 @@ No Commerce Manager:
 
 Depois disso, cada uso de **Salvar e publicar** atualiza o JSON e o feed. O Meta busca a versao nova no proximo horario programado; para urgencias, solicite uma atualizacao manual da fonte no Commerce Manager.
 
+## Meta Pixel
+
+O conjunto de dados **Maximos Signature** usa o Pixel ID `1011169471576704`. O script `analytics.js` so carrega o Pixel depois do consentimento e registra `PageView`, `ViewContent` e `Contact`. A opcao fica disponivel novamente no rodape em **Preferencias de privacidade**.
+
+Para validar uma publicacao, abra **Gerenciador de Eventos > Maximos Signature > Testar eventos**, informe a URL publicada, aceite a medicao no aviso do site e confirme o recebimento de `PageView`. Em uma pagina de produto, confirme tambem `ViewContent`; o evento `Contact` ocorre somente ao clicar em um botao do WhatsApp.
+
+Nao configure `Purchase` enquanto a venda for concluida fora do site. Se o Pixel mudar, atualize apenas `metaPixelId` em `config.js`.
+
 Se o dominio ou caminho publico mudar, altere `DEFAULT_BASE_URL` em `scripts/generate_meta_feed.py`, execute `python3 scripts/generate_meta_feed.py` e publique o CSV regenerado. Valide com `python3 scripts/test_meta_feed.py` e `python3 scripts/generate_meta_feed.py --check`.
 
 ## WhatsApp
