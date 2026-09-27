@@ -34,6 +34,32 @@ class MetaPixelIntegrationTest(unittest.TestCase):
         config = (ROOT / 'config.js').read_text(encoding='utf-8')
         self.assertIn("metaPixelId: '1011169471576704'", config)
 
+    def test_privacy_control_is_floating_and_accessible(self):
+        script = (ROOT / 'analytics.js').read_text(encoding='utf-8')
+        styles = (ROOT / 'analytics.css').read_text(encoding='utf-8')
+        self.assertNotIn("querySelector('.site-footer')", script)
+        self.assertIn('document.body.appendChild(button)', script)
+        self.assertIn("aria-controls', 'privacy-consent-panel", script)
+        self.assertIn("aria-haspopup', 'dialog", script)
+        self.assertIn("event.key === 'Escape'", script)
+        self.assertIn('previousFocus.focus()', script)
+        self.assertIn('position:fixed', styles)
+        self.assertIn('left:max(1rem,env(safe-area-inset-left))', styles)
+        self.assertIn('@media(max-width:700px)', styles)
+        self.assertIn('.has-social-float .privacy-preferences', styles)
+
+    def test_whatsapp_opens_secure_new_tab(self):
+        config = (ROOT / 'config.js').read_text(encoding='utf-8')
+        self.assertIn("link.target = '_blank'", config)
+        self.assertIn("link.rel = 'noopener noreferrer'", config)
+        self.assertNotIn('window.open(', config)
+        for filename in ('home.js', 'catalog.js', 'product.js', 'script.js'):
+            script = (ROOT / filename).read_text(encoding='utf-8')
+            with self.subTest(filename=filename):
+                self.assertIn('window.prepareWhatsAppLink?.(', script)
+                self.assertNotIn('location.href = `https://wa.me/', script)
+                self.assertNotIn('window.open(', script)
+
 
 if __name__ == '__main__':
     unittest.main()

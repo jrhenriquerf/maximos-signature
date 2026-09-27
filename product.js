@@ -152,13 +152,12 @@ function renderRelated(items) {
 }
 
 function contact(event, product, variant) {
-  event.preventDefault();
   const selection = [variant.cor, variant.sku].filter(Boolean).join(' — ');
   activeMessage = isAvailable(variant, product)
     ? `Olá! Tenho interesse na ${product.nome}${selection ? ` (${selection})` : ''}. Poderia me confirmar as formas de pagamento e entrega?`
     : `Olá! Gostaria de saber sobre a reposição da ${product.nome}${selection ? ` (${selection})` : ''}.`;
-  const number = window.SITE_CONFIG?.whatsapp;
-  if (number) { location.href = `https://wa.me/${number}?text=${encodeURIComponent(activeMessage)}`; return; }
+  if (window.prepareWhatsAppLink?.(event.currentTarget, activeMessage)) return;
+  event.preventDefault();
   document.querySelector('[data-message]').textContent = activeMessage;
   dialog.showModal();
 }

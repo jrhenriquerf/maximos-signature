@@ -5,3 +5,12 @@ window.SITE_CONFIG = {
   instagram: 'https://www.instagram.com/maximos.signature/',
   email: 'maximos.signature@gmail.com'
 };
+
+window.prepareWhatsAppLink = (link, message) => {
+  const number = window.SITE_CONFIG?.whatsapp;
+  if (!number || !link) return false;
+  link.href = `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+  link.target = '_blank';
+  link.rel = 'noopener noreferrer';
+  return true;
+};

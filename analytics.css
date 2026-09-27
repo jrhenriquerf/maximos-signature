@@ -5,8 +5,11 @@
 .privacy-consent a{color:var(--consent-accent);text-decoration:underline;text-underline-offset:.2em}
 .privacy-consent__actions{display:flex;gap:.65rem;flex-wrap:wrap;justify-content:flex-end}
 .privacy-consent button,.privacy-preferences{min-height:42px;padding:.65rem 1rem;border:1px solid var(--consent-accent);font:700 .68rem/1 Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.privacy-consent button:focus-visible,.privacy-preferences:focus-visible{outline:3px solid #2f7bea;outline-offset:3px}
 .privacy-consent [data-consent-accept]{background:var(--consent-accent);color:#21150f}
 .privacy-consent [data-consent-reject]{background:transparent;color:var(--consent-text)}
-.privacy-preferences{display:inline-flex;align-items:center;margin-top:.7rem;background:transparent;color:inherit;border-color:currentColor;opacity:.72}
-.privacy-preferences:hover{opacity:1}
-@media(max-width:700px){.privacy-consent{grid-template-columns:1fr;gap:1rem;padding:1rem}.privacy-consent__actions{justify-content:stretch}.privacy-consent button{flex:1}}
+.privacy-preferences{position:fixed;z-index:45;left:max(1rem,env(safe-area-inset-left));bottom:max(1rem,env(safe-area-inset-bottom));display:inline-flex;align-items:center;gap:.45rem;min-height:44px;padding:.68rem .9rem;border:1px solid #4b3025;border-radius:999px;background:#fff;color:#2a1a13;box-shadow:0 7px 24px #0003;opacity:.9}
+.privacy-preferences:hover{opacity:1;background:#f7f1eb}
+.privacy-preferences svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.has-social-float .privacy-preferences{bottom:8.2rem}
+@media(max-width:700px){.privacy-consent{grid-template-columns:1fr;gap:1rem;padding:1rem}.privacy-consent__actions{justify-content:stretch}.privacy-consent button{flex:1}.privacy-preferences{width:44px;padding:0;justify-content:center}.privacy-preferences span{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.has-social-float .privacy-preferences{bottom:max(1rem,env(safe-area-inset-bottom))}}

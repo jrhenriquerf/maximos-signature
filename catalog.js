@@ -193,9 +193,8 @@ document.querySelector('[data-search]').addEventListener('input', event => { que
 document.querySelector('[data-sort]').addEventListener('change', event => { sortBy = event.target.value; page = 1; render(); });
 
 function contact(event) {
+  if (window.prepareWhatsAppLink?.(event.currentTarget, message)) return;
   event.preventDefault();
-  const number = window.SITE_CONFIG?.whatsapp;
-  if (number) { location.href = `https://wa.me/${number}?text=${encodeURIComponent(message)}`; return; }
   document.querySelector('[data-message]').textContent = message;
   dialog.showModal();
 }
