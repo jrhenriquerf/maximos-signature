@@ -18,7 +18,7 @@ DEFAULT_BASE_URL = "https://jrhenriquerf.github.io/maximos-signature/"
 FIELDNAMES = [
     "id", "title", "description", "availability", "condition", "price",
     "sale_price", "link", "image_link", "additional_image_link", "brand",
-    "quantity_to_sell_on_facebook", "item_group_id", "product_type", "color",
+    "quantity_to_sell_on_facebook", "product_type", "color",
 ]
 
 
@@ -101,7 +101,6 @@ def build_rows(catalog: dict, base_url: str = DEFAULT_BASE_URL) -> list[dict[str
                 "additional_image_link": ",".join(additional_images),
                 "brand": "Maximos Signature",
                 "quantity_to_sell_on_facebook": str(stock if available else 0),
-                "item_group_id": product_id,
                 "product_type": " > ".join(
                     value for value in [
                         str(product.get("categoria") or "").strip(),
