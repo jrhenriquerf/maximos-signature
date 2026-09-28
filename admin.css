@@ -59,6 +59,8 @@
 .small-button:disabled{cursor:not-allowed;opacity:.35}
 .small-button.sold-button{border-color:#b28a5e;color:#76512e}
 .small-button.danger{border-color:#d2aaa4;color:var(--danger)}
+
+select{display:block;width:100%;margin-top:.35rem;border:1px solid #c8bfb3;background:white;padding:.7rem;font:inherit;color:inherit}
 .variant-card textarea{min-height:120px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.72rem;line-height:1.55}
 
 @media(max-width:1180px){

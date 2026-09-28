@@ -45,7 +45,7 @@ function featuredFromProducts(products) {
   ];
   return products.filter(product => product.destaque).sort((a, b) => a.ordem - b.ordem).map((product, index) => ({
     productId: product.id,
-    linha: `Destaque · ${product.colecao || product.categoria}`,
+    linha: `Destaque · ${product.tipo || product.categoria}`,
     titulo: product.nome,
     texto: product.resumo,
     imagem: product.imagemDestaque || productCover(product),
@@ -117,7 +117,7 @@ function renderShowcase(items) {
 function renderProducts(products) {
   document.querySelector('[data-home-products]').innerHTML = products.slice(0, 6).map(product => {
     const available = productAvailable(product);
-    return `<article class="home-card reveal ${available ? '' : 'is-sold-out'}"><a href="produto.html?id=${encodeURIComponent(product.id)}"><div class="home-card-visual"><img src="${escapeHtml(imageVersion(productCover(product), 'card'))}" srcset="${escapeHtml(imageSrcset(productCover(product)))}" sizes="(max-width: 700px) 100vw, 33vw" alt="${escapeHtml(product.nome)}" loading="lazy"><span class="${available ? '' : 'is-sold-out'}">${available ? 'Disponível' : 'Esgotado'}</span></div><div class="home-card-meta"><div><h3>${escapeHtml(product.nome)}</h3><p>${escapeHtml(product.colecao)}</p></div><strong>${money.format(product.preco)}</strong></div></a></article>`;
+    return `<article class="home-card reveal ${available ? '' : 'is-sold-out'}"><a href="produto.html?id=${encodeURIComponent(product.id)}"><div class="home-card-visual"><img src="${escapeHtml(imageVersion(productCover(product), 'card'))}" srcset="${escapeHtml(imageSrcset(productCover(product)))}" sizes="(max-width: 700px) 100vw, 33vw" alt="${escapeHtml(product.nome)}" loading="lazy"><span class="${available ? '' : 'is-sold-out'}">${available ? 'Disponível' : 'Esgotado'}</span></div><div class="home-card-meta"><div><h3>${escapeHtml(product.nome)}</h3><p>${escapeHtml(product.tipo)} · ${escapeHtml(product.linha)}</p></div><strong>${money.format(product.preco)}</strong></div></a></article>`;
   }).join('');
   observeReveals();
 }

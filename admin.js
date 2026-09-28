@@ -14,6 +14,33 @@ const cleanLines = value => String(value || '').split('\n').map(item => item.tri
 const slugify = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
 const numberOrNull = value => String(value ?? '').trim() === '' ? null : Number(value);
+const LEGACY_TAXONOMY = {
+  'maximos-classic-tote': { tipo: 'Tote', subtipo: '', linha: 'Clássicos', porte: 'Grande', acabamento: 'Liso' },
+  'maximos-dual-classic': { tipo: 'Tote', subtipo: '', linha: 'Clássicos', porte: 'Grande', acabamento: 'Bicolor' },
+  'maximos-essencial': { tipo: 'Tiracolo', subtipo: 'Carteiro estruturada', linha: 'Essenciais', porte: 'Grande', acabamento: '' },
+  'maximos-aura': { tipo: 'Tiracolo', subtipo: 'Vertical', linha: 'Essenciais', porte: 'Média', acabamento: 'Liso' },
+  'maximos-trama': { tipo: 'Tote', subtipo: '', linha: 'Artesanais', porte: 'Grande', acabamento: 'Trama' },
+  'maximos-marfim': { tipo: 'Tote', subtipo: '', linha: 'Clássicos', porte: 'Média', acabamento: '' },
+  'maximos-essencial-mini': { tipo: 'Porta-celular', subtipo: 'Vertical', linha: 'Essenciais', porte: 'Mini', acabamento: 'Liso' },
+  'maximos-croco': { tipo: 'Tote', subtipo: '', linha: 'Texturas', porte: 'Média', acabamento: 'Croco' },
+  'maximos-urban': { tipo: 'Tiracolo', subtipo: 'Camera bag', linha: 'Urbanos', porte: 'Compacta', acabamento: 'Liso' },
+  'maximos-origem': { tipo: 'Tiracolo', subtipo: 'Artesanal', linha: 'Artesanais', porte: 'Compacta', acabamento: 'Costura aparente' }
+};
+const migrateProductTaxonomy = product => {
+  const fallback = LEGACY_TAXONOMY[product.id] || {};
+  const linha = product.linha || fallback.linha || (!['Grandes', 'Pequenas'].includes(product.colecao) ? product.colecao : '');
+  return {
+    ...product,
+    categoria: product.categoria || 'Bolsas',
+    tipo: product.tipo || fallback.tipo || '',
+    subtipo: product.subtipo ?? fallback.subtipo ?? '',
+    linha,
+    colecao: linha,
+    porte: product.porte || fallback.porte || '',
+    acabamento: product.acabamento ?? fallback.acabamento ?? ''
+  };
+};
+const migrateCatalog = value => ({ ...value, products: (value.products || []).map(migrateProductTaxonomy) });
 
 function setSync(message, state = '') {
   syncStatus.textContent = message;
@@ -59,7 +86,7 @@ function renderList(query = '') {
     .sort((a, b) => a.ordem - b.ordem)
     .filter(product => {
       const variantText = adminVariants(product).flatMap(item => [item.cor, item.sku]).join(' ');
-      return `${product.nome} ${product.colecao} ${variantText}`.toLowerCase().includes(term);
+      return `${product.nome} ${product.tipo} ${product.subtipo} ${product.linha} ${product.porte} ${variantText}`.toLowerCase().includes(term);
     });
 
   document.querySelector('[data-total]').textContent = catalog.products.length;
@@ -331,8 +358,13 @@ function productFromForm(form) {
       ...existing,
       id: String(data.get('id')).trim(),
       nome: String(data.get('nome')).trim(),
-      categoria: String(data.get('categoria')).trim(),
-      colecao: String(data.get('colecao')).trim(),
+      categoria: String(data.get('categoria')).trim() || 'Bolsas',
+      tipo: String(data.get('tipo')).trim(),
+      subtipo: String(data.get('subtipo')).trim(),
+      linha: String(data.get('linha')).trim(),
+      colecao: String(data.get('linha')).trim(),
+      porte: String(data.get('porte')).trim(),
+      acabamento: String(data.get('acabamento')).trim(),
       preco: preferred.preco,
       precoAnterior: preferred.precoAnterior,
       disponivel: variants.some(item => item.disponivel && item.estoque > 0),
@@ -425,6 +457,11 @@ function addProduct() {
     nome: 'Nova peça',
     categoria: 'Bolsas',
     colecao: '',
+    tipo: '',
+    subtipo: '',
+    linha: '',
+    porte: '',
+    acabamento: '',
     preco: 0,
     precoAnterior: null,
     disponivel: true,
@@ -498,7 +535,7 @@ function importCatalog(file) {
     try {
       const data = JSON.parse(reader.result);
       if (!Array.isArray(data.products)) throw new Error();
-      catalog = data;
+      catalog = migrateCatalog(data);
       selectedId = catalog.products[0]?.id || null;
       storeDraft();
       renderList();
@@ -519,12 +556,12 @@ async function connect() {
     localApi = { available: true, token: status.token, branch: status.branch, remote: status.remote };
     const productsResponse = await fetch('/api/products', { cache: 'no-store' });
     if (!productsResponse.ok) throw new Error();
-    catalog = await productsResponse.json();
+    catalog = migrateCatalog(await productsResponse.json());
     setSync(`GitHub · ${status.branch}`, status.remote ? 'success' : 'warning');
   } catch {
     localApi.available = false;
     const draft = localStorage.getItem(DRAFT_KEY);
-    catalog = draft ? JSON.parse(draft) : await fetch('data/products.json').then(response => response.json());
+    catalog = migrateCatalog(draft ? JSON.parse(draft) : await fetch('data/products.json').then(response => response.json()));
     setSync('Modo rascunho', 'warning');
   }
   selectedId = catalog.products[0]?.id || null;

@@ -33,6 +33,19 @@ def measure(row):
     }
     return values if any(v is not None for v in values.values()) else None
 
+TAXONOMY = {
+    "maximos-classic-tote": {"tipo": "Tote", "subtipo": "", "linha": "Clássicos", "porte": "Grande", "acabamento": "Liso"},
+    "maximos-dual-classic": {"tipo": "Tote", "subtipo": "", "linha": "Clássicos", "porte": "Grande", "acabamento": "Bicolor"},
+    "maximos-essencial": {"tipo": "Tiracolo", "subtipo": "Carteiro estruturada", "linha": "Essenciais", "porte": "Grande", "acabamento": ""},
+    "maximos-aura": {"tipo": "Tiracolo", "subtipo": "Vertical", "linha": "Essenciais", "porte": "Média", "acabamento": "Liso"},
+    "maximos-trama": {"tipo": "Tote", "subtipo": "", "linha": "Artesanais", "porte": "Grande", "acabamento": "Trama"},
+    "maximos-marfim": {"tipo": "Tote", "subtipo": "", "linha": "Clássicos", "porte": "Média", "acabamento": ""},
+    "maximos-essencial-mini": {"tipo": "Porta-celular", "subtipo": "Vertical", "linha": "Essenciais", "porte": "Mini", "acabamento": "Liso"},
+    "maximos-croco": {"tipo": "Tote", "subtipo": "", "linha": "Texturas", "porte": "Média", "acabamento": "Croco"},
+    "maximos-urban": {"tipo": "Tiracolo", "subtipo": "Camera bag", "linha": "Urbanos", "porte": "Compacta", "acabamento": "Liso"},
+    "maximos-origem": {"tipo": "Tiracolo", "subtipo": "Artesanal", "linha": "Artesanais", "porte": "Compacta", "acabamento": "Costura aparente"},
+}
+
 download_cache = {}
 downloaded = 0
 failed = []
@@ -95,11 +108,14 @@ for order, (name, variants_rows) in enumerate(groups.items(), 1):
         })
     first = next((v for v in variants if v["disponivel"]), variants[0])
     source = variants_rows[0]
-    category = "Pequenas" if "Pequenas" in source.get("Categorias", "") else "Grandes"
+    taxonomy = TAXONOMY.get(model_slug)
+    if not taxonomy:
+        raise RuntimeError(f"Defina a taxonomia profissional para o novo modelo: {name}")
     colors = list(OrderedDict.fromkeys(v["cor"] for v in variants))
     all_covers = [v["imagens"][0] for v in variants if v["imagens"]]
     products.append({
-        "id": model_slug, "nome": name, "categoria": "Bolsas", "colecao": category,
+        "id": model_slug, "nome": name, "categoria": "Bolsas", "colecao": taxonomy["linha"],
+        **taxonomy,
         "preco": min(v["preco"] for v in variants if v["preco"] is not None),
         "precoAnterior": first["precoAnterior"], "disponivel": any(v["disponivel"] for v in variants),
         "destaque": any(r.get("Em destaque?") == "1" for r in variants_rows),

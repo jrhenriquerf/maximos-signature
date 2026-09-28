@@ -23,7 +23,7 @@
   <main class="admin-layout">
     <aside class="product-sidebar">
       <div class="sidebar-title"><div><span>Produtos</span><strong data-total>0</strong></div><button type="button" data-add aria-label="Adicionar produto">＋</button></div>
-      <label class="search"><span>Buscar</span><input type="search" data-search placeholder="Nome, coleção, modelo ou SKU"></label>
+      <label class="search"><span>Buscar</span><input type="search" data-search placeholder="Nome, tipo, linha, modelo ou SKU"></label>
       <div class="product-list" data-list></div>
     </aside>
     <section class="editor" data-editor><div class="empty-editor"><span>MS</span><h1>Selecione uma peça</h1><p>Escolha um produto na lista ou adicione um novo.</p></div></section>
@@ -37,7 +37,9 @@
           <legend>Identificação</legend>
           <label>Nome<input name="nome" required></label>
           <label>ID da URL<input name="id" required pattern="[a-z0-9-]+"><small>Use letras minúsculas, números e hífens.</small></label>
-          <div class="columns"><label>Categoria<input name="categoria"></label><label>Coleção<input name="colecao"></label><label>Ordem<input name="ordem" type="number" min="1"></label></div>
+          <div class="columns"><label>Categoria<input name="categoria" value="Bolsas" readonly></label><label>Tipo<select name="tipo" required><option value="" disabled>Selecione</option><option value="Tote">Tote</option><option value="Tiracolo">Tiracolo</option><option value="Porta-celular">Porta-celular</option></select></label><label>Subtipo<input name="subtipo" placeholder="Ex.: Vertical"></label></div>
+          <div class="columns"><label>Linha<select name="linha" required><option value="" disabled>Selecione</option><option value="Clássicos">Clássicos</option><option value="Essenciais">Essenciais</option><option value="Artesanais">Artesanais</option><option value="Texturas">Texturas</option><option value="Urbanos">Urbanos</option></select></label><label>Porte<select name="porte" required><option value="" disabled>Selecione</option><option value="Mini">Mini</option><option value="Compacta">Compacta</option><option value="Média">Média</option><option value="Grande">Grande</option></select></label><label>Ordem<input name="ordem" type="number" min="1"></label></div>
+          <label>Acabamento<input name="acabamento" placeholder="Ex.: Croco, trama ou costura aparente"></label>
           <div class="checks"><label><input name="destaque" type="checkbox"> Mostrar na vitrine</label><label><input name="imagemConceitual" type="checkbox"> Imagem ilustrativa ou gerada</label></div>
           <p class="field-help">Marque “Imagem ilustrativa ou gerada” somente quando a fotografia não representar fielmente a peça real. O site mostrará esse aviso ao cliente.</p>
         </fieldset>

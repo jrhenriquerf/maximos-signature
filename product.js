@@ -60,6 +60,7 @@ function render(product, all, variantIndex = 0) {
   const materials = (product.materiais || []).map(item => `<li>${escapeHtml(item)}</li>`).join('');
   const models = variants.map(item => `<li>${escapeHtml(item.cor)}${isAvailable(item, product) ? '' : ' — Esgotado'}</li>`).join('');
   const measures = measuresData ? `${measuresData.largura} × ${measuresData.altura} × ${measuresData.profundidade} cm` : 'Confirme as dimensões no atendimento';
+  const taxonomy = [product.tipo, product.subtipo, product.linha, product.porte ? `Porte ${product.porte}` : ''].filter(Boolean);
   const thumbs = images.map((image, index) => `<button class="thumb ${index === 0 ? 'active' : ''}" type="button" data-image="${escapeHtml(image)}" data-index="${index}" aria-label="Ver imagem ${index + 1}"><img src="${escapeHtml(imageVersion(image, 'thumb'))}" alt="" loading="lazy"></button>`).join('');
   const variationOptions = variants.map((item, index) => {
     const itemAvailable = isAvailable(item, product);
@@ -80,7 +81,7 @@ function render(product, all, variantIndex = 0) {
       </figure>
     </div>
     <div class="product-panel">
-      <div class="product-tag"><span class="tag">Couro legítimo</span>${discount ? `<span class="tag sale">-${discount}%</span>` : ''}</div>
+      <div class="product-tag"><span class="tag">${escapeHtml(product.tipo || 'Bolsa')}</span><span class="tag">Couro legítimo</span>${discount ? `<span class="tag sale">-${discount}%</span>` : ''}</div>
       <h1>${escapeHtml(product.nome)}</h1>
       <p class="summary">${escapeHtml(product.resumo)}</p>
       <div class="price-row"><strong>${money.format(price)}</strong>${old}</div>
@@ -92,6 +93,7 @@ function render(product, all, variantIndex = 0) {
       <div class="details">
         <details open><summary>Descrição</summary><p>${escapeHtml(product.descricao)}</p></details>
         <details><summary>Material e acabamento</summary><ul>${materials}</ul></details>
+        <details><summary>Tipo, linha e porte</summary><p>${taxonomy.map(escapeHtml).join(' · ')}</p></details>
         <details><summary>Modelos desta linha</summary><ul>${models}</ul></details>
         <details><summary>Dimensões</summary><p>${measures}${variant.pesoKg ? `<br>Peso informado: ${escapeHtml(variant.pesoKg)} kg` : ''}${variant.sku ? `<br>SKU: ${escapeHtml(variant.sku)}` : ''}</p></details>
       </div>

@@ -33,6 +33,21 @@ PRODUCT_ID = re.compile(r"^[a-z0-9][a-z0-9-]{0,119}$")
 SKU_PATTERN = re.compile(r"^[A-Z0-9][A-Z0-9._-]{0,79}$")
 WRITE_LOCK = threading.Lock()
 SESSION_TOKEN = secrets.token_urlsafe(32)
+PRODUCT_TYPES = {"Tote", "Tiracolo", "Porta-celular"}
+PRODUCT_LINES = {"Clássicos", "Essenciais", "Artesanais", "Texturas", "Urbanos"}
+PRODUCT_SIZES = {"Mini", "Compacta", "Média", "Grande"}
+LEGACY_TAXONOMY = {
+    "maximos-classic-tote": ("Tote", "", "Clássicos", "Grande", "Liso"),
+    "maximos-dual-classic": ("Tote", "", "Clássicos", "Grande", "Bicolor"),
+    "maximos-essencial": ("Tiracolo", "Carteiro estruturada", "Essenciais", "Grande", ""),
+    "maximos-aura": ("Tiracolo", "Vertical", "Essenciais", "Média", "Liso"),
+    "maximos-trama": ("Tote", "", "Artesanais", "Grande", "Trama"),
+    "maximos-marfim": ("Tote", "", "Clássicos", "Média", ""),
+    "maximos-essencial-mini": ("Porta-celular", "Vertical", "Essenciais", "Mini", "Liso"),
+    "maximos-croco": ("Tote", "", "Texturas", "Média", "Croco"),
+    "maximos-urban": ("Tiracolo", "Camera bag", "Urbanos", "Compacta", "Liso"),
+    "maximos-origem": ("Tiracolo", "Artesanal", "Artesanais", "Compacta", "Costura aparente"),
+}
 
 
 class ApiError(Exception):
@@ -87,6 +102,19 @@ def validate_catalog(value: object) -> dict:
         if not isinstance(name, str) or not name.strip():
             raise ApiError(HTTPStatus.BAD_REQUEST, f"Nome ausente no produto {identifier}.")
 
+        fallback = LEGACY_TAXONOMY.get(identifier, ("", "", "", "", ""))
+        product_type = str(product.get("tipo") or fallback[0]).strip()
+        subtype = str(product.get("subtipo") if product.get("subtipo") is not None else fallback[1]).strip()
+        line = str(product.get("linha") or fallback[2]).strip()
+        size = str(product.get("porte") or fallback[3]).strip()
+        finish = str(product.get("acabamento") if product.get("acabamento") is not None else fallback[4]).strip()
+        if product_type not in PRODUCT_TYPES:
+            raise ApiError(HTTPStatus.BAD_REQUEST, f"Tipo invalido no produto {name}.")
+        if line not in PRODUCT_LINES:
+            raise ApiError(HTTPStatus.BAD_REQUEST, f"Linha invalida no produto {name}.")
+        if size not in PRODUCT_SIZES:
+            raise ApiError(HTTPStatus.BAD_REQUEST, f"Porte invalido no produto {name}.")
+
         variants = product.get("variantes")
         if not isinstance(variants, list) or not variants:
             raise ApiError(HTTPStatus.BAD_REQUEST, f"Adicione ao menos uma versao em {name}.")
@@ -127,6 +155,13 @@ def validate_catalog(value: object) -> dict:
         available = [variant for variant in normalized_variants if variant["disponivel"]]
         preferred = available[0] if available else normalized_variants[0]
         normalized_product = dict(product)
+        normalized_product["categoria"] = "Bolsas"
+        normalized_product["tipo"] = product_type
+        normalized_product["subtipo"] = subtype
+        normalized_product["linha"] = line
+        normalized_product["colecao"] = line
+        normalized_product["porte"] = size
+        normalized_product["acabamento"] = finish
         normalized_product["variantes"] = normalized_variants
         normalized_product["disponivel"] = bool(available)
         normalized_product["cores"] = list(dict.fromkeys(variant["cor"] for variant in normalized_variants))
