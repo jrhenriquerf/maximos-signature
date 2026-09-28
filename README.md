@@ -54,7 +54,7 @@ O feed fica publico depois do deploy em:
 https://jrhenriquerf.github.io/maximos-signature/data/meta-commerce.csv
 ```
 
-Cada linha representa um SKU independente e inclui estoque, disponibilidade, preco normal/promocional, imagens absolutas e um link que abre diretamente o modelo correspondente. O `id` enviado ao Meta e o SKU e o `item_group_id` identifica a linha do produto, agrupando as cores como variantes sem perder estoque independente.
+Cada linha representa um SKU independente e inclui estoque, disponibilidade, preco normal/promocional, imagens absolutas e um link que abre diretamente o modelo correspondente. O `id` enviado ao Meta e o SKU e o feed nao envia `item_group_id`, evitando que o Meta recombine SKUs como variantes. Quando o modelo estiver como `Consultar disponibilidade`, o titulo recebe o SKU como sufixo para permanecer unico.
 
 A taxonomia comercial usa `product_type` por formato (`Bolsas > Tote`, `Bolsas > Tiracolo > ...` ou `Bolsas > Porta-celular`) e mantem porte, linha e acabamento nos campos `custom_label_0`, `custom_label_1` e `custom_label_2`. Os termos antigos `Grandes` e `Pequenas` nao sao mais categorias principais. Valores operacionais como `Consultar disponibilidade` permanecem no gerenciador, mas nao sao enviados como cor ao Meta.
 
