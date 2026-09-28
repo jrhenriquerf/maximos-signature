@@ -17,7 +17,12 @@ class MetaFeedTests(unittest.TestCase):
                 "id": "bolsa-aura",
                 "nome": "Bolsa Aura",
                 "categoria": "Bolsas",
-                "colecao": "Grandes",
+                "colecao": "Essenciais",
+                "tipo": "Tiracolo",
+                "subtipo": "Vertical",
+                "linha": "Essenciais",
+                "porte": "Média",
+                "acabamento": "Liso",
                 "descricao": "Bolsa artesanal.",
                 "variantes": [
                     {
@@ -44,7 +49,11 @@ class MetaFeedTests(unittest.TestCase):
     def test_one_row_per_sku_with_independent_inventory_and_prices(self) -> None:
         rows = build_rows(self.catalog, "https://example.com/loja/")
         self.assertEqual([row["id"] for row in rows], ["MX-001", "MX-002"])
-        self.assertNotIn("item_group_id", rows[0])
+        self.assertEqual(rows[0]["item_group_id"], "bolsa-aura")
+        self.assertEqual(rows[0]["product_type"], "Bolsas > Tiracolo > Vertical")
+        self.assertEqual(rows[0]["custom_label_0"], "Média")
+        self.assertEqual(rows[0]["custom_label_1"], "Essenciais")
+        self.assertEqual(rows[0]["custom_label_2"], "Liso")
         self.assertEqual(rows[0]["availability"], "in stock")
         self.assertEqual(rows[0]["quantity_to_sell_on_facebook"], "2")
         self.assertEqual(rows[0]["price"], "427.00 BRL")
@@ -67,11 +76,27 @@ class MetaFeedTests(unittest.TestCase):
         rows = list(csv.DictReader(StringIO(render_feed(self.catalog, "https://example.com/"))))
         self.assertEqual(rows[0]["description"], "Couro, forro e acabamento artesanal.")
 
-    def test_rendered_csv_does_not_group_color_skus(self) -> None:
+    def test_rendered_csv_groups_color_skus_by_product(self) -> None:
         rendered = render_feed(self.catalog, "https://example.com/")
         reader = csv.DictReader(StringIO(rendered))
-        self.assertNotIn("item_group_id", reader.fieldnames or [])
-        self.assertEqual([row["id"] for row in reader], ["MX-001", "MX-002"])
+        rows = list(reader)
+        self.assertIn("item_group_id", reader.fieldnames or [])
+        self.assertEqual([row["id"] for row in rows], ["MX-001", "MX-002"])
+        self.assertEqual({row["item_group_id"] for row in rows}, {"bolsa-aura"})
+
+    def test_unknown_color_is_not_sent_as_color_or_title_suffix(self) -> None:
+        variant = self.catalog["products"][0]["variantes"][0]
+        variant["cor"] = "Consultar disponibilidade"
+        first = build_rows(self.catalog)[0]
+        self.assertEqual(first["color"], "")
+        self.assertEqual(first["title"], "Bolsa Aura")
+
+    def test_google_category_is_sent_for_handbags(self) -> None:
+        first = build_rows(self.catalog)[0]
+        self.assertEqual(
+            first["google_product_category"],
+            "Apparel & Accessories > Handbags, Wallets & Cases > Handbags",
+        )
 
     def test_duplicate_sku_is_rejected(self) -> None:
         self.catalog["products"][0]["variantes"][1]["sku"] = "MX-001"

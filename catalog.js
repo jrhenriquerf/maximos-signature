@@ -60,23 +60,23 @@ function card(product) {
   return `<article class="product-card ${allUnavailable ? 'is-sold-out' : ''}" data-product-card="${escapeHtml(product.id)}">
     <a class="product-link" href="produto.html?id=${encodeURIComponent(product.id)}"><div class="product-image" data-card-hover="${escapeHtml(product.id)}" data-manual-index="${initialIndex}"><span class="product-badge ${available ? '' : 'is-sold-out'}" data-card-badge="${escapeHtml(product.id)}">${available ? 'Couro legítimo' : 'Esgotado'}</span>${discount > 0 ? `<span class="discount">-${discount}%</span>` : ''}<img class="card-image-layer is-active" src="${escapeHtml(imageVersion(initial.imagens?.[0] || product.imagens[0], 'card'))}" srcset="${escapeHtml(imageSrcset(initial.imagens?.[0] || product.imagens[0]))}" sizes="(max-width: 700px) 50vw, 600px" alt="${escapeHtml(product.nome)}" data-card-image="${escapeHtml(product.id)}" data-card-layer="0" data-source="${escapeHtml(initial.imagens?.[0] || product.imagens[0])}" loading="lazy"><img class="card-image-layer" src="${escapeHtml(imageVersion(initial.imagens?.[0] || product.imagens[0], 'card'))}" srcset="${escapeHtml(imageSrcset(initial.imagens?.[0] || product.imagens[0]))}" sizes="(max-width: 700px) 50vw, 600px" alt="" data-card-layer="1" data-source="${escapeHtml(initial.imagens?.[0] || product.imagens[0])}" aria-hidden="true"></div></a>
     <div class="variant-row">${thumbs}<span class="variant-count">${modelCount}${stockSummary}</span></div>
-    <a class="product-link" href="produto.html?id=${encodeURIComponent(product.id)}"><div class="product-info"><span class="product-material">${escapeHtml(product.colecao)}</span><h2>${escapeHtml(product.nome)}</h2><div class="product-price"><strong data-card-price="${escapeHtml(product.id)}">${money.format(initial.preco)}</strong>${old}</div><span class="product-condition ${available ? '' : 'is-sold-out'}" data-card-condition="${escapeHtml(product.id)}">${available ? 'Condições no atendimento' : 'Este modelo está esgotado'}</span><span class="product-action"><span>Ver detalhes</span><b>→</b></span></div></a>
+    <a class="product-link" href="produto.html?id=${encodeURIComponent(product.id)}"><div class="product-info"><span class="product-material">${escapeHtml([product.tipo, product.subtipo].filter(Boolean).join(' · '))}</span><h2>${escapeHtml(product.nome)}</h2><div class="product-price"><strong data-card-price="${escapeHtml(product.id)}">${money.format(initial.preco)}</strong>${old}</div><span class="product-condition ${available ? '' : 'is-sold-out'}" data-card-condition="${escapeHtml(product.id)}">${available ? `${escapeHtml(product.linha)} · Porte ${escapeHtml(product.porte)}` : 'Este modelo está esgotado'}</span><span class="product-action"><span>Ver detalhes</span><b>→</b></span></div></a>
   </article>`;
 }
 
 function filtered() {
   const needle = normalize(query);
   const list = products.filter(product => {
-    const matchesCategory = activeCategory === 'todas' || normalize(product.colecao) === activeCategory;
+    const matchesCategory = activeCategory === 'todas' || normalize(product.tipo) === activeCategory;
     const variantTerms = (product.variantes || []).flatMap(item => [item.cor, item.sku]);
-    const haystack = normalize([product.nome, product.colecao, product.categoria, product.resumo, ...(product.materiais || []), ...(product.cores || []), ...variantTerms].join(' '));
+    const haystack = normalize([product.nome, product.tipo, product.subtipo, product.linha, product.porte, product.acabamento, product.categoria, product.resumo, ...(product.materiais || []), ...(product.cores || []), ...variantTerms].join(' '));
     return matchesCategory && (!needle || haystack.includes(needle));
   });
   return list.sort((a, b) => sortBy === 'nome' ? a.nome.localeCompare(b.nome, 'pt-BR') : sortBy === 'preco-asc' ? a.preco - b.preco : sortBy === 'preco-desc' ? b.preco - a.preco : Number(b.destaque) - Number(a.destaque) || a.ordem - b.ordem);
 }
 
 function renderCategoryFilters() {
-  const categories = [...new Set(products.map(product => product.colecao).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+  const categories = [...new Set(products.map(product => product.tipo).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
   const filters = document.querySelector('[data-categories]');
   filters.innerHTML = `<button class="filter is-active" type="button" data-category="todas">Todas as categorias</button>${categories.map(category => `<button class="filter" type="button" data-category="${escapeHtml(normalize(category))}">${escapeHtml(category)}</button>`).join('')}`;
   filters.querySelectorAll('[data-category]').forEach(button => button.addEventListener('click', () => {
@@ -143,7 +143,7 @@ function updateCardVariant(productId, variantIndex, animate = true) {
   badge.textContent = available ? 'Couro legítimo' : 'Esgotado';
   badge.classList.toggle('is-sold-out', !available);
   const condition = document.querySelector(`[data-card-condition="${productId}"]`);
-  condition.textContent = available ? 'Condições no atendimento' : 'Este modelo está esgotado';
+  condition.textContent = available ? `${product.linha} · Porte ${product.porte}` : 'Este modelo está esgotado';
   condition.classList.toggle('is-sold-out', !available);
 }
 

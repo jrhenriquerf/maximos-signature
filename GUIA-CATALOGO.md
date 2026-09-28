@@ -85,7 +85,7 @@ Depois da publicacao no GitHub Pages, use esta URL como fonte de dados programad
 https://jrhenriquerf.github.io/maximos-signature/data/meta-commerce.csv
 ```
 
-O feed envia cada SKU como um item independente, sem `item_group_id`, para evitar que cores diferentes sejam agrupadas em um unico item nos canais da Meta. Para cada SKU, ele inclui:
+O feed envia cada SKU como um item independente e usa `item_group_id` para reunir as cores do mesmo produto como variantes. Para cada SKU, ele inclui:
 
 - identificador unico;
 - titulo, descricao, modelo/cor e marca;
@@ -93,6 +93,11 @@ O feed envia cada SKU como um item independente, sem `item_group_id`, para evita
 - preco normal e, quando aplicavel, preco promocional;
 - imagem principal e imagens adicionais com URL absoluta;
 - link direto com `id` e `sku` para abrir o modelo correto.
+- tipo profissional (`Tote`, `Tiracolo` ou `Porta-celular`) em `product_type`;
+- porte, linha e acabamento em `custom_label_0`, `custom_label_1` e `custom_label_2`;
+- categoria padronizada de bolsas em `google_product_category`.
+
+No gerenciador, classifique cada produto por tipo, subtipo, linha e porte. Porte e linha sao atributos secundarios: nao use `Grandes` ou `Pequenas` como categoria principal. Para novos modelos importados do WooCommerce, inclua primeiro o mapeamento em `scripts/import_woocommerce.py`; o importador interrompe a operacao quando encontra um modelo ainda nao classificado.
 
 No Commerce Manager:
 

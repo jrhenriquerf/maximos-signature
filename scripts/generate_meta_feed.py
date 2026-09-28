@@ -18,8 +18,17 @@ DEFAULT_BASE_URL = "https://jrhenriquerf.github.io/maximos-signature/"
 FIELDNAMES = [
     "id", "title", "description", "availability", "condition", "price",
     "sale_price", "link", "image_link", "additional_image_link", "brand",
-    "quantity_to_sell_on_facebook", "product_type", "color",
+    "quantity_to_sell_on_facebook", "item_group_id", "product_type",
+    "google_product_category", "color", "custom_label_0", "custom_label_1",
+    "custom_label_2",
 ]
+
+UNKNOWN_COLORS = {"consultar disponibilidade", "a consultar", "sob consulta"}
+GOOGLE_HANDBAGS_CATEGORY = (
+    "Apparel & Accessories > Handbags, Wallets & Cases > Handbags"
+)
+PRODUCT_TYPES = {"Tote", "Tiracolo", "Porta-celular"}
+PRODUCT_SIZES = {"Mini", "Compacta", "Média", "Grande"}
 
 
 class FeedError(ValueError):
@@ -55,10 +64,16 @@ def build_rows(catalog: dict, base_url: str = DEFAULT_BASE_URL) -> list[dict[str
         if not product_id or not product_name or not isinstance(variants, list) or not variants:
             label = product_id or product_name or "(sem identificacao)"
             raise FeedError(f"Produto incompleto no feed: {label}.")
+        product_type = str(product.get("tipo") or "").strip()
+        product_line = str(product.get("linha") or "").strip()
+        product_size = str(product.get("porte") or "").strip()
+        if product_type not in PRODUCT_TYPES or not product_line or product_size not in PRODUCT_SIZES:
+            raise FeedError(f"Taxonomia incompleta no produto {product_name}.")
 
         for variant in variants:
             sku = str(variant.get("sku") or "").strip().upper()
             color = str(variant.get("cor") or "").strip()
+            feed_color = "" if color.casefold() in UNKNOWN_COLORS else color
             images = variant.get("imagens") or product.get("imagens") or []
             if not sku or sku in seen_skus:
                 raise FeedError(f"SKU ausente ou duplicado no feed: {sku or '(vazio)'}.")
@@ -87,7 +102,7 @@ def build_rows(catalog: dict, base_url: str = DEFAULT_BASE_URL) -> list[dict[str
 
             rows.append({
                 "id": sku,
-                "title": f"{product_name} - {color}",
+                "title": f"{product_name} - {feed_color}" if feed_color else product_name,
                 "description": description,
                 "availability": "in stock" if available else "out of stock",
                 "condition": "new",
@@ -101,13 +116,19 @@ def build_rows(catalog: dict, base_url: str = DEFAULT_BASE_URL) -> list[dict[str
                 "additional_image_link": ",".join(additional_images),
                 "brand": "Maximos Signature",
                 "quantity_to_sell_on_facebook": str(stock if available else 0),
+                "item_group_id": product_id,
                 "product_type": " > ".join(
                     value for value in [
                         str(product.get("categoria") or "").strip(),
-                        str(product.get("colecao") or "").strip(),
+                        product_type,
+                        str(product.get("subtipo") or "").strip(),
                     ] if value
                 ),
-                "color": color,
+                "google_product_category": GOOGLE_HANDBAGS_CATEGORY,
+                "color": feed_color,
+                "custom_label_0": product_size,
+                "custom_label_1": product_line,
+                "custom_label_2": str(product.get("acabamento") or "").strip(),
             })
             seen_skus.add(sku)
 
