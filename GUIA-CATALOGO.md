@@ -85,10 +85,10 @@ Depois da publicacao no GitHub Pages, use esta URL como fonte de dados programad
 https://jrhenriquerf.github.io/maximos-signature/data/meta-commerce.csv
 ```
 
-O feed envia cada SKU como um item independente e usa `item_group_id` para reunir as cores do mesmo produto como variantes. Para cada SKU, ele inclui:
+O feed envia cada SKU como um item independente, sem `item_group_id`, para impedir que o Meta recombine cores ou modelos como variantes. Para cada SKU, ele inclui:
 
 - identificador unico;
-- titulo, descricao, modelo/cor e marca;
+- titulo, descricao, modelo/cor e marca; quando o modelo for `Consultar disponibilidade`, o titulo usa o SKU como sufixo;
 - estoque e disponibilidade independentes;
 - preco normal e, quando aplicavel, preco promocional;
 - imagem principal e imagens adicionais com URL absoluta;

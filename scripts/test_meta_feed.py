@@ -49,7 +49,6 @@ class MetaFeedTests(unittest.TestCase):
     def test_one_row_per_sku_with_independent_inventory_and_prices(self) -> None:
         rows = build_rows(self.catalog, "https://example.com/loja/")
         self.assertEqual([row["id"] for row in rows], ["MX-001", "MX-002"])
-        self.assertEqual(rows[0]["item_group_id"], "bolsa-aura")
         self.assertEqual(rows[0]["product_type"], "Bolsas > Tiracolo > Vertical")
         self.assertEqual(rows[0]["custom_label_0"], "Média")
         self.assertEqual(rows[0]["custom_label_1"], "Essenciais")
@@ -76,20 +75,19 @@ class MetaFeedTests(unittest.TestCase):
         rows = list(csv.DictReader(StringIO(render_feed(self.catalog, "https://example.com/"))))
         self.assertEqual(rows[0]["description"], "Couro, forro e acabamento artesanal.")
 
-    def test_rendered_csv_groups_color_skus_by_product(self) -> None:
+    def test_rendered_csv_keeps_each_sku_as_an_independent_item(self) -> None:
         rendered = render_feed(self.catalog, "https://example.com/")
         reader = csv.DictReader(StringIO(rendered))
         rows = list(reader)
-        self.assertIn("item_group_id", reader.fieldnames or [])
+        self.assertNotIn("item_group_id", reader.fieldnames or [])
         self.assertEqual([row["id"] for row in rows], ["MX-001", "MX-002"])
-        self.assertEqual({row["item_group_id"] for row in rows}, {"bolsa-aura"})
 
-    def test_unknown_color_is_not_sent_as_color_or_title_suffix(self) -> None:
+    def test_unknown_color_uses_sku_in_title_instead_of_color(self) -> None:
         variant = self.catalog["products"][0]["variantes"][0]
         variant["cor"] = "Consultar disponibilidade"
         first = build_rows(self.catalog)[0]
         self.assertEqual(first["color"], "")
-        self.assertEqual(first["title"], "Bolsa Aura")
+        self.assertEqual(first["title"], "Bolsa Aura - MX-001")
 
     def test_google_category_is_sent_for_handbags(self) -> None:
         first = build_rows(self.catalog)[0]

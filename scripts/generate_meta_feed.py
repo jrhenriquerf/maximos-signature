@@ -18,7 +18,7 @@ DEFAULT_BASE_URL = "https://jrhenriquerf.github.io/maximos-signature/"
 FIELDNAMES = [
     "id", "title", "description", "availability", "condition", "price",
     "sale_price", "link", "image_link", "additional_image_link", "brand",
-    "quantity_to_sell_on_facebook", "item_group_id", "product_type",
+    "quantity_to_sell_on_facebook", "product_type",
     "google_product_category", "color", "custom_label_0", "custom_label_1",
     "custom_label_2",
 ]
@@ -102,7 +102,11 @@ def build_rows(catalog: dict, base_url: str = DEFAULT_BASE_URL) -> list[dict[str
 
             rows.append({
                 "id": sku,
-                "title": f"{product_name} - {feed_color}" if feed_color else product_name,
+                "title": (
+                    f"{product_name} - {feed_color}"
+                    if feed_color
+                    else f"{product_name} - {sku}"
+                ),
                 "description": description,
                 "availability": "in stock" if available else "out of stock",
                 "condition": "new",
@@ -116,7 +120,6 @@ def build_rows(catalog: dict, base_url: str = DEFAULT_BASE_URL) -> list[dict[str
                 "additional_image_link": ",".join(additional_images),
                 "brand": "Maximos Signature",
                 "quantity_to_sell_on_facebook": str(stock if available else 0),
-                "item_group_id": product_id,
                 "product_type": " > ".join(
                     value for value in [
                         str(product.get("categoria") or "").strip(),
