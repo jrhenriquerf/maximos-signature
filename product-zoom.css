@@ -1,5 +1,6 @@
 .main-photo{--zoom-x:50%;--zoom-y:50%}
 .zoom-hint{display:none;position:absolute;left:1rem;top:1rem;z-index:2;padding:.42rem .6rem;background:#fffc;border:1px solid var(--line);color:var(--muted);font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;pointer-events:none;transition:opacity .2s}
+.gallery-arrow{position:absolute;top:50%;z-index:3;display:grid;place-items:center;width:2.7rem;height:2.7rem;transform:translateY(-50%);border:1px solid var(--line);border-radius:50%;background:#fffdf2e8;color:var(--brown);font:400 2rem/1 var(--serif);cursor:pointer;box-shadow:0 3px 14px #0002;transition:background .2s,transform .2s}.gallery-arrow:hover{background:#fff;transform:translateY(-50%) scale(1.06)}.gallery-arrow:focus-visible{outline:2px solid var(--brown);outline-offset:3px}.gallery-arrow-prev{left:1rem}.gallery-arrow-next{right:1rem}.gallery-arrow span{transform:translateY(-.08em)}.swipe-hint{display:none}
 .variation{position:relative;width:76px;height:88px;padding:.2rem .2rem 1.45rem}
 .variation img{height:58px}
 .variation span{position:absolute;left:.2rem;right:.2rem;bottom:.2rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.55rem;color:var(--muted)}
@@ -13,5 +14,6 @@
   .main-photo.is-zoomed .zoom-hint{opacity:0}
   .main-photo.is-zoomed>img{transform:scale(2.15)!important;transform-origin:var(--zoom-x) var(--zoom-y);transition:transform .12s linear,opacity .2s}
 }
+@media(max-width:760px),(hover:none),(pointer:coarse){.main-photo{touch-action:pan-y}.gallery-arrow{display:none}.swipe-hint{display:block;position:absolute;left:1rem;top:1rem;z-index:2;padding:.42rem .6rem;background:#fffc;border:1px solid var(--line);color:var(--muted);font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;pointer-events:none}}
 @media(max-width:520px){.variation-options{overflow-x:auto;padding-bottom:.3rem}.variation{flex:0 0 66px;height:80px}.variation img{height:50px}.zoom-hint{display:none!important}}
 @media(prefers-reduced-motion:reduce){.main-photo.is-zoomed>img{transition:none}}

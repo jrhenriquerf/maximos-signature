@@ -5,6 +5,7 @@ const requestedModel = productParams.get('sku') || productParams.get('modelo');
 const page = document.querySelector('[data-product-page]');
 const dialog = document.querySelector('[data-dialog]');
 let activeMessage = '';
+let imageTransitionTimer;
 
 const escapeHtml = value => String(value ?? '').replace(/[&<>\"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;' }[char]));
 const imageVersion = (source, size) => PRODUCT_IMAGES.version(source, size);
@@ -47,6 +48,7 @@ function syncVariantUrl(productId, sku) {
 }
 
 function render(product, all, variantIndex = 0) {
+  clearTimeout(imageTransitionTimer);
   const variants = productVariants(product);
   const variant = variants[variantIndex] || variants[0];
   syncVariantUrl(product.id, variant.sku);
@@ -73,10 +75,11 @@ function render(product, all, variantIndex = 0) {
     <p class="breadcrumb"><a href="index.html">Início</a> / <a href="catalogo.html">Bolsas</a> / ${escapeHtml(product.nome)}</p>
     <div class="gallery">
       <div class="thumbs">${thumbs}</div>
-      <figure class="main-photo" data-zoom-area>
-        <img src="${escapeHtml(images[0])}" srcset="${escapeHtml(imageSrcset(images[0]))}" sizes="(max-width: 760px) 100vw, 1200px" alt="${escapeHtml(product.nome)} — ${escapeHtml(variant.cor)}" data-main-image>
+      <figure class="main-photo" data-zoom-area ${images.length > 1 ? 'tabindex="0" aria-label="Galeria de fotos do produto. Use as setas para navegar."' : ''}>
+        <img src="${escapeHtml(images[0])}" srcset="${escapeHtml(imageSrcset(images[0]))}" sizes="(max-width: 760px) 100vw, 1200px" alt="${escapeHtml(product.nome)} — ${escapeHtml(variant.cor)}" data-base-alt="${escapeHtml(product.nome)} — ${escapeHtml(variant.cor)}" data-main-image>
         ${product.imagemConceitual ? '<span class="concept-badge">Imagem conceitual</span>' : ''}
         <span class="zoom-hint" aria-hidden="true">＋ Passe o mouse para ampliar</span>
+        ${images.length > 1 ? '<button class="gallery-arrow gallery-arrow-prev" type="button" data-gallery-nav="-1" aria-label="Foto anterior"><span aria-hidden="true">‹</span></button><button class="gallery-arrow gallery-arrow-next" type="button" data-gallery-nav="1" aria-label="Próxima foto"><span aria-hidden="true">›</span></button><span class="swipe-hint" aria-hidden="true">Deslize para ver mais fotos</span>' : ''}
         <span class="photo-count"><b data-current>1</b> / ${images.length}</span>
       </figure>
     </div>
@@ -101,6 +104,7 @@ function render(product, all, variantIndex = 0) {
   </article>`;
 
   document.querySelectorAll('[data-image]').forEach(button => button.addEventListener('click', () => selectImage(button)));
+  setupGalleryNavigation(images.length);
   document.querySelectorAll('[data-variant-index]').forEach(button => button.addEventListener('click', () => {
     const scrollY = window.scrollY;
     render(product, all, Number(button.dataset.variantIndex));
@@ -119,17 +123,54 @@ function render(product, all, variantIndex = 0) {
 }
 
 function selectImage(button) {
+  if (!button || button.classList.contains('active')) return;
+  clearTimeout(imageTransitionTimer);
   document.querySelectorAll('.thumb').forEach(item => item.classList.remove('active'));
   button.classList.add('active');
   const image = document.querySelector('[data-main-image]');
   image.style.opacity = '0';
-  setTimeout(() => {
+  imageTransitionTimer = setTimeout(() => {
     image.srcset = imageSrcset(button.dataset.image);
     image.sizes = '(max-width: 760px) 100vw, 1200px';
     image.src = button.dataset.image;
+    image.alt = `${image.dataset.baseAlt}, foto ${Number(button.dataset.index) + 1}`;
     image.style.opacity = '1';
   }, 160);
   document.querySelector('[data-current]').textContent = Number(button.dataset.index) + 1;
+}
+
+function setupGalleryNavigation(imageCount) {
+  if (imageCount < 2) return;
+  const area = document.querySelector('[data-zoom-area]');
+  const navigate = step => {
+    const active = Number(document.querySelector('.thumb.active')?.dataset.index || 0);
+    const next = (active + step + imageCount) % imageCount;
+    selectImage(document.querySelector(`.thumb[data-index="${next}"]`));
+  };
+
+  area.querySelectorAll('[data-gallery-nav]').forEach(button => {
+    button.addEventListener('click', () => navigate(Number(button.dataset.galleryNav)));
+  });
+  area.addEventListener('keydown', event => {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+    event.preventDefault();
+    navigate(event.key === 'ArrowRight' ? 1 : -1);
+  });
+
+  let touchStart;
+  area.addEventListener('touchstart', event => {
+    if (event.touches.length !== 1) { touchStart = null; return; }
+    touchStart = { x: event.touches[0].clientX, y: event.touches[0].clientY };
+  }, { passive: true });
+  area.addEventListener('touchend', event => {
+    if (!touchStart || event.changedTouches.length !== 1) return;
+    const distanceX = event.changedTouches[0].clientX - touchStart.x;
+    const distanceY = event.changedTouches[0].clientY - touchStart.y;
+    touchStart = null;
+    if (Math.abs(distanceX) < 40 || Math.abs(distanceX) <= Math.abs(distanceY)) return;
+    navigate(distanceX < 0 ? 1 : -1);
+  }, { passive: true });
+  area.addEventListener('touchcancel', () => { touchStart = null; }, { passive: true });
 }
 
 function setupZoom() {
