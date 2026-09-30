@@ -1,0 +1,10 @@
+# A publicação por branch do GitHub Pages usa Jekyll.
+# O gerenciador e suas ferramentas devem permanecer apenas no projeto local.
+exclude:
+  - admin.html
+  - admin.css
+  - admin.js
+  - Abrir-Gerenciador-Maximos.cmd
+  - scripts/
+  - README.md
+  - GUIA-CATALOGO.md
