@@ -14,7 +14,7 @@ from urllib.parse import quote, urljoin
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CATALOG = ROOT / "data" / "products.json"
 DEFAULT_OUTPUT = ROOT / "data" / "meta-commerce.csv"
-DEFAULT_BASE_URL = "https://jrhenriquerf.github.io/maximos-signature/"
+DEFAULT_BASE_URL = "https://maximossignature.com.br/"
 FIELDNAMES = [
     "id", "title", "description", "availability", "condition", "price",
     "sale_price", "link", "image_link", "additional_image_link", "brand",

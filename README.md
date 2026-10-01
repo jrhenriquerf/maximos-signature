@@ -51,7 +51,7 @@ O navegador escolhe automaticamente a resolução adequada por meio de `srcset`.
 O feed fica publico depois do deploy em:
 
 ```text
-https://jrhenriquerf.github.io/maximos-signature/data/meta-commerce.csv
+https://maximossignature.com.br/data/meta-commerce.csv
 ```
 
 Cada linha representa um SKU independente e inclui estoque, disponibilidade, preco normal/promocional, imagens absolutas e um link que abre diretamente o modelo correspondente. O `id` enviado ao Meta e o SKU e o feed nao envia `item_group_id`, evitando que o Meta recombine SKUs como variantes. Quando o modelo estiver como `Consultar disponibilidade`, o titulo recebe o SKU como sufixo para permanecer unico.

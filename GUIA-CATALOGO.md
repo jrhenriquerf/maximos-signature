@@ -82,7 +82,7 @@ Marque **Imagem ilustrativa ou gerada** apenas quando as fotografias não repres
 Depois da publicacao no GitHub Pages, use esta URL como fonte de dados programada:
 
 ```text
-https://jrhenriquerf.github.io/maximos-signature/data/meta-commerce.csv
+https://maximossignature.com.br/data/meta-commerce.csv
 ```
 
 O feed envia cada SKU como um item independente, sem `item_group_id`, para impedir que o Meta recombine cores ou modelos como variantes. Para cada SKU, ele inclui:
