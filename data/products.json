@@ -372,7 +372,7 @@
       ],
       "cores": [
         "Caramelo",
-        "Consultar disponibilidade"
+        "Marrom"
       ],
       "medidas": {
         "largura": 33,
@@ -410,7 +410,7 @@
         {
           "id": "maximos-trama-mx-bag-010",
           "sku": "MX-BAG-010",
-          "cor": "Consultar disponibilidade",
+          "cor": "Marrom",
           "preco": 327.75,
           "precoAnterior": 437,
           "disponivel": true,
