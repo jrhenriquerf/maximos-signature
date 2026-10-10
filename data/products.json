@@ -516,7 +516,7 @@
         "Construção artesanal"
       ],
       "cores": [
-        "Consultar disponibilidade",
+        "Preto",
         "Craquelado",
         "Café",
         "Caramelo",
@@ -540,7 +540,7 @@
         {
           "id": "maximos-essencial-mini-mx-bag-012",
           "sku": "MX-BAG-012",
-          "cor": "Consultar disponibilidade",
+          "cor": "Preto",
           "preco": 111.75,
           "precoAnterior": 149,
           "disponivel": true,
@@ -659,7 +659,8 @@
         }
       ],
       "imagemConceitual": false,
-      "ordem": 7
+      "ordem": 7,
+      "imagemDestaque": ""
     },
     {
       "id": "maximos-croco",
