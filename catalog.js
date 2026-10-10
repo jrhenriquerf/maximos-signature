@@ -42,10 +42,10 @@ function initialVariantIndex(product) {
 }
 
 function variantLink(product, variant) {
-  return `produto.html?id=${encodeURIComponent(product.id)}${variant?.sku ? `&sku=${encodeURIComponent(variant.sku)}` : ''}`;
+  return PRODUCT_IMAGES.productUrl(product, variant);
 }
 
-function card(product) {
+function card(product, position = 0) {
   const variants = variantsFor(product);
   const initialIndex = initialVariantIndex(product);
   const initial = variants[initialIndex];
@@ -62,7 +62,7 @@ function card(product) {
   const modelCount = `${variants.length} ${variants.length === 1 ? 'modelo' : 'modelos'}`;
   const stockSummary = unavailableCount ? ` · ${unavailableCount} ${unavailableCount === 1 ? 'indisponível' : 'indisponíveis'}` : '';
   return `<article class="product-card ${allUnavailable ? 'is-sold-out' : ''}" data-product-card="${escapeHtml(product.id)}">
-    <a class="product-link" href="${variantLink(product, initial)}"><div class="product-image" data-card-hover="${escapeHtml(product.id)}" data-manual-index="${initialIndex}"><span class="product-badge ${available ? '' : 'is-sold-out'}" data-card-badge="${escapeHtml(product.id)}">${available ? 'Couro legítimo' : 'Indisponível'}</span>${discount > 0 ? `<span class="discount">-${discount}%</span>` : ''}<img class="card-image-layer is-active" src="${escapeHtml(imageVersion(initial.imagens?.[0] || product.imagens[0], 'card'))}" srcset="${escapeHtml(imageSrcset(initial.imagens?.[0] || product.imagens[0]))}" sizes="(max-width: 700px) 50vw, 600px" alt="${escapeHtml(product.nome)}" data-card-image="${escapeHtml(product.id)}" data-card-layer="0" data-source="${escapeHtml(initial.imagens?.[0] || product.imagens[0])}" loading="lazy"><img class="card-image-layer" src="${escapeHtml(imageVersion(initial.imagens?.[0] || product.imagens[0], 'card'))}" srcset="${escapeHtml(imageSrcset(initial.imagens?.[0] || product.imagens[0]))}" sizes="(max-width: 700px) 50vw, 600px" alt="" data-card-layer="1" data-source="${escapeHtml(initial.imagens?.[0] || product.imagens[0])}" aria-hidden="true"></div></a>
+    <a class="product-link" href="${variantLink(product, initial)}"><div class="product-image" data-card-hover="${escapeHtml(product.id)}" data-manual-index="${initialIndex}"><span class="product-badge ${available ? '' : 'is-sold-out'}" data-card-badge="${escapeHtml(product.id)}">${available ? 'Couro legítimo' : 'Indisponível'}</span>${discount > 0 ? `<span class="discount">-${discount}%</span>` : ''}<img class="card-image-layer is-active" src="${escapeHtml(imageVersion(initial.imagens?.[0] || product.imagens[0], 'card'))}" srcset="${escapeHtml(imageSrcset(initial.imagens?.[0] || product.imagens[0]))}" sizes="(max-width: 520px) calc(50vw - 48px), (max-width: 800px) calc(50vw - 64px), (max-width: 1050px) calc(33vw - 50px), calc(25vw - 56px)" alt="${escapeHtml(product.nome)}" data-card-image="${escapeHtml(product.id)}" data-card-layer="0" data-source="${escapeHtml(initial.imagens?.[0] || product.imagens[0])}" loading="${position < 2 ? 'eager' : 'lazy'}" ${position === 0 ? 'fetchpriority="high"' : ''}><img class="card-image-layer" src="${escapeHtml(imageVersion(initial.imagens?.[0] || product.imagens[0], 'card'))}" srcset="${escapeHtml(imageSrcset(initial.imagens?.[0] || product.imagens[0]))}" sizes="(max-width: 520px) calc(50vw - 48px), (max-width: 800px) calc(50vw - 64px), (max-width: 1050px) calc(33vw - 50px), calc(25vw - 56px)" alt="" data-card-layer="1" data-source="${escapeHtml(initial.imagens?.[0] || product.imagens[0])}" aria-hidden="true"></div></a>
     <div class="variant-row">${thumbs}<span class="variant-count">${modelCount}${stockSummary}</span></div>
     <a class="product-link" href="${variantLink(product, initial)}"><div class="product-info"><span class="product-material">${escapeHtml([product.tipo, product.subtipo].filter(Boolean).join(' · '))}</span><h2>${escapeHtml(product.nome)}</h2><div class="product-price"><strong data-card-price="${escapeHtml(product.id)}">${money.format(initial.preco)}</strong>${old}</div><span class="product-condition ${available ? '' : 'is-sold-out'}" data-card-condition="${escapeHtml(product.id)}">${available ? `${escapeHtml(product.linha)} · Porte ${escapeHtml(product.porte)}` : 'Este modelo está indisponível'}</span><span class="product-action"><span>Ver detalhes</span><b>→</b></span></div></a>
   </article>`;
@@ -128,7 +128,7 @@ function swapCardImage(productId, source, alt, animate = true) {
   next.onload = activate;
   next.onerror = () => { next.onload = null; };
   next.srcset = imageSrcset(source);
-  next.sizes = '(max-width: 700px) 50vw, 600px';
+  next.sizes = '(max-width: 520px) calc(50vw - 48px), (max-width: 800px) calc(50vw - 64px), (max-width: 1050px) calc(33vw - 50px), calc(25vw - 56px)';
   next.src = imageVersion(source, 'card');
   if (next.complete && next.naturalWidth) activate();
 }
@@ -209,5 +209,5 @@ function contact(event) {
 document.querySelectorAll('[data-contact]').forEach(item => item.addEventListener('click', contact));
 document.querySelector('[data-close]')?.addEventListener('click', () => dialog.close());
 document.querySelector('[data-copy]')?.addEventListener('click', async event => { await navigator.clipboard.writeText(message); event.currentTarget.textContent = 'Mensagem copiada'; });
-fetch('data/products.json').then(response => { if (!response.ok) throw new Error(); return response.json(); }).then(data => { products = data.products; renderCategoryFilters(); render(); }).catch(() => { document.querySelector('[data-catalog]').innerHTML = '<p class="loading">Não foi possível carregar os produtos.</p>'; });
+fetch('data/products.json', { cache: 'no-cache' }).then(response => { if (!response.ok) throw new Error(); return response.json(); }).then(data => { products = data.products; renderCategoryFilters(); render(); }).catch(() => { if (!document.querySelector('[data-catalog] .product-card')) document.querySelector('[data-catalog]').innerHTML = '<p class="loading">Não foi possível carregar os produtos.</p>'; });
 document.querySelector('[data-year]').textContent = new Date().getFullYear();

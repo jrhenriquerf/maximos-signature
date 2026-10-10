@@ -9,8 +9,13 @@ window.SITE_CONFIG = {
 window.prepareWhatsAppLink = (link, message) => {
   const number = window.SITE_CONFIG?.whatsapp;
   if (!number || !link) return false;
-  link.href = `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+  link.href = `https://wa.me/${number}?text=${encodeURIComponent(message + (window.CAMPAIGN?.messageSuffix() || ''))}`;
   link.target = '_blank';
   link.rel = 'noopener noreferrer';
+  const sku = link.dataset.sku;
+  dispatchEvent(new CustomEvent('maximos:contact', { detail: {
+    contact_channel: 'WhatsApp',
+    ...(sku ? { content_ids: [sku], content_name: link.dataset.productName, content_type: 'product', value: Number(link.dataset.price), currency: 'BRL' } : {})
+  } }));
   return true;
 };

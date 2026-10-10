@@ -35,6 +35,9 @@ jobs:
           python3 scripts/test_meta_feed.py
           python3 scripts/generate_meta_feed.py --check
           node scripts/test_availability.cjs
+          node scripts/test_campaign.cjs
+          node scripts/test_public_pages.cjs
+          node scripts/generate_public_pages.cjs --check
 
       - name: Configurar o GitHub Pages
         uses: actions/configure-pages@v5
@@ -48,6 +51,7 @@ jobs:
             --exclude .gitignore \
             --exclude _site/ \
             --exclude scripts/ \
+            --exclude docs/ \
             --exclude admin.html \
             --exclude admin.css \
             --exclude admin.js \

@@ -11,7 +11,7 @@ const escapeHtml = value => String(value ?? '').replace(/[&<>\"]/g, char => ({ '
 
 const imageVersion = (source, size) => PRODUCT_IMAGES.version(source, size);
 const imageSrcset = source => PRODUCT_IMAGES.srcset(source);
-const showcaseSrcset = source => `${imageVersion(source, 'card')} 900w, ${source} 1200w`;
+const showcaseSrcset = source => `${imageVersion(source, 'card')} 900w, ${source} 1254w`;
 
 function setMenu(open) {
   header.classList.toggle('menu-open', open);
@@ -45,6 +45,7 @@ function featuredFromProducts(products) {
   ];
   return products.filter(product => product.destaque).sort((a, b) => a.ordem - b.ordem).map((product, index) => ({
     productId: product.id,
+    url: PRODUCT_IMAGES.productUrl(product),
     linha: `Destaque · ${product.tipo || product.categoria}`,
     titulo: product.nome,
     texto: product.resumo,
@@ -58,7 +59,14 @@ function setStage(index) {
   if (!showcaseItems.length) return;
   activeStage = Math.max(0, Math.min(index, showcaseItems.length - 1));
   document.querySelectorAll('.showcase-info,.showcase-stage img,.showcase-step').forEach((element, itemIndex) => {
-    element.classList.toggle('active', itemIndex % showcaseItems.length === activeStage);
+    const active = itemIndex % showcaseItems.length === activeStage;
+    element.classList.toggle('active', active);
+    if (active && element.dataset.showcaseSrc) {
+      element.srcset = element.dataset.showcaseSrcset;
+      element.src = element.dataset.showcaseSrc;
+      delete element.dataset.showcaseSrc;
+      delete element.dataset.showcaseSrcset;
+    }
   });
   document.querySelector('[data-current]').textContent = String(activeStage + 1).padStart(2, '0');
   document.querySelector('.showcase-sticky').style.background = showcaseItems[activeStage].fundo;
@@ -71,8 +79,8 @@ function renderShowcase(items) {
   const stage = document.querySelector('[data-showcase-stage]');
   const steps = document.querySelector('[data-showcase-steps]');
   container.style.setProperty('--showcase-count', Math.max(items.length, 1));
-  copy.innerHTML = items.map((item, index) => `<article class="showcase-info ${index === 0 ? 'active' : ''}"><span class="showcase-kicker">${escapeHtml(item.linha)}</span><h2>${escapeHtml(item.titulo)}</h2><p>${escapeHtml(item.texto)}</p><a class="text-link" href="produto.html?id=${encodeURIComponent(item.productId)}">Conhecer a peça ↗</a></article>`).join('');
-  stage.innerHTML = items.map((item, index) => `<img class="showcase-product ${item.editorial ? 'editorial' : 'cutout'} ${index === 0 ? 'active' : ''}" src="${escapeHtml(item.imagem)}" srcset="${escapeHtml(showcaseSrcset(item.imagem))}" sizes="(max-width: 620px) 900px, 1200px" alt="${escapeHtml(item.titulo)}" ${index ? 'loading="lazy"' : 'fetchpriority="high"'}>`).join('');
+  copy.innerHTML = items.map((item, index) => `<article class="showcase-info ${index === 0 ? 'active' : ''}"><span class="showcase-kicker">${escapeHtml(item.linha)}</span><h2>${escapeHtml(item.titulo)}</h2><p>${escapeHtml(item.texto)}</p><a class="text-link" href="${item.url || `produto.html?id=${encodeURIComponent(item.productId)}`}">Conhecer a peça ↗</a></article>`).join('');
+  stage.innerHTML = items.map((item, index) => `<img class="showcase-product ${item.editorial ? 'editorial' : 'cutout'} ${index === 0 ? 'active' : ''}" ${index === 0 ? `src="${escapeHtml(item.imagem)}" srcset="${escapeHtml(showcaseSrcset(item.imagem))}"` : `data-showcase-src="${escapeHtml(item.imagem)}" data-showcase-srcset="${escapeHtml(showcaseSrcset(item.imagem))}"`} sizes="(max-width: 620px) 88vw, 54vw" alt="${escapeHtml(item.titulo)}" loading="lazy">`).join('');
   steps.innerHTML = items.map((item, index) => `<button class="showcase-step ${index === 0 ? 'active' : ''}" type="button" data-stage="${index}" aria-label="Ver ${escapeHtml(item.titulo)}"><span>${escapeHtml(item.titulo)}</span></button>`).join('');
   document.querySelector('[data-total]').textContent = String(items.length).padStart(2, '0');
 
@@ -117,7 +125,7 @@ function renderShowcase(items) {
 function renderProducts(products) {
   document.querySelector('[data-home-products]').innerHTML = products.slice(0, 6).map(product => {
     const available = productAvailable(product);
-    return `<article class="home-card reveal ${available ? '' : 'is-sold-out'}"><a href="produto.html?id=${encodeURIComponent(product.id)}"><div class="home-card-visual"><img src="${escapeHtml(imageVersion(productCover(product), 'card'))}" srcset="${escapeHtml(imageSrcset(productCover(product)))}" sizes="(max-width: 700px) 100vw, 33vw" alt="${escapeHtml(product.nome)}" loading="lazy"><span class="${available ? '' : 'is-sold-out'}">${available ? 'Disponível' : 'Indisponível'}</span></div><div class="home-card-meta"><div><h3>${escapeHtml(product.nome)}</h3><p>${escapeHtml(product.tipo)} · ${escapeHtml(product.linha)}</p></div><strong>${money.format(product.preco)}</strong></div></a></article>`;
+    return `<article class="home-card reveal ${available ? '' : 'is-sold-out'}"><a href="${PRODUCT_IMAGES.productUrl(product)}"><div class="home-card-visual"><img src="${escapeHtml(imageVersion(productCover(product), 'card'))}" srcset="${escapeHtml(imageSrcset(productCover(product)))}" sizes="(max-width: 700px) 100vw, 33vw" alt="${escapeHtml(product.nome)}" loading="lazy"><span class="${available ? '' : 'is-sold-out'}">${available ? 'Disponível' : 'Indisponível'}</span></div><div class="home-card-meta"><div><h3>${escapeHtml(product.nome)}</h3><p>${escapeHtml(product.tipo)} · ${escapeHtml(product.linha)}</p></div><strong>${money.format(product.preco)}</strong></div></a></article>`;
   }).join('');
   observeReveals();
 }
@@ -151,14 +159,14 @@ document.querySelectorAll('[data-whatsapp]').forEach(link => link.addEventListen
 document.querySelector('[data-close]').addEventListener('click', () => dialog.close());
 document.querySelector('[data-copy]').addEventListener('click', async event => { await navigator.clipboard.writeText(activeMessage); event.currentTarget.textContent = 'Mensagem copiada'; });
 
-fetch('data/products.json').then(response => response.json()).then(data => {
+fetch('data/products.json', { cache: 'no-cache' }).then(response => response.json()).then(data => {
   const ordered = [...data.products].sort((a, b) => a.ordem - b.ordem);
   renderShowcase(featuredFromProducts(ordered));
   renderProducts(ordered);
   handleScroll();
 }).catch(() => {
   document.querySelector('[data-showcase-stage]').innerHTML = '<p>Não foi possível carregar a vitrine.</p>';
-  document.querySelector('[data-home-products]').innerHTML = '<p>Não foi possível carregar a coleção.</p>';
+  if (!document.querySelector('[data-home-products] .home-card')) document.querySelector('[data-home-products]').innerHTML = '<p>Não foi possível carregar a coleção.</p>';
 });
 
 addEventListener('scroll', handleScroll, { passive: true });

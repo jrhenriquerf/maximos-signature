@@ -8,3 +8,4 @@ exclude:
   - scripts/
   - README.md
   - GUIA-CATALOGO.md
+  - docs/

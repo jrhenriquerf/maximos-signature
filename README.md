@@ -6,7 +6,7 @@ Site estatico e responsivo da Maximos Signature, com vitrine editorial, catalogo
 
 - `index.html`: apresentacao da marca e vitrine de destaques.
 - `catalogo.html`: catalogo completo com filtros.
-- `produto.html?id=maximos-aura&sku=MX-BAG-007`: pagina individual com o modelo/SKU correto.
+- `bolsas/maximos-aura-mx-bag-007.html`: página pública por SKU, com conteúdo, metadados e dados estruturados no HTML. Os links antigos `produto.html?id=...&sku=...` continuam funcionando.
 - `admin.html`: editor para uso local; ele nao e incluido no site publico.
 
 ## Dados e configuracao
@@ -34,7 +34,7 @@ O editor administrativo não é publicado no GitHub Pages. Para abri-lo com capa
 python3 scripts/local_admin_server.py
 ```
 
-Acesse `http://127.0.0.1:8080/admin.html`. O servidor grava `data/products.json`, regenera `data/meta-commerce.csv`, cria um backup local, versiona os dois arquivos no mesmo commit e executa o push usando a autenticação Git/SSH já configurada. Consulte `GUIA-CATALOGO.md` para o fluxo completo.
+Acesse `http://127.0.0.1:8080/admin.html`. O servidor grava `data/products.json`, regenera o feed, as páginas por SKU, o sitemap e os estilos agrupados, cria um backup local e publica esses arquivos no mesmo commit usando a autenticação Git/SSH já configurada. Consulte `GUIA-CATALOGO.md` para o fluxo completo.
 
 ## Imagens dos produtos
 
@@ -92,7 +92,7 @@ O site nao envia `Purchase`, pois nao possui checkout proprio. O identificador p
 
 ## Publicar no GitHub Pages
 
-O projeto nao precisa de build, banco de dados ou servidor de aplicacao. O workflow `.github/workflows/deploy-pages.yml` publica automaticamente o site a cada envio para a branch `main`.
+O site publicado continua estático, sem banco de dados ou servidor de aplicação. A preparação dos arquivos públicos usa `node scripts/generate_public_pages.cjs` e `python3 scripts/build_public_site.py`. O workflow `.github/workflows/deploy-pages.yml` publica automaticamente o site a cada envio para a branch `main`.
 
 ### Primeira publicacao
 
@@ -140,3 +140,7 @@ git add .
 git commit -m "Atualiza o catalogo"
 git push
 ```
+
+## Divulgação e preparação para anúncios
+
+Consulte [docs/preparacao-anuncios.md](docs/preparacao-anuncios.md) para regenerar as páginas, preparar `dist`, validar o Meta e o Search Console e acompanhar a origem de campanha no atendimento. As políticas e o fluxo de compra estão em `como-comprar.html`, `trocas-e-envios.html`, `privacidade.html` e `termos.html`.

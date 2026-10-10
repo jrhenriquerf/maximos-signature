@@ -18,6 +18,7 @@
   function loadPixel() {
     if (enabled || !pixelId) return;
     enabled = true;
+    window.CAMPAIGN?.setConsent('granted');
     if (!window.fbq) {
       const fbq = window.fbq = function () { fbq.callMethod ? fbq.callMethod.apply(fbq, arguments) : fbq.queue.push(arguments); };
       if (!window._fbq) window._fbq = fbq;
@@ -40,6 +41,7 @@
   }
 
   function disablePixel() {
+    window.CAMPAIGN?.setConsent('denied');
     if (!enabled) return;
     enabled = false;
     trackedProducts.clear();
@@ -54,9 +56,9 @@
     window.fbq('track', 'ViewContent', detail);
   }
 
-  function trackContact() {
+  function trackContact(detail) {
     if (!enabled) return;
-    window.fbq('track', 'Contact', { contact_channel: 'WhatsApp' });
+    window.fbq('track', 'Contact', detail || { contact_channel: 'WhatsApp' });
   }
 
   function showConsentView(element, detailed) {
@@ -78,7 +80,7 @@
     element.id = 'privacy-consent-panel';
     element.setAttribute('role', 'dialog');
     element.setAttribute('aria-label', 'Preferências de privacidade');
-    element.innerHTML = `<div class="privacy-consent__copy"><h2 data-consent-title tabindex="-1">Sua privacidade</h2><p data-consent-summary>Usamos cookies e tecnologias semelhantes opcionais para entender como o site é usado, medir resultados e melhorar sua experiência. Você pode aceitar ou recusar esses recursos.</p><p data-consent-detail hidden>Atualmente usamos o Meta Pixel, uma tecnologia opcional de medição e marketing, para registrar os eventos PageView (visita à página), ViewContent (visualização de produto) e Contact (contato pelo WhatsApp). O Pixel permanece bloqueado até você aceitar. Saiba mais na <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener noreferrer">Política de Privacidade da Meta</a>.</p><button type="button" class="privacy-consent__details" data-consent-details>Ver detalhes</button></div><div class="privacy-consent__actions"><button type="button" data-consent-reject>Recusar opcionais</button><button type="button" data-consent-accept>Aceitar opcionais</button></div>`;
+    element.innerHTML = `<div class="privacy-consent__copy"><h2 data-consent-title tabindex="-1">Sua privacidade</h2><p data-consent-summary>Usamos cookies e tecnologias semelhantes opcionais para entender como o site é usado, medir resultados e melhorar sua experiência. Você pode aceitar ou recusar esses recursos.</p><p data-consent-detail hidden>Atualmente usamos o Meta Pixel, uma tecnologia opcional de medição e marketing, para registrar os eventos PageView (visita à página), ViewContent (visualização de produto) e Contact (contato pelo WhatsApp). O Pixel permanece bloqueado até você aceitar. Com sua autorização, guardamos a origem da campanha durante esta sessão e a incluímos na mensagem de contato. Saiba mais na <a href="privacidade.html">Política de Privacidade da Maximos Signature</a> e na <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener noreferrer">Política de Privacidade da Meta</a>.</p><button type="button" class="privacy-consent__details" data-consent-details>Ver detalhes</button></div><div class="privacy-consent__actions"><button type="button" data-consent-reject>Recusar opcionais</button><button type="button" data-consent-accept>Aceitar opcionais</button></div>`;
     document.body.appendChild(element);
     const hideBanner = () => {
       element.hidden = true;
@@ -130,9 +132,7 @@
     trackViewContent(lastViewContent);
   });
 
-  document.addEventListener('click', event => {
-    if (event.target.closest('[data-whatsapp],[data-contact],[data-buy],.js-whatsapp')) trackContact();
-  }, { capture: true });
+  addEventListener('maximos:contact', event => trackContact(event.detail));
 
   document.addEventListener('DOMContentLoaded', () => {
     addPreferencesControl();

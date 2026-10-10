@@ -1,8 +1,8 @@
 const money = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 const productParams = new URLSearchParams(location.search);
-const id = productParams.get('id');
-const requestedModel = productParams.get('sku') || productParams.get('modelo');
 const page = document.querySelector('[data-product-page]');
+const id = page.dataset.productId || productParams.get('id');
+const requestedModel = page.dataset.sku || productParams.get('sku') || productParams.get('modelo');
 const dialog = document.querySelector('[data-dialog]');
 let activeMessage = '';
 let imageTransitionTimer;
@@ -39,12 +39,16 @@ function productVariants(product) {
 }
 
 function syncVariantUrl(productId, sku) {
-  if (!sku) return;
+  if (!sku || page.dataset.sku) return;
   const url = new URL(location.href);
   url.searchParams.set('id', productId);
   url.searchParams.set('sku', sku);
   url.searchParams.delete('modelo');
   history.replaceState(null, '', url);
+}
+
+function updateProductMetadata(product, variant) {
+  window.PRODUCT_SEO?.update(product, variant);
 }
 
 function render(product, all, variantIndex = 0) {
@@ -54,7 +58,8 @@ function render(product, all, variantIndex = 0) {
   syncVariantUrl(product.id, variant.sku);
   const images = variant.imagens?.length ? variant.imagens : product.imagens;
   const price = Number(variant.preco ?? product.preco);
-  const previousPrice = Number(variant.precoAnterior ?? product.precoAnterior) || null;
+  const previous = Number(Object.hasOwn(variant, 'precoAnterior') ? variant.precoAnterior : product.precoAnterior);
+  const previousPrice = previous > price ? previous : null;
   const available = isAvailable(variant, product);
   const measuresData = variant.medidas || product.medidas;
   const old = previousPrice ? `<del>${money.format(previousPrice)}</del>` : '';
@@ -66,17 +71,18 @@ function render(product, all, variantIndex = 0) {
   const thumbs = images.map((image, index) => `<button class="thumb ${index === 0 ? 'active' : ''}" type="button" data-image="${escapeHtml(image)}" data-index="${index}" aria-label="Ver imagem ${index + 1}"><img src="${escapeHtml(imageVersion(image, 'thumb'))}" alt="" loading="lazy"></button>`).join('');
   const variationOptions = variants.map((item, index) => {
     const itemAvailable = isAvailable(item, product);
-    return `<button class="variation ${index === variantIndex ? 'active' : ''}${itemAvailable ? '' : ' is-unavailable'}" type="button" data-variant-index="${index}" title="${escapeHtml(item.cor)}${item.sku ? ` — ${escapeHtml(item.sku)}` : ''}${itemAvailable ? '' : ' — Indisponível'}" aria-label="Selecionar modelo ${escapeHtml(item.cor)}${itemAvailable ? '' : ' — Indisponível'}"><img src="${escapeHtml(imageVersion(item.imagens?.[0] || product.imagens?.[0], 'thumb'))}" alt="" loading="lazy"><span>${escapeHtml(item.cor)}</span>${itemAvailable ? '' : '<small>Indisponível</small>'}</button>`;
+    return `<a class="variation ${index === variantIndex ? 'active' : ''}${itemAvailable ? '' : ' is-unavailable'}" href="${PRODUCT_IMAGES.productUrl(product, item)}" data-variant-index="${index}" title="${escapeHtml(item.cor)}${item.sku ? ` — ${escapeHtml(item.sku)}` : ''}${itemAvailable ? '' : ' — Indisponível'}"><img src="${escapeHtml(imageVersion(item.imagens?.[0] || product.imagens?.[0], 'thumb'))}" alt="" loading="lazy"><span>${escapeHtml(item.cor)}</span>${itemAvailable ? '' : '<small>Indisponível</small>'}</a>`;
   }).join('');
 
   document.title = `${product.nome} — Maximos Signature`;
   document.querySelector('meta[name="description"]').content = product.resumo;
+  updateProductMetadata(product, variant);
   page.innerHTML = `<article class="product-shell">
     <p class="breadcrumb"><a href="index.html">Início</a> / <a href="catalogo.html">Bolsas</a> / ${escapeHtml(product.nome)}</p>
     <div class="gallery">
       <div class="thumbs">${thumbs}</div>
       <figure class="main-photo" data-zoom-area ${images.length > 1 ? 'tabindex="0" aria-label="Galeria de fotos do produto. Use as setas para navegar."' : ''}>
-        <img src="${escapeHtml(images[0])}" srcset="${escapeHtml(imageSrcset(images[0]))}" sizes="(max-width: 760px) 100vw, 1200px" alt="${escapeHtml(product.nome)} — ${escapeHtml(variant.cor)}" data-base-alt="${escapeHtml(product.nome)} — ${escapeHtml(variant.cor)}" data-main-image>
+        <img src="${escapeHtml(images[0])}" srcset="${escapeHtml(imageSrcset(images[0]))}" sizes="(max-width: 760px) 100vw, 1200px" width="1800" height="1800" fetchpriority="high" decoding="async" alt="${escapeHtml(product.nome)} — ${escapeHtml(variant.cor)}" data-base-alt="${escapeHtml(product.nome)} — ${escapeHtml(variant.cor)}" data-main-image>
         ${product.imagemConceitual ? '<span class="concept-badge">Imagem conceitual</span>' : ''}
         <span class="zoom-hint" aria-hidden="true">＋ Passe o mouse para ampliar</span>
         ${images.length > 1 ? '<button class="gallery-arrow gallery-arrow-prev" type="button" data-gallery-nav="-1" aria-label="Foto anterior"><span aria-hidden="true">‹</span></button><button class="gallery-arrow gallery-arrow-next" type="button" data-gallery-nav="1" aria-label="Próxima foto"><span aria-hidden="true">›</span></button><span class="swipe-hint" aria-hidden="true">Deslize para ver mais fotos</span>' : ''}
@@ -88,10 +94,11 @@ function render(product, all, variantIndex = 0) {
       <h1>${escapeHtml(product.nome)}</h1>
       <p class="summary">${escapeHtml(product.resumo)}</p>
       <div class="price-row"><strong>${money.format(price)}</strong>${old}</div>
-      <p class="payment-note">Consulte formas de pagamento e entrega no atendimento.</p>
+      <p class="payment-note">Pix ou cartão por link Asaas. Frete calculado pelo Melhor Envio para seu endereço.</p>
       <span class="availability ${available ? '' : 'no'}">${available ? 'Disponível' : 'Indisponível'}</span>
       ${variants.length > 1 ? `<div class="variation-title"><span>Modelo: <strong>${escapeHtml(variant.cor)}</strong></span><span>${variants.length} modelos</span></div><div class="variation-options">${variationOptions}</div>` : `<p class="single-variant">Modelo: <strong>${escapeHtml(variant.cor)}</strong>${variant.sku ? `<span>SKU ${escapeHtml(variant.sku)}</span>` : ''}</p>`}
-      <a class="buy-button" href="#" data-buy><span class="button-label">${whatsappIcon}${available ? 'Comprar pelo WhatsApp' : 'Consultar reposição'}</span><b>→</b></a>
+      <a class="buy-button" href="https://wa.me/5514991488234" data-buy data-sku="${escapeHtml(variant.sku)}" data-product-name="${escapeHtml(product.nome)}" data-price="${price}"><span class="button-label">${whatsappIcon}${available ? 'Comprar pelo WhatsApp' : 'Consultar reposição'}</span><b>→</b></a>
+      <p class="purchase-help">Confirmamos a peça, o frete e o prazo antes de enviar seu link de pagamento. <a href="como-comprar.html">Como comprar</a> · <a href="trocas-e-envios.html">Trocas e envios</a></p>
       <div class="benefits"><span>Atendimento direto</span><span>Feito no Brasil</span><span>Pequena escala</span></div>
       <div class="details">
         <details open><summary>Descrição</summary><p>${escapeHtml(product.descricao)}</p></details>
@@ -105,7 +112,13 @@ function render(product, all, variantIndex = 0) {
 
   document.querySelectorAll('[data-image]').forEach(button => button.addEventListener('click', () => selectImage(button)));
   setupGalleryNavigation(images.length);
-  document.querySelectorAll('[data-variant-index]').forEach(button => button.addEventListener('click', () => {
+  document.querySelectorAll('[data-variant-index]').forEach(button => button.addEventListener('click', event => {
+    event.preventDefault();
+    if (page.dataset.sku) {
+      const target = new URL(PRODUCT_IMAGES.productUrl(product, variants[Number(button.dataset.variantIndex)]), document.baseURI);
+      location.assign(window.CAMPAIGN?.decorateUrl(target).href || target.href);
+      return;
+    }
     const scrollY = window.scrollY;
     render(product, all, Number(button.dataset.variantIndex));
     window.scrollTo(0, scrollY);
@@ -191,7 +204,7 @@ function renderRelated(items) {
   const section = document.querySelector('[data-related-section]');
   if (!items.length) { section.hidden = true; return; }
   section.hidden = false;
-  document.querySelector('[data-related]').innerHTML = items.map(item => `<a class="related-card" href="produto.html?id=${encodeURIComponent(item.id)}"><figure><img src="${escapeHtml(imageVersion(item.imagens[0], 'card'))}" srcset="${escapeHtml(imageSrcset(item.imagens[0]))}" sizes="(max-width: 700px) 50vw, 600px" alt="${escapeHtml(item.nome)}" loading="lazy"></figure><div><h3>${escapeHtml(item.nome)}</h3><span>A partir de ${money.format(item.preco)}</span></div></a>`).join('');
+  document.querySelector('[data-related]').innerHTML = items.map(item => `<a class="related-card" href="${PRODUCT_IMAGES.productUrl(item)}"><figure><img src="${escapeHtml(imageVersion(item.imagens[0], 'card'))}" srcset="${escapeHtml(imageSrcset(item.imagens[0]))}" sizes="(max-width: 700px) calc(50vw - 64px), calc(25vw - 64px)" alt="${escapeHtml(item.nome)}" loading="lazy"></figure><div><h3>${escapeHtml(item.nome)}</h3><span>A partir de ${money.format(item.preco)}</span></div></a>`).join('');
 }
 
 function contact(event, product, variant) {
@@ -205,7 +218,7 @@ function contact(event, product, variant) {
   dialog.showModal();
 }
 
-fetch('data/products.json')
+fetch('data/products.json', { cache: 'no-cache' })
   .then(response => { if (!response.ok) throw new Error(); return response.json(); })
   .then(data => {
     const product = data.products.find(item => item.id === id);
@@ -221,7 +234,12 @@ fetch('data/products.json')
       : (availableVariant >= 0 ? availableVariant : 0);
     render(product, data.products, initialVariant);
   })
-  .catch(() => { page.innerHTML = '<div class="loading"><div><h1>Produto não encontrado</h1><a href="catalogo.html">Voltar às bolsas</a></div></div>'; });
+  .catch(() => {
+    if (page.dataset.sku && page.querySelector('.product-shell')) return;
+    page.innerHTML = '<div class="loading"><div><h1>Produto não encontrado</h1><a href="catalogo.html">Voltar às bolsas</a></div></div>';
+    const robots = document.createElement('meta');
+    robots.name = 'robots'; robots.content = 'noindex'; document.head.appendChild(robots);
+  });
 
 document.querySelector('[data-close]')?.addEventListener('click', () => dialog.close());
 document.querySelector('[data-copy]')?.addEventListener('click', async event => { await navigator.clipboard.writeText(activeMessage); event.currentTarget.textContent = 'Mensagem copiada'; });

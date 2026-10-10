@@ -27,6 +27,7 @@ from generate_meta_feed import DEFAULT_BASE_URL, render_feed
 ROOT = Path(__file__).resolve().parents[1]
 PRODUCTS_FILE = ROOT / "data" / "products.json"
 META_FEED_FILE = ROOT / "data" / "meta-commerce.csv"
+PUBLIC_PAGE_GENERATOR = ROOT / "scripts" / "generate_public_pages.cjs"
 BACKUP_DIR = ROOT / ".local-backups"
 MAX_BODY = 8 * 1024 * 1024
 PRODUCT_ID = re.compile(r"^[a-z0-9][a-z0-9-]{0,119}$")
@@ -209,12 +210,24 @@ def save_and_publish(catalog: dict, message: str) -> dict[str, object]:
             Path(temporary_name).unlink()
     META_FEED_FILE.write_text(feed_serialized, encoding="utf-8", newline="")
 
-    add_result = git("add", "--", "data/products.json", "data/meta-commerce.csv")
+    pages_result = subprocess.run(
+        ["node", str(PUBLIC_PAGE_GENERATOR)], cwd=ROOT, capture_output=True,
+        text=True, timeout=120, check=False,
+    )
+    if pages_result.returncode != 0:
+        raise ApiError(HTTPStatus.INTERNAL_SERVER_ERROR,
+                       "Catalogo salvo, mas a preparacao das paginas falhou: " + pages_result.stderr.strip())
+
+    public_paths = ["data/products.json", "data/meta-commerce.csv", "bolsas", "index.html",
+                    "catalogo.html", "produto.html", "sitemap.xml", "robots.txt",
+                    "como-comprar.html", "trocas-e-envios.html", "privacidade.html", "termos.html",
+                    "home-bundle.css", "catalog-bundle.css", "product-bundle.css", "information-bundle.css"]
+    add_result = git("add", "--", *public_paths)
     if add_result.returncode != 0:
         raise ApiError(HTTPStatus.INTERNAL_SERVER_ERROR, add_result.stderr.strip() or "Falha ao preparar o commit.")
 
     safe_message = " ".join(message.split())[:72] or "catalog: atualiza produtos"
-    commit_result = git("commit", "-m", safe_message, "--", "data/products.json", "data/meta-commerce.csv")
+    commit_result = git("commit", "-m", safe_message, "--", *public_paths)
     if commit_result.returncode != 0:
         raise ApiError(HTTPStatus.INTERNAL_SERVER_ERROR, commit_result.stderr.strip() or "Falha ao criar o commit.")
 

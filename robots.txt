@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /scripts/
+Disallow: /.local-backups/
+Sitemap: https://maximossignature.com.br/sitemap.xml

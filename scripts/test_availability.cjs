@@ -9,6 +9,8 @@ const context = vm.createContext({
   money: new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }),
   escapeHtml: value => String(value ?? ''), imageVersion: value => value, imageSrcset: value => value
 });
+context.window = context;
+vm.runInContext(read('image-utils.js'), context);
 vm.runInContext(section(catalog, 'function variantsFor(', 'function filtered('), context);
 const product = {
   id: 'test', nome: 'Nome original', imagens: ['a.webp'], linha: 'Clássicos', porte: 'Médio',
@@ -20,9 +22,9 @@ const product = {
 context.product = product;
 assert.equal(vm.runInContext('isAvailable(product.variantes[0])', context), false);
 assert.equal(vm.runInContext('initialVariantIndex(product)', context), 1);
-assert.equal(vm.runInContext('variantLink(product, product.variantes[0])', context), 'produto.html?id=test&sku=SKU-1');
+assert.equal(vm.runInContext('variantLink(product, product.variantes[0])', context), 'bolsas/test-sku-1.html');
 let html = vm.runInContext('card(product)', context);
-assert.match(html, /href="produto.html\?id=test&sku=SKU-2"/);
+assert.match(html, /href="bolsas\/test-sku-2.html"/);
 assert.match(html, /Vinho — Indisponível/);
 assert.match(html, /<h2>Nome original<\/h2>/);
 product.variantes[1].estoque = 0;
@@ -39,7 +41,7 @@ context.document = {
 };
 vm.runInContext(section(catalog, 'function updateCardVariant(', 'function bindVariants('), context);
 vm.runInContext('updateCardVariant("test", 0)', context);
-assert.ok(links.every(link => link.href === 'produto.html?id=test&sku=SKU-1'));
+assert.ok(links.every(link => link.href === 'bolsas/test-sku-1.html'));
 assert.equal(badge.textContent, 'Este modelo está indisponível');
 
 const checkbox = { checked: false };
