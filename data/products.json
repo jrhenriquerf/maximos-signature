@@ -744,7 +744,7 @@
         "Construção artesanal"
       ],
       "cores": [
-        "Consultar disponibilidade"
+        "Preto"
       ],
       "medidas": {
         "largura": 36,
@@ -758,7 +758,7 @@
         {
           "id": "maximos-urban-mx-bag-019",
           "sku": "MX-BAG-019",
-          "cor": "Consultar disponibilidade",
+          "cor": "Preto",
           "preco": 99,
           "precoAnterior": null,
           "disponivel": false,
