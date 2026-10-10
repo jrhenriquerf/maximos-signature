@@ -60,13 +60,13 @@ function render(product, all, variantIndex = 0) {
   const old = previousPrice ? `<del>${money.format(previousPrice)}</del>` : '';
   const discount = previousPrice ? Math.round((1 - price / previousPrice) * 100) : 0;
   const materials = (product.materiais || []).map(item => `<li>${escapeHtml(item)}</li>`).join('');
-  const models = variants.map(item => `<li>${escapeHtml(item.cor)}${isAvailable(item, product) ? '' : ' — Esgotado'}</li>`).join('');
+  const models = variants.map(item => `<li>${escapeHtml(item.cor)}${isAvailable(item, product) ? '' : ' — Indisponível'}</li>`).join('');
   const measures = measuresData ? `${measuresData.largura} × ${measuresData.altura} × ${measuresData.profundidade} cm` : 'Confirme as dimensões no atendimento';
   const taxonomy = [product.tipo, product.subtipo, product.linha, product.porte ? `Porte ${product.porte}` : ''].filter(Boolean);
   const thumbs = images.map((image, index) => `<button class="thumb ${index === 0 ? 'active' : ''}" type="button" data-image="${escapeHtml(image)}" data-index="${index}" aria-label="Ver imagem ${index + 1}"><img src="${escapeHtml(imageVersion(image, 'thumb'))}" alt="" loading="lazy"></button>`).join('');
   const variationOptions = variants.map((item, index) => {
     const itemAvailable = isAvailable(item, product);
-    return `<button class="variation ${index === variantIndex ? 'active' : ''}${itemAvailable ? '' : ' is-unavailable'}" type="button" data-variant-index="${index}" title="${escapeHtml(item.cor)}${item.sku ? ` — ${escapeHtml(item.sku)}` : ''}${itemAvailable ? '' : ' — Esgotado'}" aria-label="Selecionar modelo ${escapeHtml(item.cor)}${itemAvailable ? '' : ' — Esgotado'}"><img src="${escapeHtml(imageVersion(item.imagens?.[0] || product.imagens?.[0], 'thumb'))}" alt="" loading="lazy"><span>${escapeHtml(item.cor)}</span>${itemAvailable ? '' : '<small>Esgotado</small>'}</button>`;
+    return `<button class="variation ${index === variantIndex ? 'active' : ''}${itemAvailable ? '' : ' is-unavailable'}" type="button" data-variant-index="${index}" title="${escapeHtml(item.cor)}${item.sku ? ` — ${escapeHtml(item.sku)}` : ''}${itemAvailable ? '' : ' — Indisponível'}" aria-label="Selecionar modelo ${escapeHtml(item.cor)}${itemAvailable ? '' : ' — Indisponível'}"><img src="${escapeHtml(imageVersion(item.imagens?.[0] || product.imagens?.[0], 'thumb'))}" alt="" loading="lazy"><span>${escapeHtml(item.cor)}</span>${itemAvailable ? '' : '<small>Indisponível</small>'}</button>`;
   }).join('');
 
   document.title = `${product.nome} — Maximos Signature`;
@@ -89,7 +89,7 @@ function render(product, all, variantIndex = 0) {
       <p class="summary">${escapeHtml(product.resumo)}</p>
       <div class="price-row"><strong>${money.format(price)}</strong>${old}</div>
       <p class="payment-note">Consulte formas de pagamento e entrega no atendimento.</p>
-      <span class="availability ${available ? '' : 'no'}">${available ? 'Disponível' : 'Esgotado'}</span>
+      <span class="availability ${available ? '' : 'no'}">${available ? 'Disponível' : 'Indisponível'}</span>
       ${variants.length > 1 ? `<div class="variation-title"><span>Modelo: <strong>${escapeHtml(variant.cor)}</strong></span><span>${variants.length} modelos</span></div><div class="variation-options">${variationOptions}</div>` : `<p class="single-variant">Modelo: <strong>${escapeHtml(variant.cor)}</strong>${variant.sku ? `<span>SKU ${escapeHtml(variant.sku)}</span>` : ''}</p>`}
       <a class="buy-button" href="#" data-buy><span class="button-label">${whatsappIcon}${available ? 'Comprar pelo WhatsApp' : 'Consultar reposição'}</span><b>→</b></a>
       <div class="benefits"><span>Atendimento direto</span><span>Feito no Brasil</span><span>Pequena escala</span></div>

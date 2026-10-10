@@ -280,7 +280,7 @@ function handleVariantInput(event) {
   if (event.target.name === 'variant-estoque') {
     const stock = Math.max(0, Math.trunc(Number(event.target.value) || 0));
     event.target.value = stock;
-    card.querySelector('[name="variant-disponivel"]').checked = stock > 0;
+    if (stock === 0) card.querySelector('[name="variant-disponivel"]').checked = false;
   }
   refreshVariantCard(card);
   updateStockSummary();
