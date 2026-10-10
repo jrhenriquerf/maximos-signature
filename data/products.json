@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-28",
+  "updatedAt": "2026-10-10",
   "currency": "BRL",
   "source": {
     "type": "woocommerce-csv",
@@ -30,7 +30,7 @@
       ],
       "cores": [
         "Vinho",
-        "Consultar disponibilidade"
+        "Preta"
       ],
       "medidas": {
         "largura": 38,
@@ -69,7 +69,7 @@
         {
           "id": "maximos-classic-tote-mx-bag-003",
           "sku": "MX-BAG-003",
-          "cor": "Consultar disponibilidade",
+          "cor": "Preta",
           "preco": 320.25,
           "precoAnterior": 427,
           "disponivel": false,
