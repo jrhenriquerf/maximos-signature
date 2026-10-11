@@ -110,5 +110,7 @@ um defeito. Fontes: artigo 49 do CDC e Decreto 7.962/2013.
 
 O responsável continua pessoa física, conforme informado pelo proprietário;
 a identificação fiscal foi recuperada da política anteriormente publicada.
-O backup não continha endereço comercial completo. A publicação informa
-Bauru/SP e os contatos; o endereço completo ainda deve ser fornecido.
+O endereço de fabricação foi informado e autorizado para publicação pelo
+proprietário em 11/10/2026: Rua André Padilha Sobrinho, 354 — Centro — Bauru/SP.
+As páginas de informações exibem o endereço e esclarecem que a operação é
+exclusivamente online, sem atendimento presencial ou retirada no local.
