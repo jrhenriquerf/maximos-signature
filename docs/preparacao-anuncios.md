@@ -14,6 +14,7 @@ python3 scripts/generate_meta_feed.py
 node scripts/generate_public_pages.cjs
 node scripts/test_availability.cjs
 node scripts/test_campaign.cjs
+node scripts/test_analytics.cjs
 node scripts/test_public_pages.cjs
 python3 -m unittest discover -s scripts -p 'test_*.py'
 python3 scripts/build_public_site.py
@@ -35,7 +36,7 @@ Pages; não são interpretados pelo GitHub Pages.
 Exemplo de destino de anúncio:
 
 ```text
-https://maximossignature.com.br/bolsas/maximos-aura-mx-bag-007.html?utm_source=instagram&utm_medium=paid_social&utm_campaign=colecao&utm_content=video1
+https://maximossignature.com.br/bolsas/maximos-aura-mx-bag-007?utm_source=instagram&utm_medium=paid_social&utm_campaign=colecao&utm_content=video1
 ```
 
 Com consentimento, `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`,
@@ -114,3 +115,60 @@ O endereço de fabricação foi informado e autorizado para publicação pelo
 proprietário em 11/10/2026: Rua André Padilha Sobrinho, 354 — Centro — Bauru/SP.
 As páginas de informações exibem o endereço e esclarecem que a operação é
 exclusivamente online, sem atendimento presencial ou retirada no local.
+
+
+## Ajustes após auditoria Meta e Search Console (11/10/2026)
+
+O código configura `fbq('set', 'autoConfig', false, pixelId)` antes de `init`,
+seguindo o template oficial da Meta:
+https://github.com/facebook/GoogleTagManager-WebTemplate-For-FacebookPixel/blob/main/template.tpl
+A página de documentação avançada do Pixel retornou HTTP 429 durante a consulta;
+a ordem foi confirmada no código oficial do template. Isso desativa configuração
+automática/coleta inferida; os três eventos explícitos continuam com `track`.
+Não foram adicionados eventos de compra nem parâmetros artificiais de URL.
+A apresentação “personalizado” no painel e a URL raiz não provam erro do payload.
+
+Os testes locais usam SDK simulado: confirmam comandos, ordem, bloqueios,
+reaceitação, uma inicialização/listener e Contact único com SKU/preço/BRL.
+Também cobrem revogação enquanto o SDK ainda carrega, removendo eventos pendentes.
+A campanha armazenada na sessão é removida ao revogar.
+
+`PRODUCT_IMAGES.productUrl` mantém o caminho físico `.html` para geração e links
+relativos compatíveis com o servidor local. `publicProductUrl` fornece o destino
+sem extensão para canonical, og:url, Product/Offer e breadcrumbs. O sitemap e
+feed também usam URLs públicas sem extensão. Os redirecionamentos antigos
+apontam diretamente para essas URLs. O gerenciador regenera os mesmos artefatos.
+
+Verificação de produção antes de publicar estes ajustes: `curl` recebeu HTTP 200,
+Content-Type `application/xml`, XML com namespace correto e 26 URLs ainda com
+extensão. Uma requisição Python urllib ao mesmo endereço recebeu HTTP 403.
+Essa diferença não identifica a causa do erro de leitura no Search Console.
+O chat do Edge deve verificar data da última tentativa, detalhes do erro,
+regras/desafios/bloqueios Cloudflare e, se disponíveis, logs de acesso do Google.
+Não alterar regras de segurança com base apenas nesse teste.
+
+### Validação após deploy
+
+1. Confirmar que `/sitemap.xml` retorna HTTP 200, XML real (sem HTML de fallback
+   ou desafio), Content-Type XML, namespace padrão e 26 URLs únicas sem `.html`.
+   Conferir o sitemap em `robots.txt`. Abrir exemplos de URLs e verificar que
+   canonical, og:url, ofertas e breadcrumbs coincidem com os destinos finais.
+2. Em sessão limpa, recusar opcionais: não carregar `fbevents.js`, nem enviar
+   eventos para Meta. Abrir produtos e clicar WhatsApp sem enviar mensagem.
+3. Aceitar: no Meta Testar eventos, confirmar PageView, ViewContent e um Contact
+   por clique com SKU, valor e BRL. Na rede do navegador, verificar `ev=PageView`
+   e o parâmetro `dl` dos eventos de produto contra a página acessada; registrar
+   divergências entre payload observado e apresentação da interface.
+4. Abrir preferências e recusar: verificar ausência de SubscribedButtonClick,
+   eventos inferidos e eventos explícitos desse clique e das ações seguintes.
+   Confirmar limpeza de `maximos_campaign_v1`; trocar modelo, navegar e clicar
+   WhatsApp. Reaceitar e confirmar funcionamento sem eventos duplicados.
+   Repetir com rede lenta, revogando enquanto o SDK carrega.
+5. No Edge, conferir também configuração de coleta automática e Event Setup Tool
+   na conta Meta; o código não comprova nem altera esses estados externos.
+6. Reimportar o feed Meta: conferir 20 IDs únicos, sem `item_group_id`, links sem
+   extensão, atributos preservados e diagnósticos. Usar a quantidade atual se
+   houver atualização de catálogo.
+7. Reenviar o sitemap na propriedade existente do Search Console e acompanhar
+   o novo processamento. HTTP 200 local ou em produção não comprova leitura pelo
+   Google. Registrar resultado e pendências com evidências.

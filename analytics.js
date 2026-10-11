@@ -33,6 +33,8 @@
     }
     window.fbq('consent', 'grant');
     if (!initialized) {
+      // Configuração manual antes de init: não coletar cliques/eventos inferidos.
+      window.fbq('set', 'autoConfig', false, pixelId);
       window.fbq('init', pixelId);
       initialized = true;
     }
@@ -45,6 +47,10 @@
     if (!enabled) return;
     enabled = false;
     trackedProducts.clear();
+    // Se o SDK ainda estiver carregando, não reproduzir eventos anteriores ao reaceitar.
+    if (Array.isArray(window.fbq?.queue)) {
+      window.fbq.queue = window.fbq.queue.filter(args => !String(args[0]).startsWith('track'));
+    }
     window.fbq?.('consent', 'revoke');
   }
 
@@ -99,8 +105,8 @@
     });
     element.querySelector('[data-consent-reject]').addEventListener('click', () => {
       writeConsent('denied');
-      hideBanner();
       disablePixel();
+      hideBanner();
     });
     element.addEventListener('keydown', event => {
       if (event.key === 'Escape') hideBanner();

@@ -8,5 +8,7 @@
   const productUrl = (product, variant = preferredVariant(product)) => variant?.sku
     ? `bolsas/${product.id}-${variant.sku.toLowerCase()}.html`
     : `produto.html?id=${encodeURIComponent(product.id)}`;
-  window.PRODUCT_IMAGES = { version, srcset, available, preferredVariant, productUrl };
+  // Caminho físico usado na geração e navegação local; URL final usada em SEO/feed.
+  const publicProductUrl = (product, variant = preferredVariant(product)) => productUrl(product, variant).replace(/\.html(?=$|\?)/, '');
+  window.PRODUCT_IMAGES = { version, srcset, available, preferredVariant, productUrl, publicProductUrl };
 }());

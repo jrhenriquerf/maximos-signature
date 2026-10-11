@@ -36,6 +36,8 @@ jobs:
           python3 scripts/generate_meta_feed.py --check
           node scripts/test_availability.cjs
           node scripts/test_campaign.cjs
+          node scripts/test_analytics.cjs
+          python3 scripts/test_sitemap.py
           node scripts/test_public_pages.cjs
           node scripts/generate_public_pages.cjs --check
 

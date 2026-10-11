@@ -61,6 +61,8 @@ function metadata(data) {
 }
 
 function versionAssets(html, generated = new Map()) {
+  // Normaliza metadados absolutos sem alterar links relativos/caminhos físicos.
+  html = html.replace(/https:\/\/maximossignature\.com\.br\/([a-z0-9/-]+)\.html/g, (_, page) => ORIGIN + (page === 'index' ? '' : page));
   return html.replace(/((?:src|href)=")([^"?]+\.(?:js|css))(?:\?v=[^" ]*)?"/g, (_, prefix, file) => {
     const source = path.join(ROOT, file);
     if (!generated.has(file) && !fs.existsSync(source)) return `${prefix}${file}"`;
@@ -131,7 +133,7 @@ function generate(catalog) {
   outputs.set('produto.html', versionAssets(template, outputs));
   for (const file of ['como-comprar.html', 'trocas-e-envios.html', 'privacidade.html', 'termos.html']) outputs.set(file, versionAssets(bundle(read(file), 'information-bundle.css'), outputs));
   const pages = ['', 'catalogo.html', 'como-comprar.html', 'trocas-e-envios.html', 'privacidade.html', 'termos.html', ...[...outputs.keys()].filter(file => file.startsWith('bolsas/'))];
-  outputs.set('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map(file => `  <url><loc>${escape(ORIGIN + file)}</loc></url>`).join('\n')}\n</urlset>\n`);
+  outputs.set('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map(file => `  <url><loc>${escape(ORIGIN + file.replace(/\.html$/, ''))}</loc></url>`).join('\n')}\n</urlset>\n`);
   outputs.set('robots.txt', `User-agent: *\nAllow: /\nDisallow: /admin.html\nDisallow: /scripts/\nDisallow: /.local-backups/\nSitemap: ${ORIGIN}sitemap.xml\n`);
   return outputs;
 }

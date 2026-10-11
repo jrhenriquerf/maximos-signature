@@ -15,7 +15,11 @@ for (const product of catalog.products) for (const variant of product.variantes)
   assert.equal(data.sku, variant.sku);
   assert.equal(data.offers.price, Number(variant.preco).toFixed(2));
   assert.equal(data.offers.availability.endsWith('/InStock'), variant.disponivel !== false && Number(variant.estoque) > 0);
-  assert.ok(data.offers.url.endsWith(filename));
+  assert.ok(data.offers.url.endsWith(filename.replace(/\.html$/, '')));
+  assert.ok(html.includes(`<link rel="canonical" href="${data.offers.url}">`));
+  assert.ok(html.includes(`<meta property="og:url" content="${data.offers.url}">`));
+  assert.equal(data['@id'], data.offers.url + '#produto');
+  assert.equal(schema['@graph'][1].itemListElement[2].item, data.offers.url);
   assert.ok(output.get('sitemap.xml').includes(data.offers.url));
   assert.ok(html.includes('https://wa.me/5514991488234?text='));
 }
@@ -34,4 +38,12 @@ assert.match(changedHtml, /Teste &lt;seguro&gt; &amp; novo/);
 assert.match(changedHtml, /"price":"123.45"/);
 assert.match(changedHtml, /"availability":"https:\/\/schema.org\/OutOfStock"/);
 assert.ok(!changedHtml.includes('Teste <seguro>'));
+const locations = [...output.get('sitemap.xml').matchAll(/<loc>(.*?)<\/loc>/g)].map(match => match[1]);
+assert.equal(locations.length, 26);
+assert.equal(new Set(locations).size, 26);
+assert.ok(locations.every(url => url.startsWith('https://maximossignature.com.br/') && !url.includes('.html')));
+assert.ok(output.get('sitemap.xml').includes('xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"'));
+for (const [file, html] of output) if (file.endsWith('.html') && file !== 'produto.html') {
+  assert.ok(!/https:\/\/maximossignature\.com\.br\/[^"< ]*\.html/.test(html), file);
+}
 console.log('Páginas por SKU: conteúdo, preços, estoque, sitemap e escape de HTML: OK');

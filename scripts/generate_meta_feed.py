@@ -114,7 +114,7 @@ def build_rows(catalog: dict, base_url: str = DEFAULT_BASE_URL) -> list[dict[str
                 "sale_price": money(current_price, currency) if has_sale else "",
                 "link": absolute_url(
                     base_url,
-                    f"bolsas/{quote(product_id, safe='')}-{quote(sku.lower(), safe='')}.html",
+                    f"bolsas/{quote(product_id, safe='')}-{quote(sku.lower(), safe='')}",
                 ),
                 "image_link": absolute_url(base_url, str(images[0])),
                 "additional_image_link": ",".join(additional_images),

@@ -1,7 +1,7 @@
 (function () {
   const origin = 'https://maximossignature.com.br/';
   function details(product, variant) {
-    const url = new URL(PRODUCT_IMAGES.productUrl(product, variant), origin).href;
+    const url = new URL(PRODUCT_IMAGES.publicProductUrl(product, variant), origin).href;
     const title = `${product.nome} — ${variant.cor} | Maximos Signature`;
     const description = `${product.resumo} Modelo ${variant.cor}. Pix ou cartão por link Asaas; frete calculado para seu endereço.`;
     const image = new URL(variant.imagens?.[0] || product.imagens[0], origin).href;
@@ -16,7 +16,7 @@
             itemCondition: 'https://schema.org/NewCondition', seller: { '@type': 'Organization', name: 'Maximos Signature' } } },
         { '@type': 'BreadcrumbList', itemListElement: [
           { '@type': 'ListItem', position: 1, name: 'Início', item: origin },
-          { '@type': 'ListItem', position: 2, name: 'Bolsas', item: `${origin}catalogo.html` },
+          { '@type': 'ListItem', position: 2, name: 'Bolsas', item: `${origin}catalogo` },
           { '@type': 'ListItem', position: 3, name: `${product.nome} — ${variant.cor}`, item: url }
         ] }
       ]

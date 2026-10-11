@@ -63,7 +63,7 @@ class MetaFeedTests(unittest.TestCase):
         first = build_rows(self.catalog, "https://example.com/loja/")[0]
         self.assertEqual(
             first["link"],
-            "https://example.com/loja/bolsas/bolsa-aura-mx-001.html",
+            "https://example.com/loja/bolsas/bolsa-aura-mx-001",
         )
         self.assertEqual(first["image_link"], "https://example.com/loja/assets/01.webp")
         self.assertEqual(
